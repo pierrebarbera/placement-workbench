@@ -1,0 +1,5 @@
+# Used by rules in place-epa-ng.smk
+channels:
+  - bioconda
+dependencies:
+  - epa-ng ==0.3.8

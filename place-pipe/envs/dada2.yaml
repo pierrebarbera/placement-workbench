@@ -1,0 +1,4 @@
+channels:
+  - bioconda
+dependencies:
+  - bioconductor-dada2 ==1.22.0-1

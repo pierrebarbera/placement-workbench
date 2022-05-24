@@ -1,0 +1,5 @@
+# Used by rules in align-hmmer.smk
+channels:
+  - bioconda
+dependencies:
+  - hmmer ==3.3.2

@@ -1,0 +1,5 @@
+# Used by rules in clustering.smk
+channels:
+  - bioconda
+dependencies:
+  - swarm ==3.1.0

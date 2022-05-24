@@ -1,0 +1,4 @@
+channels:
+  - bioconda
+dependencies:
+  - pplacer ==1.1.alpha17
