@@ -48,7 +48,7 @@ if( args.prefix ):
 skip_alignment = not args.do_align
 
 # make a unique output dir, labeled by date and time
-out_dir = "search-{}".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) if( not args.out_dir ) else args.out_dir
+out_dir = "run-{}".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) if( not args.out_dir ) else args.out_dir
 
 # build up a samples.tsv file to be used in this execution
 # 

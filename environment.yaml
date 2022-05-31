@@ -1,4 +1,4 @@
-name: nidhoggr
+name: place-workbench
 channels:
   - bioconda
   - conda-forge
