@@ -15,6 +15,9 @@ if( platform.machine() == 'arm64' ):
   os.environ['CONDA_SUBDIR'] = "osx-64"
 
 parser = argparse.ArgumentParser(description='Wrapper to run the pipeline with some default settings.')
+###
+#  Input Files
+###
 parser.add_argument('--fasta-paths', dest='fasta_files', type=str, nargs='+',
                     help='input fasta files', required=True)
 parser.add_argument('--reference-tree', dest='ref_tree', type=str,
@@ -23,7 +26,12 @@ parser.add_argument('--reference-msa', dest='ref_msa', type=str,
                     help='Reference MSA, in fasta format', required=True)
 parser.add_argument('--model-file', dest='model_file', type=str,
                     help='Reference tree, in newick format', required=True)
+parser.add_argument('--taxonomy-file', dest='taxon_file', type=str,
+                    help='Tab-separated file mapping reference labels to their taxonomic paths', required=False)
 
+###
+#   Config Manip
+###
 parser.add_argument('-d', '--datatype', dest='datatype', type=str, nargs='?',
                     const='nt', default='nt', choices=['nt', 'aa'],
                     help="datatype, 'aa' for protein, 'nt' for DNA data")
@@ -34,6 +42,9 @@ parser.add_argument('-p', '--prefix', dest='prefix', type=str,
                     default=None,
                     help='prefix to fasta paths and output (useful to specify where data was mounted to in docker)')
 
+###
+#   Runtime Manip
+###
 parser.add_argument('--threads', dest='threads', type=int,
                     default=multiprocessing.cpu_count(),
                     help='number of threads to use')
@@ -51,6 +62,9 @@ util.expect_file_exists( args.model_file )
 
 if( args.prefix ):
   util.expect_dir_exists( args.prefix )
+
+if( args.taxon_file ):
+  util.expect_file_exists( args.taxon_file )
 
 # make a unique output dir, labeled by date and time
 out_dir = "run-{}".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) if( not args.out_dir ) else args.out_dir
@@ -129,6 +143,9 @@ config_overrrides = {
     'threads': args.threads
   }
 }
+
+if( args.taxon_file ):
+  config_overrrides['data']['taxonomy_file'] = args.taxon_file
 
 calling_dir = os.path.dirname(os.path.abspath(__file__))
 

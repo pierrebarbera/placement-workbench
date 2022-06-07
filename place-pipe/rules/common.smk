@@ -31,8 +31,6 @@ samples = pd.read_table(config["data"]["samples"], dtype=str).set_index(["sample
 # Transform for ease of use
 sample_names=list(set(samples.index.get_level_values("sample")))
 
-print(sample_names)
-
 # output prefix
 outdir=config["settings"]["outdir"].rstrip("/")
 

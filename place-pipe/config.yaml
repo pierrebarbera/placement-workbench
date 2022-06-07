@@ -11,17 +11,17 @@ data:
   samples: "data/samples.tsv"
 
   # Reference tree in newick format.
-  reference-tree: "data/reference.newick"
+  reference-tree: "data/reference/tree.newick"
 
   # Reference alignment, preferrably in fasta format, but currently, any format that is accepted
   # by hmmbuild also works here.
   # TODO might need to change this once we allow for different alignment tools as well!
   # Needs to contain the same sequences (by name) as the reference tree above.
-  reference-alignment: "data/reference.fasta"
+  reference-alignment: "data/reference/seqs.fasta"
 
   # OPTIONAL File containing a tab-separated list of reference taxon to taxonomic string assignments, as
   # used by 'gappa assign'. If provided, taxonomic assignment is added as an output
-  taxonomy-file: "data/taxon-file.tsv"
+  taxonomy-file: "data/reference/taxopaths.tsv"
 
 # =================================================================================================
 #     Pipeline Settings
