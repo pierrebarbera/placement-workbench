@@ -163,6 +163,12 @@ params:
 
       # Any extra parameters. In particular useful to change color and svg settings.
       extra: "--svg-tree-ladderize"
+    
+    # Settings for taxonomic assignment. See 
+    # https://github.com/lczech/gappa/wiki/Subcommand:-assign for details.
+    assign:
+      #any extra params
+      extra: ""
 
     threads: 2
 

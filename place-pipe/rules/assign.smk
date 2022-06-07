@@ -7,7 +7,7 @@ rule assign:
         jplace      = "{outdir}/placed/{sample}.jplace",
         taxon_file  = config["data"]["taxonomy-file"]
     output:
-        "{outdir}/taxassign/gappa/{sample}/profile.tsv"
+        "{outdir}/assign/gappa/{sample}/profile.tsv"
     params:
         extra = config["params"]["gappa"]["assign"]["extra"]
     log:
