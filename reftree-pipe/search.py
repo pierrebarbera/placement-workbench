@@ -3,7 +3,7 @@
 import multiprocessing
 import argparse, sys, os
 sys.path.insert(0, './rules/scripts')
-from util import *
+import util
 from datetime import datetime
 import pandas as pd
 import snakemake
@@ -43,7 +43,7 @@ args = parser.parse_args()
 
 # input validation
 if( args.prefix ):
-  expect_dir_exists( args.prefix )
+  util.expect_dir_exists( args.prefix )
 
 skip_alignment = not args.do_align
 
@@ -55,9 +55,9 @@ out_dir = "run-{}".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) if( not 
 # first read in a unique list of all the desired files
 file_paths = []
 if( args.fasta_files ):
-  file_paths.extend( ingest_paths( args.fasta_files, extensions=['.fa', '.afa', '.fasta'] ) )
+  file_paths.extend( util.ingest_paths( args.fasta_files, extensions=['.fa', '.afa', '.fasta'] ) )
 if( args.accession_files ):
-  file_paths.extend( ingest_paths( args.accession_files, extensions=['.csv'] ) )
+  file_paths.extend( util.ingest_paths( args.accession_files, extensions=['.csv'] ) )
 
 def get_unique_names( paths ):
   """
@@ -71,13 +71,13 @@ def get_unique_names( paths ):
 
   names = []
   # extend by at most as long as the longest path
-  for i in range(0, max( [num_dirs( f ) for f in paths] )):
+  for i in range(0, max( [util.num_dirs( f ) for f in paths] )):
 
     failed=False
     for path in paths:
       # get at most i preceding dir names as prefixes
-      prefixes = last_n_dirnames( path, i )
-      prefixes.append( filename( path ) )
+      prefixes = util.last_n_dirnames( path, i )
+      prefixes.append( util.filename( path ) )
       new_name = '_'.join( prefixes )
       if( new_name in names ):
         failed = True
@@ -90,7 +90,7 @@ def get_unique_names( paths ):
       break
 
   if( failed ):
-    fail( "Could not find assignment of unique names to list of input files. The list:\n{paths}" )
+    util.fail( "Could not find assignment of unique names to list of input files. The list:\n{paths}" )
 
   assert( len(names) == len(paths) )
 
@@ -103,7 +103,7 @@ samples = pd.DataFrame({
   }).set_index( 'sample' )
 
 # finally, write the samples.tsv to the output folder
-make_path( out_dir )
+util.make_path( out_dir )
 samples_file = os.path.join( out_dir, "samples.tsv" )
 samples.to_csv( samples_file, sep='\t' )
 
@@ -128,9 +128,15 @@ config_overrrides = {
 
 calling_dir = os.path.dirname(os.path.abspath(__file__))
 
+# check if mamba exists
+conda_front = 'conda'
+if util.is_tool('mamba'):
+  conda_front = 'mamba'
+
 snakemake.snakemake(
   snakefile=os.path.join( calling_dir, "Snakefile" ),
   use_conda=True,
+  conda_frontend=conda_front,
   cores=args.threads,
   config=config_overrrides,
   config_args=["dummy=0"]

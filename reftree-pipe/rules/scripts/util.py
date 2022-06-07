@@ -181,3 +181,12 @@ def num_physical_cores():
        [line for line in out if not line.startswith('#') and line != '']
   ))
   return num_cores
+
+def is_tool(name):
+  # via https://stackoverflow.com/a/34177358
+  """Check whether `name` is on PATH and marked as executable."""
+
+  # from whichcraft import which
+  from shutil import which
+
+  return which(name) is not None
