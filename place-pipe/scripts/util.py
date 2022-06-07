@@ -107,10 +107,10 @@ def ingest_paths( paths, extensions=None ):
   return file_list
 
 def is_fastq( path ):
-  return (util.extension( path ) in [".fastq", ".fq"])
+  return (extension( path ) in [".fastq", ".fq"])
 
 def is_fasta( path ):
-  return (util.extension( path ) in [".fasta", ".fa", ".afa"])
+  return (extension( path ) in [".fasta", ".fa", ".afa"])
 
 
 # =================================================================================================

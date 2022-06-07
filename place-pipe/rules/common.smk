@@ -5,7 +5,7 @@
 import pandas as pd
 import os, re, sys
 import socket, platform
-import util
+from util import is_fasta, is_fastq
 
 # Ensure min Snakemake version
 snakemake.utils.min_version("5.7")
@@ -13,9 +13,6 @@ snakemake.utils.min_version("5.7")
 # =================================================================================================
 #     Basic Configuration
 # =================================================================================================
-
-# Add a description of the workflow to the final report
-# report: os.path.join(workflow.basedir, "reports/workflow.rst")
 
 # Load the config. If --directory was provided, this is also loaded from there.
 # This is useful to have runs that have different settings, but generally re-use the main setup.
@@ -51,7 +48,7 @@ hostname = hostname + ("; " + platform.node() if platform.node() != socket.getho
 
 # Some helpful messages
 logger.info("===========================================================================")
-logger.info("    RATATOSK")
+logger.info("    place-pipe")
 logger.info("")
 logger.info("    Host:               " + hostname)
 logger.info("    Snakefile:          " + (workflow.snakefile))

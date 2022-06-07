@@ -4,7 +4,7 @@
 
 import pandas as pd
 import os
-import util
+from util import extension, fail
 
 # Ensure min Snakemake version
 snakemake.utils.min_version("5.7")
@@ -43,7 +43,7 @@ outdir=config["settings"]["outdir"].rstrip("/")
 
 # Some helpful messages
 logger.info("===========================================================================")
-logger.info("    nidhoggr - snakemake pipeline to run phylogenetic tree inferences")
+logger.info("    reftree-pipe")
 logger.info("")
 logger.info("    Snakefile:          " + (workflow.snakefile))
 logger.info("    Base directory:     " + (workflow.basedir))
@@ -63,7 +63,7 @@ def get_fasta( wildcards ):
     # differentiate: if the samples.tsv contains the path to a .csv file, then the fasta must be under
     # 'downloads'. If not, then take the path as-is, expecting a fasta file
     path = samples.loc[wildcards.sample, "input_file"]
-    if( util.extension( path ) == ".csv" ):
+    if( extension( path ) == ".csv" ):
         path = "{}/result/{}/download/seqs.fa".format( wildcards.outdir, wildcards.sample )
     return path
 
@@ -71,10 +71,10 @@ def get_accessions( wildcards ):
     """Get accessions file of given sample."""
 
     path = samples.loc[wildcards.sample, "input_file"]
-    if( util.extension( path ) != ".csv" ):
+    if( extension( path ) != ".csv" ):
         # brief check, as this should not happen: samples that were specified via fasta file
         # should have the alignment rule as the top-level of the dependency graph
-        util.fail("Somehow 'get_accessions' was called with a non-csv file? path: '{}'".format(path))
+        fail("Somehow 'get_accessions' was called with a non-csv file? path: '{}'".format(path))
     return path
 
 def relative_input_path( wildcards, input, output ):
@@ -90,7 +90,7 @@ def get_highest_override( tool, key ):
     in which case fetch the override"""
 
     if not tool in config["params"]:
-        util.fail("invalid key for 'config['params']': '{}'".format( tool ))
+        fail("invalid key for 'config['params']': '{}'".format( tool ))
 
     if key in config["params"][tool]:
         return config["params"][tool][key]
