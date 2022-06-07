@@ -14,7 +14,10 @@ rule gappa_heat_tree_all:
     params:
         extra=config["params"]["gappa"]["heat-tree"]["extra"],
     log:
-        "{outdir}/logs/gappa/heat_tree_all.log"
+        expand("{outdir}/logs/gappa/heat_tree_all.{ext}.log",
+            outdir=outdir,
+            ext=config["params"]["gappa"]["heat-tree"]["formats"]
+            )
     conda:
         "../envs/gappa.yaml"
     script:
@@ -32,7 +35,10 @@ rule gappa_heat_tree:
     params:
         extra=config["params"]["gappa"]["heat-tree"]["extra"],
     log:
-        "{outdir}/logs/gappa/heat_trees/{sample}.log"
+        expand("{outdir}/logs/gappa/heat_trees/{{sample}}.{ext}.log",
+            outdir=outdir,
+            ext=config["params"]["gappa"]["heat-tree"]["formats"]
+            )
     conda:
         "../envs/gappa.yaml"
     script:
