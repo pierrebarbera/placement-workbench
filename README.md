@@ -25,15 +25,15 @@ mamba env create -v environment.yml
 ### 3) enable the environment
 Then, we activate that environment.
 ```
-mamba env plwb
+conda env plwb
 ```
 
 This step has to be repeated every time you re-open your terminal or re-connect to a server. By default, mamba will add information about which is the active environment, to your command line:
 ```
 (base) user@computer$ ... # by default, we are in the base environment
 # now we enable our environment:
-mamba env place-workbench
-(place-workbench) user@computer$ ... # tada!
+conda env plwb
+(plwb) user@computer$ ... # tada!
 ```
 
 ### 4) thats it! ready to go
@@ -41,7 +41,32 @@ No, seriously, thats it.
 
 ## Basic Usage
 
-### First steps
+### Examples
+Both pipelines come with a convenient python script that should cover the majority of use-cases. 
+
+By default, these scripts will output to a directory called `run-` followed by a timestamp. You can change the output directory by adding the `--out-dir ...` option. Use the `--help` command for a full list of options.
+
+Some examples:
+#### reftree-pipe
+Infer phylogenetic trees from a set of unaligned sequences (`data/sequences.fasta`). It's DNA/Nucleotide data (`nt`), and we want to just use 4 threads:
+```
+./search.py --fasta-paths data/sequences.fasta  --align --datatype nt --threads 4
+```
+
+Same as the previous, except now we get some sequences by specifying their genbank accession labels in a file (`data/accessions.csv`), which are then automatically downloaded.
+```
+./search.py --csv-paths data/accessions.csv  --align --datatype nt --threads 4
+```
+
+You can also combine both commands, add multiple files each, and even add all fasta/csv files by the directory they're in:
+```
+./search.py --fasta-paths a.fasta b.fa data/ --csv-paths c.csv data/ ...
+```
+
+#### place-pipe
+```
+./place.py --fasta-paths data/query.fa --reference-tree data/reference/tree.newick --reference-msa data/reference/seqs.fa --model-file data/reference/model --threads 4
+```
 
 ## Advanced Usage and Configuration
 
