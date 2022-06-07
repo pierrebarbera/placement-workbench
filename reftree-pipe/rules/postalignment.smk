@@ -50,7 +50,7 @@ rule trim_gblocks:
         "../envs/gblocks.yaml"
     shell:
         # somehow gblocks returns a non-zero exit value regardless of success or failure?!
-        "$(gblocks {input} -t={params.datatype} {params.extra} > {log} ; echo '' )"
+        "$(Gblocks {input} -t={params.datatype} {params.extra} > {log} ; echo '' )"
         " && ln -s {params.rel_input}-gb {output}"
 
 rule trim_trimal:
