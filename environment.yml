@@ -1,4 +1,4 @@
-name: place-workbench
+name: plwb
 channels:
   - bioconda
   - conda-forge
