@@ -74,6 +74,7 @@ def num_dirs( path ):
   """Returns the number of directories in a path"""
   return len( Path( os.path.dirname( path ) ).parts )
 
+
 def last_n_dirnames( path, n ):
   path = os.path.normpath(path)
   names = Path( os.path.dirname( path ) ).parts[ 1: ]
@@ -105,12 +106,6 @@ def ingest_paths( paths, extensions=None ):
         file_list.extend( [f for f in files if not f in file_list] )
 
   return file_list
-
-def is_fastq( path ):
-  return (extension( path ) in [".fastq", ".fq"])
-
-def is_fasta( path ):
-  return (extension( path ) in [".fasta", ".fa", ".afa"])
 
 
 # =================================================================================================

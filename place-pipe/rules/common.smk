@@ -2,6 +2,8 @@
 #     Dependencies
 # =================================================================================================
 
+sys.path.insert(0, '../../common')
+
 import pandas as pd
 import os, re, sys
 import socket, platform
