@@ -40,6 +40,11 @@ wildcard_constraints:
 outdir=config["settings"]["outdir"].rstrip("/")
 
 # =================================================================================================
+#     Other global settings
+# =================================================================================================
+use_phat = bool(config["settings"]["use_phat"])
+
+# =================================================================================================
 #     Pipeline User Output
 # =================================================================================================
 
@@ -59,8 +64,14 @@ logger.info("")
 #     Common File Access Functions
 # =================================================================================================
 
-def get_fasta( wildcards ):
+def get_fasta( wildcards, called_from_phat=False ):
     """Get fasta file of given sample."""
+
+    # short-circuit if phat is being used, and the calling site is not phat itself
+    if use_phat and not called_from_phat:
+        return "{}/result/{}/phat/ref_candidates.fa".format( wildcards.outdir, wildcards.sample )
+
+    # otherwise, return as usual, depending on csv or not:
 
     # differentiate: if the samples.tsv contains the path to a .csv file, then the fasta must be under
     # 'downloads'. If not, then take the path as-is, expecting a fasta file
@@ -68,6 +79,17 @@ def get_fasta( wildcards ):
     if( extension( path ) == ".csv" ):
         path = "{}/result/{}/download/seqs.fa".format( wildcards.outdir, wildcards.sample )
     return path
+
+def get_taxonomy_file( wildcards ):
+    """Get taxonomy file associated with given sample."""
+
+    path = samples.loc[wildcards.sample, "input_file"]
+    
+    # we assume that if there is a taxonomy file, it exists alongside the sample fasta/csv file
+    tax_file = "{}/{}.tsv".format( dirname(path), filename(path) )
+    expect_file_exists( tax_file )
+
+    return tax_file
 
 def get_accessions( wildcards ):
     """Get accessions file of given sample."""

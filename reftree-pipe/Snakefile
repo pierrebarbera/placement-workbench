@@ -87,6 +87,8 @@ localrules: all
 # =================================================================================================
 
 include: "rules/download.smk"
+if use_phat:
+    include: "rules/gappa-phat.smk"
 include: "rules/align.smk"
 include: "rules/postalignment.smk"
 include: "rules/treesearch.smk"

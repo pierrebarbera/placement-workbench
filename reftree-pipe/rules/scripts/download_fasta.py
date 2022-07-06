@@ -1,4 +1,5 @@
 import csv, sys
+sys.path.insert(0, '../../../common')
 import util
 
 import pandas as pd
@@ -54,6 +55,19 @@ def dl_to_fasta( accession_file, fasta_dest_path ):
 	except IOError:
 		util.fail("Could not connect to GenBank.")
 
-with open(snakemake.log[0], "w") as f:
-	sys.stderr = sys.stdout = f
-	dl_to_fasta( snakemake.input[0], snakemake.output[0] )
+def copy_tsv( input_csv_path, output_fasta_path ):
+	input_tsv_path = "{}/{}.tsv".format( util.dirname(input_csv_path), util.filename(input_csv_path) )
+	output_tsv_path = "{}/{}.tsv".format( util.dirname(output_fasta_path), util.filename(output_fasta_path) )
+
+	util.expect_file_exists( input_tsv_path )
+
+	util.copy( input_tsv_path, output_tsv_path )
+
+if __name__ == "__main__":
+	with open(snakemake.log[0], "w") as f:
+		sys.stderr = sys.stdout = f
+		# first try to copy over the taxonomy tsv files, so we can short-circuit if that fails
+		if snakemake.params.copy_tsvs_over:
+			copy_tsv( snakemake.input[0], snakemake.output[0] )
+
+		dl_to_fasta( snakemake.input[0], snakemake.output[0] )

@@ -24,6 +24,11 @@ data:
 
 settings:
 
+  # Toggle to run with/without the PhAT algorithm to autoreduce a large database of sequences down to
+  # a target number, specified via settings.target_taxa_number
+  use_phat: False
+  target_taxa_number: 512
+
   # If set to True, the files in the above samples table are assumed to already be aligned,
   # and the below list of alignment tools is not used.
   skip_alignment: False
@@ -84,6 +89,14 @@ params:
   # ======================================================================
   #     Tool specific settings
   # ======================================================================
+
+  # ----------------------------------------------------------------------
+  #     gappa
+  # ----------------------------------------------------------------------
+
+  gappa:
+    phat:
+      extra: ""
 
   # ----------------------------------------------------------------------
   #     mafft

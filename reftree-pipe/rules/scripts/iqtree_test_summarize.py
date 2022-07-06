@@ -1,4 +1,5 @@
 import sys
+sys.path.insert(0, '../../../common')
 import util
 
 # courtesy of Github BenoitMorel/covid19_cme_analysis
@@ -31,14 +32,16 @@ def filter_accepted_trees( iqtree_tests_file, ml_trees_file ):
       accepted_trees.append(ml_trees[i])
   return accepted_trees
 
-iqtree_stats_file = util.parse_file_path( snakemake.input.iqtree_stats )
-ml_trees          = util.parse_file_path( snakemake.input.ml_trees )
-plausible_trees_file = snakemake.output.plausible_trees
 
-accepted_trees = filter_accepted_trees( iqtree_stats_file, ml_trees )
-with open( snakemake.output.summary, "w+" ) as writer:
-  writer.write( str( len( accepted_trees ) ) + " tree passed all IQTree consistency tests\n")
+if __name__ == "__main__":
+  iqtree_stats_file = util.parse_file_path( snakemake.input.iqtree_stats )
+  ml_trees          = util.parse_file_path( snakemake.input.ml_trees )
+  plausible_trees_file = snakemake.output.plausible_trees
 
-with open( plausible_trees_file, "w+" ) as writer:
-  for tree in accepted_trees:
-    writer.write( tree )
+  accepted_trees = filter_accepted_trees( iqtree_stats_file, ml_trees )
+  with open( snakemake.output.summary, "w+" ) as writer:
+    writer.write( str( len( accepted_trees ) ) + " tree passed all IQTree consistency tests\n")
+
+  with open( plausible_trees_file, "w+" ) as writer:
+    for tree in accepted_trees:
+      writer.write( tree )

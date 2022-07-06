@@ -1,4 +1,5 @@
 import sys
+sys.path.insert(0, '../../../common')
 import util
 from Bio import AlignIO
 from collections import Counter
@@ -42,12 +43,13 @@ def trim_ends( input_file, output_file, n=4, datatype='nt' ):
 
 	AlignIO.write( aln[:, start:finish], open(output_file, "w"), "fasta" )
 
-with open(snakemake.log[0], "w") as f:
-	sys.stderr = sys.stdout = f
-	trim_ends( snakemake.input[0],
-		snakemake.output[0],
-		n=snakemake.params.n,
-		datatype=snakemake.params.datatype )
+if __name__ == "__main__":
+	with open(snakemake.log[0], "w") as f:
+		sys.stderr = sys.stdout = f
+		trim_ends( snakemake.input[0],
+			snakemake.output[0],
+			n=snakemake.params.n,
+			datatype=snakemake.params.datatype )
 
 # trim_ends( "test.afa",
 #         "cleaned.afa",

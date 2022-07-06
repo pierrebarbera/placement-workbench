@@ -23,6 +23,14 @@ parser.add_argument('--csv-paths', dest='accession_files', type=str, nargs='+',
                     with an accession. The label will subsequently be used in the fasta/tree files. Note that the column
                     labels can be customized when using the pipeline directly, using the config.yaml file.
                     """)
+
+parser.add_argument('--phat', dest='do_phat', action='store_true',
+                    help="""enable the optional PhAT algorithm, reducing the number of taxa down to a target number, 
+                    based on a given taxonomy. The taxonomy file is expected to exist alongside the input fasta/csv file.""")
+parser.add_argument('--phat-target-num', dest='phat_target_num', type=int,
+                    default=512,
+                    help='target number of taxa that the PhAT algorithm should aim for.')
+
 parser.add_argument('-a','--align', dest='do_align', action='store_true',
                     help='align the sequences')
 parser.add_argument('-d', '--datatype', dest='datatype', type=str, nargs='?',
@@ -116,6 +124,8 @@ config_overrrides = {
   },
   'settings':
   {
+    'use_phat': args.do_phat,
+    'target_taxa_number': args.phat_target_num,
     'skip_alignment': skip_alignment,
     'outdir': out_dir,
     'datatype': args.datatype
