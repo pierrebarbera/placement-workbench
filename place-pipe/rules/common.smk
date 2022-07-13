@@ -7,7 +7,7 @@ sys.path.insert(0, '../../common')
 import pandas as pd
 import os, re, sys
 import socket, platform
-from util import is_fasta, is_fastq
+from util import is_fasta, is_fastq, expect_file_exists
 
 # Ensure min Snakemake version
 snakemake.utils.min_version("5.7")
@@ -67,13 +67,19 @@ def get_sample_fasta(wildcards):
     """Get fasta file for a given sample"""
     path = samples.loc[wildcards.sample, "input_file"]
     assert(is_fasta( path ))
+    expect_file_exists( path )
     return path
 
 def get_sample_fastq(wildcards):
     """Get fastq file for a given sample"""
     path = samples.loc[wildcards.sample, "input_file"]
     assert(is_fastq( path ))
+    expect_file_exists( path )
     return path
+
+def relative_input_path( wildcards, input, output ):
+    """Returns the relative path to the input file, from the directory of the output file/directory"""
+    return os.path.relpath( str(input), os.path.dirname( str(output) ) )
 
 # def get_all_sample_names():
 #     """Get the samples names given to all fasta files"""

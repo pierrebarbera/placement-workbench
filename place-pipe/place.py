@@ -41,6 +41,8 @@ parser.add_argument('--out-dir', dest='out_dir', type=str,
 parser.add_argument('-p', '--prefix', dest='prefix', type=str,
                     default=None,
                     help='prefix to fasta paths and output (useful to specify where data was mounted to in docker)')
+parser.add_argument('--no-chunkify', dest='no_chunkify', action='store_true',
+                    help='use the chunkify routine to split queries into blocks of more managable size')
 
 ###
 #   Runtime Manip
@@ -65,6 +67,9 @@ if( args.prefix ):
 
 if( args.taxon_file ):
   util.expect_file_exists( args.taxon_file )
+
+use_chunkify = False if args.no_chunkify else True
+
 
 # make a unique output dir, labeled by date and time
 out_dir = "run-{}".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) if( not args.out_dir ) else args.out_dir
@@ -135,6 +140,7 @@ config_overrrides = {
   },
   'settings':
   {
+    'use-chunkify': use_chunkify,
     'outdir': out_dir,
     'datatype': args.datatype
   },
