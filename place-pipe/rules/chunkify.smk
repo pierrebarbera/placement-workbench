@@ -79,8 +79,8 @@ rule unchunkify:
         protected( expand( "{outdir}/placed/{sample}.jplace", outdir=outdir, sample=sample_names ))
     params:
         hash_function = config["params"]["chunkify"]["hash-function"]
-    # log:
-    #     "{outdir}/logs/unchunkify.log"
+    log:
+        expand("{outdir}/chunkify/unchunkify_{sample}.log", outdir=outdir, sample=sample_names)
     conda:
         "../envs/gappa.yaml"
     shell:

@@ -9,7 +9,8 @@ rule raxml_ng_model_eval:
         tree = config["data"]["reference-tree"],
         msa = config["data"]["reference-alignment"]
     output:
-        "{outdir}/model/model_eval.raxml.bestModel"
+        modelfile = "{outdir}/model/model_eval.raxml.bestModel",
+        model_dir = directory( "{outdir}/model" )
     params:
         model = config["params"]["epa-ng"]["model"]
     log:
@@ -23,7 +24,7 @@ rule raxml_ng_model_eval:
         " --msa {input.msa}"
         " --tree {input.tree}"
         " --model {params.model}"
-        " --prefix model/model_eval"
+        " --prefix {output.model_dir}/model_eval"
         " --threads {threads}"
         " > {log} 2>&1"
 
