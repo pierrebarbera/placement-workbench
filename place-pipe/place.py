@@ -2,7 +2,7 @@
 
 import multiprocessing
 import argparse, sys, os
-sys.path.insert(0, './scripts')
+sys.path.insert(0, '../common')
 import util
 from datetime import datetime
 import pandas as pd

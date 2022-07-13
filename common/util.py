@@ -107,6 +107,11 @@ def ingest_paths( paths, extensions=None ):
 
   return file_list
 
+def is_fastq( path ):
+  return (extension( path ) in [".fastq", ".fq"])
+
+def is_fasta( path ):
+  return (extension( path ) in [".fasta", ".fa", ".afa"])
 
 # =================================================================================================
 #     File System Manipulation
