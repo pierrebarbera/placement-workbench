@@ -68,5 +68,21 @@ You can also combine both commands, add multiple files each, and even add all fa
 ./place.py --fasta-paths data/query.fa --reference-tree data/reference/tree.newick --reference-msa data/reference/seqs.fa --model-file data/reference/model --threads 4
 ```
 
-## Advanced Usage and Configuration
+If you also have a tab-separated file containing a mapping from the reference labels to their taxonomic paths ([example](place-pipe/data/reference/taxopaths.tsv)):
+```
+AY919771_clone_LG25_05_Alveolata	Eukaryota;ALVEOLATA;Alveolata_X;Alveolata_XX;Alveolata_XXX;Alveolata_XXXX;Alveolata_XXXXX;Alveolata_XXXXX+sp.;Uncultured;Uncultured+freshwater
+HM245049_Alveolata_sp_CCMP3155	Eukaryota;ALVEOLATA;Alveolata_X;Alveolata_XX;Alveolata_XXX;Alveolata_XXXX;Chromerida;Chromerida+sp.;Chromerida;Chromerida+sp.
+...
+```
 
+then you can add this file to the input:
+```
+./place.py [...] --taxonomy-file data/reference/taxopaths.tsv
+```
+
+...and taxonomic assignment ([explained here](https://github.com/lczech/gappa/wiki/Subcommand:-assign#final-output)) of the placed sequences will be added to the output.
+
+## Advanced Usage and Configuration
+Both `search.py` and `place.py` are just convenience functions to manipulate and run the Snakemake configuration file. The pipelines can also be run directly from their respective folders. If you choose to do so, please consult the [Snakemake documentation](https://snakemake.readthedocs.io/en/v5.4.0/executable.html).
+
+You can also find default configuration files for [reftree-pipe](reftree-pipe/config.yaml) and [place-pipe](place-pipe/config.yaml) that themselves are extensively documented, explaining the most commonly used options and parameters.
