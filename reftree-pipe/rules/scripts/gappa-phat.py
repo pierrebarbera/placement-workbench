@@ -13,37 +13,30 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 # Get the output directory
 sample_outdir = util.dirname( snakemake.output )
 
+# =================================================================================================
+#     Parse arguments
+# =================================================================================================
 ps = sp.Parser("gappa prepare phat")
 
-# Parse arguments
 # Required args
 ps.add( snakemake.input.taxonomy_file, "--taxonomy-file {}", sp.typ.FILE )
 ps.add( snakemake.input.sequence_file, "--sequence-file {}", sp.typ.FILE )
 ps.add( snakemake.params.target_size, "--target-size {}" )
 
 # Optional args
-if snakemake.input.sub_taxonomy:
-    ps.add( snakemake.params.sub_taxonomy, "--sub-taxonomy {}" )
-if snakemake.params.min_subclade_size:
-    ps.add( snakemake.params.min_subclade_size, "--min-subclade-size {}" )
-if snakemake.params.max_subclade_size:
-    ps.add( snakemake.params.max_subclade_size, "--max-subclade-size {}" )
-if snakemake.params.min_tax_level:
-    ps.add( snakemake.params.min_tax_level, "--min-tax-level {}" )
-if snakemake.params.allow_approximation:
-    ps.add( snakemake.params.allow_approximation, "--allow-approximation", sp.typ.FLAG )
-if snakemake.params.no_taxa_selection:
-    ps.add( snakemake.params.no_taxa_selection, "--no-taxa-selection", sp.typ.FLAG )
-if snakemake.params.consensus_method:
-    ps.add( snakemake.params.consensus_method, "--consensus-method" )
-if snakemake.params.consensus_threshold:
-    ps.add( snakemake.params.consensus_threshold, "--consensus-threshold" )
+ps.add_opt( "sub_taxonomy",          "--sub-taxonomy {}" )
+ps.add_opt( "min_subclade_size",     "--min-subclade-size {}" )
+ps.add_opt( "max_subclade_size",     "--max-subclade-size {}" )
+ps.add_opt( "min_tax_level",         "--min-tax-level {}" )
+ps.add_opt( "allow_approximation",   "--allow-approximation",   sp.typ.FLAG )
+ps.add_opt( "no_taxa_selection",     "--no-taxa-selection",     sp.typ.FLAG )
+ps.add_opt( "consensus_method",      "--consensus-method" )
+ps.add_opt( "consensus_threshold",   "--consensus-threshold" )
 
 # Closing args
 ps.add( sample_outdir, "--out-dir {}" , sp.typ.DIR )
-ps.add( snakemake.threads, "--threads {}" )
-if snakemake.params.extra:
-    ps.add( snakemake.params.extra )
+if snakemake.threads: ps.add( snakemake.threads, "--threads {}" )
+ps.add_opt( "extra" )
 ps.add( log )
 
 # =================================================================================================

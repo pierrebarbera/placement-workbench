@@ -54,7 +54,7 @@ checkpoint chunkify:
         " --hash-function {params.hashfunction}"
         " --min-abundance {params.minabun}"
         " --chunk-size {params.chunksize}"
-        " 2> {log}"
+        " > {log} 2>&1"
 
 # Following the documentation tutorial here:
 # https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#data-dependent-conditional-execution

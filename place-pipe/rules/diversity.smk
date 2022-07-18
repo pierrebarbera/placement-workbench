@@ -14,7 +14,7 @@ rule diversity_guppy:
         "{outdir}/logs/guppy/diversity/{sample}.log"
     conda:
         "../envs/pplacer.yaml"
-    script:
+    shell:
         "guppy fpd -o {output} --csv {params.include_pendant} {input} > {log}"
 
 
