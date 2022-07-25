@@ -11,8 +11,7 @@ from pathlib import Path
 # =================================================================================================
 
 def fail( msg ):
-  print( "ERROR: " + msg )
-  sys.exit(1)
+  raise Exception( "ERROR: " + msg )
 
 def warn( msg ):
   print( "WARNING: " + msg )

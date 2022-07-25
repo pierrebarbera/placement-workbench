@@ -19,17 +19,19 @@ sample_outdir = os.path.dirname( snakemake.output[0] )
 ps = sp.Parser( "gappa examine assign", snakemake )
 
 # Required args
-ps.add( snakemake.input.jplace, "--jplace-path {}", sp.typ.FILE )
-ps.add( snakemake.input.taxon_file, "--taxon-file {}", sp.typ.FILE )
+ps.add( snakemake.input.jplace,     "--jplace-path {}", sp.typ.FILE )
+ps.add( snakemake.input.taxon_file, "--taxon-file {}",  sp.typ.FILE )
 
 # Optional args
 ps.add_opt( "root_outgroup",        "--root-outgroup {}",           sp.typ.FILE )
 ps.add_opt( "taxonomy",             "--taxonomy {}",                sp.typ.FILE )
 ps.add_opt( "ranks_string",         "--ranks-string {}" )
 ps.add_opt( "sub_taxopath",         "--sub-taxopath {}" )
-ps.add_opt( "max_level",            "--max-level {}" )
-ps.add_opt( "distribution_ratio",   "--distribution-ratio {}" )
-ps.add_opt( "consensus_thresh",     "--consensus-thresh {}" )
+ps.add_opt( "max_level",            "--max-level {}",               sp.typ.UINT )
+ps.add_opt( "distribution_ratio",   "--distribution-ratio {}",
+    sp.typ.FLOAT(0.0,1.0) )
+ps.add_opt( "consensus_thresh",     "--consensus-thresh {}",
+    sp.typ.FLOAT(0.0,1.0) )
 ps.add_opt( "resolve_missing_paths","--resolve-missing-paths {}",   sp.typ.FLAG )
 ps.add_opt( "distant_label",        "--distant-label {}",           sp.typ.FLAG )
 
@@ -47,7 +49,7 @@ ps.add_opt( "verbose",                  "--verbose {}",                 sp.typ.F
 
 # Closing args
 ps.add( sample_outdir, "--out-dir {}" , sp.typ.DIR )
-if snakemake.threads: ps.add( snakemake.threads, "--threads {}" )
+if snakemake.threads: ps.add( snakemake.threads, "--threads {}", sp.typ.UINT )
 ps.add_opt( "extra" )
 ps.add( log )
 
