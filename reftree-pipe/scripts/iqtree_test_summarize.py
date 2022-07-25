@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '../../../common')
+sys.path.insert(0, '../common')
 import util
 
 # courtesy of Github BenoitMorel/covid19_cme_analysis

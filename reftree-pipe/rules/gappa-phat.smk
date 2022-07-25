@@ -16,4 +16,4 @@ rule gappa_phat_raw:
     conda:
         "../envs/gappa.yaml"
     script:
-        "scripts/gappa-phat.py"
+        "../scripts/gappa-phat.py"

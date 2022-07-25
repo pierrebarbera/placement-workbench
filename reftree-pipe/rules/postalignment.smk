@@ -20,7 +20,7 @@ rule clean_alignment:
     conda:
         "../envs/biopython.yaml"
     script:
-        "scripts/trim_ends.py"
+        "../scripts/trim_ends.py"
 
 # special rule that skips trimming / does nothing
 rule trim_skipped:

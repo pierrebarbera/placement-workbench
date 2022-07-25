@@ -16,4 +16,4 @@ rule download_sequences:
     conda:
         "../envs/download.yaml"
     script:
-        "scripts/download_fasta.py"
+        "../scripts/download_fasta.py"
