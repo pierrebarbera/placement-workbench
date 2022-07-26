@@ -12,7 +12,7 @@ shell.executable("bash")
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 # Get the output directory
-sample_outdir = util.dirname( snakemake.output )
+sample_outdir = util.dirname( snakemake.output[0] )
 
 # =================================================================================================
 #     Parse arguments
@@ -48,8 +48,11 @@ ps.add( log )
 
 shell( ps.shell_string )
 
+result_file = os.path.join( sample_outdir, "model.file.out" )
+util.expect_file_exists( result_file )
+
 # also, move the result file to what is expected by the output
 shell( "mv {} {}".format( 
-    os.path.join( sample_outdir, "consensus_sequences.fa" ), 
-    snakemake.output )
+    result_file, 
+    snakemake.output[0] )
 )

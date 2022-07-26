@@ -33,6 +33,8 @@ parser.add_argument('--phat-target-num', dest='phat_target_num', type=int,
 
 parser.add_argument('-a','--align', dest='do_align', action='store_true',
                     help='align the sequences')
+parser.add_argument('--modeltest', dest='do_modeltest', action='store_true',
+                    help='automatically find the best model')
 parser.add_argument('-d', '--datatype', dest='datatype', type=str, nargs='?',
                     const='nt', default='nt', choices=['nt', 'aa'],
                     help="datatype, 'aa' for protein, 'nt' for DNA data")
@@ -115,6 +117,11 @@ util.make_path( out_dir )
 samples_file = os.path.join( out_dir, "samples.tsv" )
 samples.to_csv( samples_file, sep='\t' )
 
+# check if we want to use modeltest, and set the model string to auto if thats the case
+model_string = "" # empty means defaults are used
+if args.do_modeltest:
+    model_string = "auto"
+
 # next, we set those config values that we wish to override from the defaults, by creating a dict
 # of those values
 config_overrrides = {
@@ -132,7 +139,8 @@ config_overrrides = {
   },
   'params':
   {
-    'threads': args.threads
+    'threads': args.threads,
+    'model': model_string
   }
 }
 

@@ -68,6 +68,7 @@ params:
 
   # substitution model to be used. Defaults if unset:
   # GTR+G (for datatype='nt'), LG+G (for datatype='aa')
+  # If set to 'auto', use modeltest to determine the best model
   model: ""
 
   # number of starting trees
@@ -111,6 +112,13 @@ params:
   # ----------------------------------------------------------------------
 
   muscle:
+    extra: ""
+
+  # ----------------------------------------------------------------------
+  #     ModelTest-ng
+  # ----------------------------------------------------------------------
+
+  modeltestng:
     extra: ""
 
   # ----------------------------------------------------------------------

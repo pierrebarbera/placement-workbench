@@ -43,7 +43,7 @@ rule trim_gblocks:
         rel_input   = relative_input_path,
         extra       = config["params"]["gblocks"]["extra"]
     output:
-    	"{outdir}/result/{sample}/{aligner}/gblocks/trimmed.afa"
+        "{outdir}/result/{sample}/{aligner}/gblocks/trimmed.afa"
     log:
         "{outdir}/result/{sample}/{aligner}/gblocks/trim.log"
     conda:

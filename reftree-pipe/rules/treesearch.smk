@@ -19,16 +19,28 @@ def bootstrap_params( wildcards ):
 
     return res
 
-def model_params( wildcards ):
+def model_params( wildcards, input ):
     datatype    = config["settings"]["datatype"]
     model       = get_highest_override( "raxmlng", "model" )
 
-    if model:
-        return model
+    prefix = "--model "
+
+    if use_auto_model:
+        return prefix + input.modelfile
+    elif model:
+        return prefix + model
     elif datatype and datatype in ['nt','aa']:
-        return "GTR+G" if datatype == 'nt' else 'LG+G'
+        return prefix + "GTR+G" if datatype == 'nt' else arg_string + 'LG+G'
     else:
         util.fail("'datatype' field is required, and must be either 'nt' or 'aa'.")
+
+def model_file( wildcards ):
+    if use_auto_model:
+        return "{}/result/{}/{}/{}/modeltest-ng/model.file".format(
+            wildcards.outdir, wildcards.sample, wildcards.aligner, wildcards.trimmer
+        )
+    else:
+        return []
 
 def starting_trees_params( wildcards ):
     pars_trees = get_highest_override( "raxmlng", "parsimony_starting_trees")
@@ -51,7 +63,8 @@ def starting_trees_params( wildcards ):
 
 rule treesearch_raxmlng:
     input:
-        "{outdir}/result/{sample}/{aligner}/{trimmer}/trimmed.afa"
+        msa = "{outdir}/result/{sample}/{aligner}/{trimmer}/trimmed.afa",
+        modelfile = model_file
     params:
         model           = model_params,
         starting_trees  = starting_trees_params,
@@ -73,11 +86,12 @@ rule treesearch_raxmlng:
     conda:
         "../envs/raxml-ng.yaml"
     shell:
-        "raxml-ng --all --msa {input} --prefix {params.prefix} --model {params.model}"
-        "{params.starting_trees}"
-        "{params.bootstrap}"
+        "raxml-ng --all --msa {input.msa} --prefix {params.prefix}"
+        " {params.model}"
+        " {params.starting_trees}"
+        " {params.bootstrap}"
         " --threads {threads}"
-        "{params.extra}"
+        " {params.extra}"
         " > {log}  2>&1"
         # symlink resulting files to be simpler to understand and conform with other methods
         " && cd $(dirname {output})"

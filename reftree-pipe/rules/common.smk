@@ -42,7 +42,8 @@ outdir=config["settings"]["outdir"].rstrip("/")
 # =================================================================================================
 #     Other global settings
 # =================================================================================================
-use_phat = bool(config["settings"]["use_phat"])
+use_phat        = bool(config["settings"]["use_phat"])
+use_auto_model  = bool(config["params"]["model"].lower() == "auto")
 
 # =================================================================================================
 #     Pipeline User Output
