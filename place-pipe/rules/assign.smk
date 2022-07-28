@@ -8,8 +8,6 @@ rule assign:
         taxon_file  = config["data"]["taxonomy-file"]
     output:
         "{outdir}/assign/gappa/{sample}/profile.tsv"
-    params:
-        extra = config["params"]["gappa"]["assign"]["extra"]
     log:
         "{outdir}/logs/gappa/assign/{sample}.log"
     threads:

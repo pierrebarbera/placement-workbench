@@ -67,7 +67,6 @@ params:
     threads: 1
     differences: 1
     fastidious: true
-    extra: ""
 
   # ----------------------------------------------------------------------
   #     chunkify / unchunkify
@@ -166,10 +165,8 @@ params:
     
     # Settings for taxonomic assignment. See 
     # https://github.com/lczech/gappa/wiki/Subcommand:-assign for details.
-    assign:
-      #any extra params
-      extra: ""
-
+    # assign:
+ 
     threads: 2
 
   # ----------------------------------------------------------------------

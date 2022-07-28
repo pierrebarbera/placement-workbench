@@ -30,7 +30,6 @@ def get_sites_from_log(log_file):
   return None
 
 shell.executable("bash")
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 # Get the output directory
 sample_outdir = util.dirname( snakemake.output[0] )
@@ -72,15 +71,14 @@ ps.add_opt( "verbose",              "--verbose",            sp.typ.FLAG )
 
 # Closing args
 ps.add( snakemake.output[0], "--output {}" )
-if snakemake.threads: ps.add( snakemake.threads, "--processes {}", sp.typ.UINT )
-ps.add_opt( "extra" )
-ps.add( log )
+ps.add_threads( "--processes {}" )
+
 
 # =================================================================================================
 #     Run
 # =================================================================================================
 
-shell( ps.shell_string )
+shell( ps.get_shell_string() )
 
 result_file = os.path.join( sample_outdir, "model.file.out" )
 util.expect_file_exists( result_file )
