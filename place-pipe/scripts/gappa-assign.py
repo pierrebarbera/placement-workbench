@@ -8,7 +8,6 @@ import snakeparser as sp
 import os
 
 shell.executable("bash")
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 # Get the output directory
 sample_outdir = os.path.dirname( snakemake.output[0] )
@@ -32,31 +31,27 @@ ps.add_opt( "distribution_ratio",   "--distribution-ratio {}",
     sp.typ.FLOAT(0.0,1.0) )
 ps.add_opt( "consensus_thresh",     "--consensus-thresh {}",
     sp.typ.FLOAT(0.0,1.0) )
-ps.add_opt( "resolve_missing_paths","--resolve-missing-paths {}",   sp.typ.FLAG )
-ps.add_opt( "distant_label",        "--distant-label {}",           sp.typ.FLAG )
+ps.add_opt( "resolve_missing_paths","--resolve-missing-paths",   sp.typ.FLAG )
+ps.add_opt( "distant_label",        "--distant-label",           sp.typ.FLAG )
 
 # Output args
 ps.add_opt( "file_prefix",              "--file-prefix {}" )
 ps.add_opt( "file_suffix",              "--file-suffix {}" )
-ps.add_opt( "cami",                     "--cami {}",                    sp.typ.FLAG )
-ps.add_opt( "krona",                    "--krona {}",                   sp.typ.FLAG )
-ps.add_opt( "sativa",                   "--sativa {}",                  sp.typ.FLAG )
+ps.add_opt( "cami",                     "--cami",                    sp.typ.FLAG )
+ps.add_opt( "krona",                    "--krona",                   sp.typ.FLAG )
+ps.add_opt( "sativa",                   "--sativa",                  sp.typ.FLAG )
 ps.add_opt( "sample_id",                "--sample-id {}" )
-ps.add_opt( "per_query_results",        "--per-query-results {}",       sp.typ.FLAG )
-ps.add_opt( "best_hit",                 "--best-hit {}",                sp.typ.FLAG )
-ps.add_opt( "allow_file_overwriting",   "--allow-file-overwriting {}",  sp.typ.FLAG )
-ps.add_opt( "verbose",                  "--verbose {}",                 sp.typ.FLAG )
+ps.add_opt( "per_query_results",        "--per-query-results",       sp.typ.FLAG )
+ps.add_opt( "best_hit",                 "--best-hit",                sp.typ.FLAG )
+ps.add_opt( "allow_file_overwriting",   "--allow-file-overwriting",  sp.typ.FLAG )
+ps.add_opt( "verbose",                  "--verbose",                 sp.typ.FLAG )
 
 # Closing args
 ps.add( sample_outdir, "--out-dir {}" , sp.typ.DIR )
-if snakemake.threads: ps.add( snakemake.threads, "--threads {}", sp.typ.UINT )
-ps.add_opt( "extra" )
-ps.add( log )
+ps.add_threads()
 
 # =================================================================================================
 #     Run
 # =================================================================================================
 
-shell(
-    ps.shell_string
-)
+shell( ps.get_shell_string() )

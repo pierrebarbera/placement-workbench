@@ -9,7 +9,6 @@ import snakeparser as sp
 import os
 
 shell.executable("bash")
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 # Get the output directory
 sample_outdir = util.dirname( snakemake.output[0] )
@@ -38,15 +37,13 @@ ps.add_opt( "consensus_threshold",   "--consensus-threshold {}",
 
 # Closing args
 ps.add( sample_outdir, "--out-dir {}", sp.typ.DIR )
-if snakemake.threads: ps.add( snakemake.threads, "--threads {}", sp.typ.UINT )
-ps.add_opt( "extra" )
-ps.add( log )
+ps.add_threads()
 
 # =================================================================================================
 #     Run
 # =================================================================================================
 
-shell( ps.shell_string )
+shell( ps.get_shell_string() )
 
 result_file = os.path.join( sample_outdir, "model.file.out" )
 util.expect_file_exists( result_file )
