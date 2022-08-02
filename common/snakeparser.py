@@ -76,8 +76,8 @@ class Parser:
             return self.add( self.snakemake.params[arg], format_string, valid_func )
 
     def add_threads( self, format_string: str = "--threads {}", valid_func: Callable[[str], bool] = typ.UINT ):
-        if "threads" in self.snakemake:
-            return self.add( self.snakemake.threads, format_string, valid_func )
+        # if "threads" in self.snakemake:
+        return self.add( self.snakemake.threads, format_string, valid_func )
 
     def get_shell_string( self ):
         if self.do_log:
