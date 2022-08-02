@@ -10,6 +10,8 @@ data:
   # a list of accessions to be downloaded, or a combination thereof
   samples: "data/samples.tsv"
 
+  # taxonomy: "data/taxonomy.tsv"
+
   # customizing the structure of any input csv files containing a list of accessions to be downloaded
   accession_file_structure:
     # name of the .csv column that contains the accessions
@@ -24,9 +26,15 @@ data:
 
 settings:
 
-  # Toggle to run with/without the PhAT algorithm to autoreduce a large database of sequences down to
-  # a target number, specified via settings.target_taxa_number
-  use_phat: False
+  # Select tools for autoref handling. For now, only the PhAT algorithm is supported. Requires
+  # data/taxonomy to be set to a valid file
+  autoref:
+    - "phat"
+
+  # Whether or not to skip autoreffing. Overrides the settings/autoref values
+  skip_autoref: True
+
+  # Target number of taxa if autoref tool is used
   target_taxa_number: 512
 
   # If set to True, the files in the above samples table are assumed to already be aligned,

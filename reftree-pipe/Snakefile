@@ -10,10 +10,13 @@ include: "rules/common.smk"
 # of the file paths of all our result files... Hence, for skipping the alignment step, we also
 # need a special case that acts as if it was an aligner, but is not. We call this "apriori"
 # algiment in the result files.
-aligner_list = ( "apriori" if config["settings"]["skip_alignment"] else config["settings"]["aligner"] )
+aligner_list = ( "no_alignment" if config["settings"]["skip_alignment"] else config["settings"]["aligner"] )
 
 # list of post-alignment trimming tools
 trimmer_list = config["settings"]["trimmer"]
+
+# list of autoref modes
+autoref_modes = ( "no_autoref" if config["settings"]["skip_autoref"] else config["settings"]["autoref"] )
 
 # The rule that is executed by default. It requests the final output files,
 # which are then created by applying snakemake rules.
@@ -21,42 +24,47 @@ rule all:
     input:
         # Best ML tree and associated model
         expand(
-            "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
             outdir=outdir,
             aligner=aligner_list,
             trimmer=trimmer_list,
-            sample=sample_names
+            sample=sample_names,
+            autoref=autoref_modes
         ),
         expand(
-            "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
             outdir=outdir,
             aligner=aligner_list,
             trimmer=trimmer_list,
-            sample=sample_names
+            sample=sample_names,
+            autoref=autoref_modes
         ),
         # Best ML tree with support values
         expand(
-            "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/bootstrap.newick",
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/bootstrap.newick",
             outdir=outdir,
             aligner=aligner_list,
             trimmer=trimmer_list,
-            sample=sample_names
+            sample=sample_names,
+            autoref=autoref_modes
         ),
 
         # Consensus trees from best tree set
         expand(
-            "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMR.newick",
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMR.newick",
             outdir=outdir,
             aligner=aligner_list,
             trimmer=trimmer_list,
-            sample=sample_names
+            sample=sample_names,
+            autoref=autoref_modes
         ),
         expand(
-            "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMRE.newick",
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMRE.newick",
             outdir=outdir,
             aligner=aligner_list,
             trimmer=trimmer_list,
-            sample=sample_names
+            sample=sample_names,
+            autoref=autoref_modes
         ),
 
         # iqtree stats summary
@@ -87,8 +95,7 @@ localrules: all
 # =================================================================================================
 
 include: "rules/download.smk"
-if use_phat:
-    include: "rules/gappa-phat.smk"
+include: "rules/autoref.smk"
 include: "rules/align.smk"
 include: "rules/postalignment.smk"
 if use_auto_model: 

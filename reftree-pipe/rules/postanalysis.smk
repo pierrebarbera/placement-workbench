@@ -16,19 +16,19 @@ def modelstring_params():
 
 rule iqtree_stats_test:
     input:
-        msa         = "result/{sample}/{aligner}/{trimmer}/trimmed.afa",
-        best_tree   = "result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
-        best_model  = "result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
-        ml_trees    = "result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
+        msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
+        best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
+        best_model  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
+        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
     output:
-        "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/stats.iqtree"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/stats.iqtree"
     threads:
         get_highest_override( "iqtree", "threads" )
     params:
-        workdir     = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post",
+        workdir     = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post",
         modelstring = modelstring_params
     log:
-        "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/iqtree.log"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/iqtree.log"
     conda:
         "../envs/iqtree.yaml"
     shell:
@@ -39,25 +39,25 @@ rule iqtree_stats_test:
 
 rule summarize_iqtree_stats_test:
     input:
-        iqtree_stats    = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/stats.iqtree",
-        ml_trees        = "result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
+        iqtree_stats    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/stats.iqtree",
+        ml_trees        = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
     output:
-        summary         = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/significance.txt",
-        plausible_trees = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
+        summary         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/significance.txt",
+        plausible_trees = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
     script:
         "scripts/iqtree_test_summarize.py"
 
 rule plausible_consensus:
     input:
-        "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
     output:
-        mr  = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/plausible.consensusTreeMR.newick",
-        mre = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/plausible.consensusTreeMRE.newick"
+        mr  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible.consensusTreeMR.newick",
+        mre = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible.consensusTreeMRE.newick"
     params:
-        prefix  = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/plausible"
+        prefix  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible"
     log:
-        mr  = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/mr.log",
-        mre = "result/{sample}/{aligner}/{trimmer}/raxml-ng/post/mre.log"
+        mr  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/mr.log",
+        mre = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/mre.log"
     conda:
         "../envs/raxml-ng.yaml"
     shell:

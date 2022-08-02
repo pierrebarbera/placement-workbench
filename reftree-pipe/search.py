@@ -30,6 +30,8 @@ parser.add_argument('--phat', dest='do_phat', action='store_true',
 parser.add_argument('--phat-target-num', dest='phat_target_num', type=int,
                     default=512,
                     help='target number of taxa that the PhAT algorithm should aim for.')
+parser.add_argument('--taxonomy-file', dest='taxonomy_file', type=str, nargs='+',
+                    help='taxonomy file (required for PhAT algorithm)')
 
 parser.add_argument('-a','--align', dest='do_align', action='store_true',
                     help='align the sequences')
@@ -54,6 +56,13 @@ args = parser.parse_args()
 # input validation
 if( args.prefix ):
   util.expect_dir_exists( args.prefix )
+
+if args.do_phat:
+    if not args.taxonomy_file:
+        util.fail( "When using PhAT, must also supply a valid taxonomy file" )
+    else:
+        util.expect_file_exists( args.taxonomy_file )
+
 
 skip_alignment = not args.do_align
 
@@ -127,11 +136,13 @@ if args.do_modeltest:
 config_overrrides = {
   'data':
   {
-    'samples': samples_file
+    'samples': samples_file,
+    'taxonomy': args.taxonomy_file
   },
   'settings':
   {
-    'use_phat': args.do_phat,
+    'skip_autoref': not args.do_phat,
+    'autoref': "phat", # always set phat as an autoref tool. ignored internally on skip
     'target_taxa_number': args.phat_target_num,
     'skip_alignment': skip_alignment,
     'outdir': out_dir,

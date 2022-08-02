@@ -36,8 +36,8 @@ def model_params( wildcards, input ):
 
 def model_file( wildcards ):
     if use_auto_model:
-        return "{}/result/{}/{}/{}/modeltest-ng/model.file".format(
-            wildcards.outdir, wildcards.sample, wildcards.aligner, wildcards.trimmer
+        return "{}/result/{}/{}/{}/{}/modeltest-ng/model.file".format(
+            wildcards.outdir, wildcards.sample, wildcards.autoref, wildcards.aligner, wildcards.trimmer
         )
     else:
         return []
@@ -63,26 +63,24 @@ def starting_trees_params( wildcards ):
 
 rule treesearch_raxmlng:
     input:
-        msa = "{outdir}/result/{sample}/{aligner}/{trimmer}/trimmed.afa",
+        msa = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
         modelfile = model_file
     params:
         model           = model_params,
         starting_trees  = starting_trees_params,
         bootstrap       = bootstrap_params,
         extra           = config["params"]["raxmlng"]["extra"],
-        prefix          = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/search"
+        prefix          = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search"
     threads:
         get_highest_override( "raxmlng", "threads" )
     output:
-        best_tree       = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
-        best_model      = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
-        support_tree    = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/bootstrap.newick",
-        ml_trees        = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick",
-        bs_trees        = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/bs_trees.newick"
+        best_tree       = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
+        best_model      = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
+        support_tree    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/bootstrap.newick",
+        ml_trees        = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick",
+        bs_trees        = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/bs_trees.newick"
     log:
-        "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/search.log"
-    benchmark:
-        "{outdir}/benchmarks/raxml-ng/{aligner}/{trimmer}/{sample}.bench.log"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search.log"
     conda:
         "../envs/raxml-ng.yaml"
     shell:
@@ -108,17 +106,17 @@ rule treesearch_raxmlng:
 
 rule treesearch_consensus:
     input:
-        "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
     output:
-        mr      = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMR.newick",
-        mre     = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMRE.newick"
+        mr      = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMR.newick",
+        mre     = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMRE.newick"
     params:
-        prefix  = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees"
+        prefix  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees"
     threads:
         get_highest_override( "raxmlng", "threads" )
     log:
-        mr      = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/mr.log",
-        mre     = "{outdir}/result/{sample}/{aligner}/{trimmer}/raxml-ng/tree/mre.log"
+        mr      = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/mr.log",
+        mre     = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/mre.log"
     conda:
         "../envs/raxml-ng.yaml"
     shell:

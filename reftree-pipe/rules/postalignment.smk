@@ -9,43 +9,41 @@
 # trim ends that is always called before trimming occurs
 rule clean_alignment:
     input:
-        "{outdir}/result/{sample}/{aligner}/aligned.afa"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/aligned.afa"
     params:
         datatype    = config["settings"]["datatype"],
         n           = config["params"]["trim_ends_n"]
     output:
-        "{outdir}/result/{sample}/{aligner}/cleaned.afa"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     log:
-        "{outdir}/result/{sample}/{aligner}/clean.log"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/cleaner_log.txt"
     conda:
         "../envs/biopython.yaml"
     script:
         "../scripts/trim_ends.py"
 
 # special rule that skips trimming / does nothing
-rule trim_skipped:
+rule no_trimming:
     input:
-        "{outdir}/result/{sample}/{aligner}/cleaned.afa"
-    params:
-        rel_input = relative_input_path,
+        "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     output:
-        "{outdir}/result/{sample}/{aligner}/no_trim/trimmed.afa"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/no_trim/trimmed.afa"
     log:
-        "{outdir}/result/{sample}/{aligner}/no_trim/trim.log"
-    shell:
-        "ln -s {params.rel_input} {output}"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/no_trim/log.txt"
+    script:
+        "../../common/symlink.py"
 
 rule trim_gblocks:
     input:
-        "{outdir}/result/{sample}/{aligner}/cleaned.afa"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     params:
         datatype    = ('p' if config["settings"]["datatype"] == 'aa' else 'd'),
         rel_input   = relative_input_path,
         extra       = config["params"]["gblocks"]["extra"]
     output:
-        "{outdir}/result/{sample}/{aligner}/gblocks/trimmed.afa"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/gblocks/trimmed.afa"
     log:
-        "{outdir}/result/{sample}/{aligner}/gblocks/trim.log"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/gblocks/log.txt"
     conda:
         "../envs/gblocks.yaml"
     shell:
@@ -55,13 +53,13 @@ rule trim_gblocks:
 
 rule trim_trimal:
     input:
-        "{outdir}/result/{sample}/{aligner}/cleaned.afa"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     params:
         extra = config["params"]["trimal"]["extra"]
     output:
-        "{outdir}/result/{sample}/{aligner}/trimal/trimmed.afa"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/trimal/trimmed.afa"
     log:
-        "{outdir}/result/{sample}/{aligner}/trimal/trim.log"
+        "{outdir}/result/{sample}/{autoref}/{aligner}/trimal/log.txt"
     conda:
         "../envs/trimal.yaml"
     shell:

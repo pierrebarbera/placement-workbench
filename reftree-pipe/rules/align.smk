@@ -2,15 +2,15 @@
 #     Dummy for when input is already aligned
 # =================================================================================================
 
-rule align_apriori:
+rule no_alignment:
     input:
-        # `get_fasta` is defined in common.smk and takes the {sample} argument to return its path.
-        # No need to pass the sample name - this is handed over to the function by snakemake magic.
-        get_fasta
+        "{outdir}/result/{sample}/{autoref}/ref_candidates.fa"
     output:
-        "{outdir}/result/{sample}/apriori/aligned.afa"
-    shell:
-        "cp {input} {output}"
+        "{outdir}/result/{sample}/{autoref}/no_alignment/aligned.afa"
+    log:
+        "{outdir}/result/{sample}/{autoref}/no_alignment/log.txt"
+    script:
+        "../../common/symlink.py"
 
 # =================================================================================================
 #     Alignment with mafft
@@ -18,19 +18,15 @@ rule align_apriori:
 
 rule align_mafft:
     input:
-        # `get_fasta` is defined in common.smk and takes the {sample} argument to return its path.
-        # No need to pass the sample name - this is handed over to the function by snakemake magic.
-        get_fasta
+        "{outdir}/result/{sample}/{autoref}/ref_candidates.fa"
     output:
-        "{outdir}/result/{sample}/mafft/aligned.afa"
+        "{outdir}/result/{sample}/{autoref}/mafft/aligned.afa"
     params:
         extra=config["params"]["mafft"]["extra"]
     threads:
         get_highest_override( "mafft", "threads" )
     log:
-        "{outdir}/result/{sample}/mafft/alignment.log"
-    benchmark:
-        "{outdir}/benchmarks/mafft/{sample}.bench.log"
+        "{outdir}/result/{sample}/{autoref}/mafft/alignment.log"
     conda:
         "../envs/mafft.yaml"
     shell:
@@ -42,17 +38,13 @@ rule align_mafft:
 
 rule align_muscle:
     input:
-        # `get_fasta` is defined in common.smk and takes the {sample} argument to return its path.
-        # No need to pass the sample name - this is handed over to the function by snakemake magic.
-        get_fasta
+        "{outdir}/result/{sample}/{autoref}/ref_candidates.fa"
     output:
-        "{outdir}/result/{sample}/muscle/aligned.afa"
+        "{outdir}/result/{sample}/{autoref}/muscle/aligned.afa"
     params:
         extra = config["params"]["muscle"]["extra"]
     log:
-        "{outdir}/result/{sample}/muscle/alignment.log"
-    benchmark:
-        "{outdir}/benchmarks/muscle/{sample}.bench.log"
+        "{outdir}/result/{sample}/{autoref}/muscle/alignment.log"
     conda:
         "../envs/muscle.yaml"
     shell:

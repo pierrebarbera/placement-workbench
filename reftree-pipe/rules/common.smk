@@ -42,7 +42,6 @@ outdir=config["settings"]["outdir"].rstrip("/")
 # =================================================================================================
 #     Other global settings
 # =================================================================================================
-use_phat        = bool(config["settings"]["use_phat"])
 use_auto_model  = bool(config["params"]["model"].lower() == "auto")
 
 # =================================================================================================
@@ -65,14 +64,8 @@ logger.info("")
 #     Common File Access Functions
 # =================================================================================================
 
-def get_fasta( wildcards, called_from_phat=False ):
+def get_fasta( wildcards ):
     """Get fasta file of given sample."""
-
-    # short-circuit if phat is being used, and the calling site is not phat itself
-    if use_phat and not called_from_phat:
-        return "{}/result/{}/phat/ref_candidates.fa".format( wildcards.outdir, wildcards.sample )
-
-    # otherwise, return as usual, depending on csv or not:
 
     # differentiate: if the samples.tsv contains the path to a .csv file, then the fasta must be under
     # 'downloads'. If not, then take the path as-is, expecting a fasta file
@@ -82,15 +75,15 @@ def get_fasta( wildcards, called_from_phat=False ):
     return path
 
 def get_taxonomy_file( wildcards ):
-    """Get taxonomy file associated with given sample."""
+    # """Get taxonomy file associated with given sample."""
 
-    path = samples.loc[wildcards.sample, "input_file"]
+    # path = samples.loc[wildcards.sample, "input_file"]
     
-    # we assume that if there is a taxonomy file, it exists alongside the sample fasta/csv file
-    tax_file = "{}/{}.tsv".format( dirname(path), filename(path) )
-    expect_file_exists( tax_file )
+    # # we assume that if there is a taxonomy file, it exists alongside the sample fasta/csv file
+    # tax_file = "{}/{}.tsv".format( dirname(path), filename(path) )
+    # expect_file_exists( tax_file )
 
-    return tax_file
+    return config["data"]["taxonomy"]
 
 def get_accessions( wildcards ):
     """Get accessions file of given sample."""
@@ -114,10 +107,10 @@ def get_highest_override( tool, key ):
     """From the config, get the value labeled with "key", unless the "tool" overrides that value,
     in which case fetch the override"""
 
-    if not tool in config["params"]:
-        fail("invalid key for 'config['params']': '{}'".format( tool ))
-
-    if key in config["params"][tool]:
+    if (tool in config["params"]) and (key in config["params"][tool]):
         return config["params"][tool][key]
     else:
-        return config["params"][key]
+        if not key in config["params"]:
+            fail("invalid key for 'config['params']': '{}'".format( key ))
+        else:
+            return config["params"][key]

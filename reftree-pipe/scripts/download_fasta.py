@@ -67,7 +67,7 @@ if __name__ == "__main__":
 	with open(snakemake.log[0], "w") as f:
 		sys.stderr = sys.stdout = f
 		# first try to copy over the taxonomy tsv files, so we can short-circuit if that fails
-		if snakemake.params.copy_tsvs_over:
-			copy_tsv( snakemake.input[0], snakemake.output[0] )
+		# if snakemake.params.copy_tsvs_over:
+		# 	copy_tsv( snakemake.input[0], snakemake.output[0] )
 
 		dl_to_fasta( snakemake.input[0], snakemake.output[0] )
