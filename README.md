@@ -63,6 +63,13 @@ You can also combine both commands, add multiple files each, and even add all fa
 ./search.py --fasta-paths a.fasta b.fa data/ --csv-paths c.csv data/ ...
 ```
 
+Finally, the pipeline also offers access to the Phylogenetic Automatic Reference Tree (PhAT) algorithm. In this mode, the input must be a database of aligned reference sequences (optionally gzipped, ending in `.gz`), and a fitting reference taxonomy must be provided (config: `data/taxonomy`, CLI: `--taxonomy-file`).
+An example of the data can be found under `reftree-pipe/data/phat_test/`, and a call to the command line may look like this:
+```
+./search.py --fasta-paths data/phat_test/cyano.afa.gz --phat --taxonomy-file data/phat_test/cyano.tsv --datatype nt --threads 4
+```
+Note that, as the sequences already have to be aligned, it does not make sense to supply the `--align` flag.
+
 #### place-pipe
 ```
 ./place.py --fasta-paths data/query.fa --reference-tree data/reference/tree.newick --reference-msa data/reference/seqs.fa --model-file data/reference/model --threads 4

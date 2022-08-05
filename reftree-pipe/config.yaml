@@ -50,9 +50,9 @@ settings:
     - "muscle"
 
   trimmer:
-    - "gblocks"
     - "trimal"
     - "no_trim"
+    # - "gblocks"
 
 
   outdir: "test"

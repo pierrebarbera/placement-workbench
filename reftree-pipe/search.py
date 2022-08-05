@@ -30,7 +30,7 @@ parser.add_argument('--phat', dest='do_phat', action='store_true',
 parser.add_argument('--phat-target-num', dest='phat_target_num', type=int,
                     default=512,
                     help='target number of taxa that the PhAT algorithm should aim for.')
-parser.add_argument('--taxonomy-file', dest='taxonomy_file', type=str, nargs='+',
+parser.add_argument('--taxonomy-file', dest='taxonomy_file', type=str,
                     help='taxonomy file (required for PhAT algorithm)')
 
 parser.add_argument('-a','--align', dest='do_align', action='store_true',
@@ -62,6 +62,9 @@ if args.do_phat:
         util.fail( "When using PhAT, must also supply a valid taxonomy file" )
     else:
         util.expect_file_exists( args.taxonomy_file )
+    
+    if args.do_align:
+        util.fail( "It does not make sense to combine PhAT with alignment, as PhAT requires aligned sequences already." )
 
 
 skip_alignment = not args.do_align
@@ -74,9 +77,10 @@ out_dir = "run-{}".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) if( not 
 # first read in a unique list of all the desired files
 file_paths = []
 if( args.fasta_files ):
-  file_paths.extend( util.ingest_paths( args.fasta_files, extensions=['.fa', '.afa', '.fasta'] ) )
+  file_paths.extend( util.ingest_paths( args.fasta_files, extensions=['.fa', '.afa', '.fasta', '.gz'] ) )
 if( args.accession_files ):
   file_paths.extend( util.ingest_paths( args.accession_files, extensions=['.csv'] ) )
+
 
 def get_unique_names( paths ):
   """

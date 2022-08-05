@@ -45,7 +45,7 @@ ps.add_threads()
 
 shell( ps.get_shell_string() )
 
-result_file = os.path.join( sample_outdir, "model.file.out" )
+result_file = os.path.join( sample_outdir, "consensus_sequences.fasta" )
 util.expect_file_exists( result_file )
 
 # also, move the result file to what is expected by the output
