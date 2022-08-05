@@ -106,11 +106,19 @@ def ingest_paths( paths, extensions=None ):
 
   return file_list
 
+def rstrip_gz( path ):
+    """Strips .gz from a file ending, if it is there"""
+    suffix = '.gz'
+    if path.endswith( suffix ):
+        return path[:-len(suffix)]
+    else:
+        return path
+
 def is_fastq( path ):
-  return (extension( path ) in [".fastq", ".fq"])
+  return (extension( rstrip_gz(path) ) in [".fastq", ".fq"])
 
 def is_fasta( path ):
-  return (extension( path ) in [".fasta", ".fa", ".afa"])
+  return (extension( rstrip_gz(path) ) in [".fasta", ".fa", ".afa"])
 
 # =================================================================================================
 #     File System Manipulation
