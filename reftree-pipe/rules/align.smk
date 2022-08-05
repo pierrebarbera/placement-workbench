@@ -11,6 +11,7 @@ rule no_alignment:
         "{outdir}/result/{sample}/{autoref}/no_alignment/log.txt"
     script:
         "../../common/symlink.py"
+localrules: no_alignment
 
 # =================================================================================================
 #     Alignment with mafft

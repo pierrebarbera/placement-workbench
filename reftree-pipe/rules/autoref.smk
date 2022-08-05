@@ -7,6 +7,7 @@ rule no_phat:
         "{outdir}/result/{sample}/no_autoref/log.txt"
     script:
         "../../common/symlink.py"
+localrules: no_phat
 
 # Rule to run gappa phat algorithm from a raw database of potential reference sequences
 rule gappa_phat_raw:

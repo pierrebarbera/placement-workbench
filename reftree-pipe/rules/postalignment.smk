@@ -23,7 +23,7 @@ rule clean_alignment:
         "../scripts/trim_ends.py"
 
 # special rule that skips trimming / does nothing
-rule no_trimming:
+rule no_trim:
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     output:
@@ -32,6 +32,7 @@ rule no_trimming:
         "{outdir}/result/{sample}/{autoref}/{aligner}/no_trim/log.txt"
     script:
         "../../common/symlink.py"
+localrules: no_trim
 
 rule trim_gblocks:
     input:
