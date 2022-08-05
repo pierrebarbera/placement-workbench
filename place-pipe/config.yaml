@@ -31,8 +31,9 @@ settings:
 
   datatype: "nt" # 'nt' for DNA, 'aa' for protein
 
-  # 
-  clustering-tool: ""
+  # Select the tools used for aligning queries to the reference alignment.
+  # Valid values: "swarm" and "no_clustering"
+  clustering-tool: "no_clustering"
 
   # If set to True, we automagically run chunkify/unchunkify on the input sample fasta files.
   # That is, we de-duplicate query sequences and re-distribute their workload to minimize cluster

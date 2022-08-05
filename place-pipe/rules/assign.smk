@@ -4,12 +4,12 @@
 
 rule assign:
     input:
-        jplace      = "{outdir}/placed/{sample}.jplace",
+        jplace      = "{outdir}/{clusterer}/placed/{sample}.jplace",
         taxon_file  = config["data"]["taxonomy-file"]
     output:
-        "{outdir}/assign/gappa/{sample}/profile.tsv"
+        "{outdir}/{clusterer}/taxonomic_assignment/gappa_assign/{sample}/profile.tsv"
     log:
-        "{outdir}/logs/gappa/assign/{sample}.log"
+        "{outdir}/{clusterer}/taxonomic_assignment/gappa_assign/{sample}/log.txt"
     threads:
         get_highest_override( "gappa", "threads" )
     conda:

@@ -14,7 +14,7 @@ rule raxml_ng_model_eval:
     params:
         model = config["params"]["epa-ng"]["model"]
     log:
-        "{outdir}/logs/model/model_eval.log"
+        "{outdir}/model/model_eval.log"
     threads:
         get_highest_override( "raxml-ng", "threads" )
     conda:

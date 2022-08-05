@@ -33,6 +33,9 @@ samples = pd.read_table(config["data"]["samples"], dtype=str).set_index(["sample
 # Transform for ease of use
 sample_names=list(set(samples.index.get_level_values("sample")))
 
+# List of used clustering approaches
+clusterer_list = config["settings"]["clustering-tool"]
+
 # output prefix
 outdir=config["settings"]["outdir"].rstrip("/")
 
@@ -63,14 +66,15 @@ logger.info("")
 #     Common File Access Functions
 # =================================================================================================
 
-def get_sample_fasta(wildcards):
-    """Get fasta file for a given sample"""
-    path = samples.loc[wildcards.sample, "input_file"]
+def get_sample_fasta( wildcards ):
+    """Get fasta file for a given sample""" 
+    path = samples.loc[wildcards.sample, "input_file"]  
     assert(is_fasta( path ))
     expect_file_exists( path )
+    
     return path
 
-def get_sample_fastq(wildcards):
+def get_sample_fastq( wildcards ):
     """Get fastq file for a given sample"""
     path = samples.loc[wildcards.sample, "input_file"]
     assert(is_fastq( path ))

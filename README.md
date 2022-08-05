@@ -89,6 +89,12 @@ then you can add this file to the input:
 
 ...and taxonomic assignment ([explained here](https://github.com/lczech/gappa/wiki/Subcommand:-assign#final-output)) of the placed sequences will be added to the output.
 
+
+Finally, the pipeline also supports option clustering of input query sequences:
+```
+./place.py [...] --cluster swarm
+```
+
 ## Advanced Usage and Configuration
 Both `search.py` and `place.py` are just convenience functions to manipulate and run the Snakemake configuration file. The pipelines can also be run directly from their respective folders. If you choose to do so, please consult the [Snakemake documentation](https://snakemake.readthedocs.io/en/v5.4.0/executable.html).
 

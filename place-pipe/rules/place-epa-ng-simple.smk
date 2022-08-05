@@ -12,7 +12,7 @@ rule epa_ng_place:
     input:
         tree = config["data"]["reference-tree"],
         msa  = config["data"]["reference-alignment"],
-        sequences = "{outdir}/aligned/{sample}.afa",
+        sequences = "{outdir}/{clusterer}/aligned/{sample}.afa",
 
         # We here use a trick to allow the "model" to be either a RAxML model file, or a string.
         # Get the model param file from the config if it is a file, or, if that is empty,
@@ -21,7 +21,7 @@ rule epa_ng_place:
         # be used below in the params section then.
         model = epa_ng_place_model( "input" )
     output:
-        jplace = protected("{outdir}/placed/{sample}.jplace")
+        jplace = protected("{outdir}/{clusterer}/placed/{sample}.jplace")
     params:
         # Get the model if it is a string (and not a file).
         model = epa_ng_place_model( "params" ),
@@ -29,7 +29,7 @@ rule epa_ng_place:
         # Get any extra params to use with epa-ng
         extra = config["params"]["epa-ng"]["extra"]
     log:
-        "{outdir}/logs/place/{sample}.log"
+        "{outdir}/{clusterer}/place/{sample}.log"
     conda:
         "../envs/epa-ng.yaml"
     threads:

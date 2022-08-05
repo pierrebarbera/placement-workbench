@@ -11,7 +11,7 @@ rule hmmer_build:
         extra   = config["params"]["hmmer"]["build-extra"],
         states  = hmmer_datatype_string
     log:
-        "{outdir}/logs/hmmer/hmmer_build.log"
+        "{outdir}/hmmer/build.log"
     threads:
         get_highest_override( "hmmer", "threads" )
     conda:

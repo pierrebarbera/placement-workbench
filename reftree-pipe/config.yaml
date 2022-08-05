@@ -83,7 +83,7 @@ params:
   parsimony_starting_trees: 10
   random_starting_trees: 10
   # number of bootstrap trees. When used with auto_bootstrap=True, this becomes the upper limit of bs trees
-  bs_trees: 1000
+  bs_trees: 100
   # should the number of bootstrap trees be automatically determined?
   auto_bootstrap: True
 

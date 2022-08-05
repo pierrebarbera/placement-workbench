@@ -43,6 +43,10 @@ parser.add_argument('-p', '--prefix', dest='prefix', type=str,
                     help='prefix to fasta paths and output (useful to specify where data was mounted to in docker)')
 parser.add_argument('--no-chunkify', dest='no_chunkify', action='store_true',
                     help='use the chunkify routine to split queries into blocks of more managable size')
+parser.add_argument('--cluster', dest='cluster', type=str, nargs='?',
+                    const="none", default="none", choices=['swarm', 'none'],
+                    help="Whether to perform sequence clustering, and which tool to use")
+
 
 ###
 #   Runtime Manip
@@ -67,6 +71,8 @@ if( args.prefix ):
 
 if( args.taxon_file ):
   util.expect_file_exists( args.taxon_file )
+
+clustering_tool = "no_clustering" if args.cluster == "none" else args.cluster
 
 use_chunkify = False if args.no_chunkify else True
 
@@ -140,9 +146,10 @@ config_overrrides = {
   },
   'settings':
   {
+    'datatype': args.datatype,
+    'clustering-tool': clustering_tool,
     'use-chunkify': use_chunkify,
     'outdir': out_dir,
-    'datatype': args.datatype
   },
   'params':
   {

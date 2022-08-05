@@ -12,14 +12,14 @@ rule hmmer_align:
     input:
         msa         = config["data"]["reference-alignment"],
         hmmprofile  = "{outdir}/hmmer/profile.hmm",
-        sample      = "{outdir}/chunkify/chunks/{sample}.fasta"
+        sample      = "{outdir}/{clusterer}/chunkify/chunks/{sample}.fasta"
     output:
-        sequences   = "{outdir}/chunkify/aligned/{sample}.afa"
+        sequences   = "{outdir}/{clusterer}/chunkify/aligned/{sample}.afa"
     params:
         extra       = config["params"]["hmmer"]["align-extra"],
         states      = hmmer_datatype_string
     log:
-        "{outdir}/logs/align/{sample}.log"
+        "{outdir}/{clusterer}/aligned/{sample}.log"
     conda:
         "../envs/hmmer.yaml"
     threads:
