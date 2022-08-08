@@ -29,27 +29,27 @@ checkpoint chunkify:
         expand( "{outdir}/{clusterer}/chunkify/samples/{sample}.fasta",
                 outdir=outdir,
                 sample=sample_names,
-                clusterer=clusterer_list
+                allow_missing=True
                 )
     output:
         abundances  = expand(   "{outdir}/{clusterer}/chunkify/abundances/abundances_{sample}.json",
                                 outdir=outdir,
                                 sample=sample_names,
-                                clusterer=clusterer_list
+                                allow_missing=True
                                 ),
         chunks_dir  = directory(expand( "{outdir}/{clusterer}/chunkify/chunks",
                                         outdir=outdir,
-                                        clusterer=clusterer_list
+                                        allow_missing=True
                                         )
                                 )
     params:
         chunks_dir      = expand(   "{outdir}/{clusterer}/chunkify/chunks",
                                     outdir=outdir,
-                                    clusterer=clusterer_list
+                                    allow_missing=True
                                     ),
         abundances_dir  = expand(   "{outdir}/{clusterer}/chunkify/abundances",
                                     outdir=outdir,
-                                    clusterer=clusterer_list
+                                    allow_missing=True
                                     ),
         hashfunction    = config["params"]["chunkify"]["hash-function"],
         minabun         = config["params"]["chunkify"]["min-abundance"],
@@ -58,7 +58,7 @@ checkpoint chunkify:
         expand( "{outdir}/{clusterer}/chunkify/chunkify_{sample}.log",
                 outdir=outdir,
                 sample=sample_names,
-                clusterer=clusterer_list
+                allow_missing=True
                 )
     conda:
         "../envs/gappa.yaml"
@@ -77,16 +77,16 @@ checkpoint chunkify:
 # Following the documentation tutorial here:
 # https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#data-dependent-conditional-execution
 def aggregate_chunkify_chunks(wildcards):
-    # Wildcards are ignored here, as the chunkify process is for the whole dataset,
-    # so we do not have any wildcards to take into account;
-    # but still have to use them in the argument list,
-    # because otherwise snakemake complains.
-    chunks     = checkpoints.chunkify.get().output["chunks_dir"][0]
-    # abundances = checkpoints.chunkify.get().output[1]
+    # Here we get the path to the chunks dir from the output of the chunkify rule.
+    # Since we have wildcards in play, we have to pass those that are relevant in the 
+    # directory path when we use the get function
+    chunks     = checkpoints.chunkify.get(**wildcards).output["chunks_dir"][0]
+
+    # Next we return the paths to all chunks
     return expand(  "{outdir}/{clusterer}/chunkify/placed/{chunk}.jplace",
                     chunk = glob_wildcards( os.path.join(chunks, "{chunk}.fasta")).chunk,
                     outdir=outdir,
-                    clusterer=clusterer_list
+                    allow_missing=True
                     )
 
 rule unchunkify:
@@ -95,30 +95,34 @@ rule unchunkify:
         expand( "{outdir}/{clusterer}/chunkify/abundances/abundances_{sample}.json",
                 outdir=outdir,
                 sample=sample_names,
-                clusterer=clusterer_list
+                allow_missing=True
                 )
     output:
         protected(  expand( "{outdir}/{clusterer}/placed/{sample}.jplace",
                             outdir=outdir,
                             sample=sample_names,
-                            clusterer=clusterer_list
+                            allow_missing=True
                             )
                     )
     params:
         hash_function = config["params"]["chunkify"]["hash-function"],
-        clusterer = expand("{clusterer}", clusterer=clusterer_list)[0]
+        base_dir        = expand(   "{outdir}/{clusterer}",
+                                    outdir=outdir,
+                                    allow_missing=True
+                                    ),
+        # clusterer = expand("{clusterer}", clusterer=clusterer_list)[0]
     log:
         expand( "{outdir}/{clusterer}/chunkify/unchunkify_{sample}.log",
                 outdir=outdir,
                 sample=sample_names,
-                clusterer=clusterer_list
+                allow_missing=True
                 )
     conda:
         "../envs/gappa.yaml"
     shell:
         "gappa prepare unchunkify"
-        " --abundances-path {outdir}/{params.clusterer}/chunkify/abundances"
-        " --chunk-file-expression {outdir}/{params.clusterer}/chunkify/placed/chunk_@.jplace"
+        " --abundances-path {params.base_dir}/chunkify/abundances"
+        " --chunk-file-expression {params.base_dir}/chunkify/placed/chunk_@.jplace"
         " --hash-function {params.hash_function}"
-        " --out-dir {outdir}/{params.clusterer}/placed"
+        " --out-dir {params.base_dir}/placed"
         " > {log} 2>&1"

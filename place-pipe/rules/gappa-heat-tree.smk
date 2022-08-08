@@ -7,13 +7,13 @@ rule gappa_heat_tree_all:
     input:
         expand( "{outdir}/{clusterer}/placed/{sample}.jplace",
                 outdir=outdir,
-                clusterer=clusterer_list,
+                allow_missing=True,
                 sample=sample_names
                 )
     output:
         expand( "{outdir}/{clusterer}/heat-tree.{ext}",
                 outdir=outdir,
-                clusterer=clusterer_list,
+                allow_missing=True,
                 ext=config["params"]["gappa"]["heat-tree"]["formats"]
                 )
     params:
@@ -21,7 +21,7 @@ rule gappa_heat_tree_all:
     log:
         expand( "{outdir}/{clusterer}/heat_tree_all.{ext}.log",
                 outdir=outdir,
-                clusterer=clusterer_list,
+                allow_missing=True,
                 ext=config["params"]["gappa"]["heat-tree"]["formats"]
                 )
     conda:
@@ -36,7 +36,7 @@ rule gappa_heat_tree:
     output:
         expand( "{outdir}/{clusterer}/heat-trees/{{sample}}/heat-tree.{ext}",
                 outdir=outdir,
-                clusterer=clusterer_list,
+                allow_missing=True,
                 ext=config["params"]["gappa"]["heat-tree"]["formats"]
                 )
     params:
@@ -44,7 +44,7 @@ rule gappa_heat_tree:
     log:
         expand( "{outdir}/{clusterer}/heat_trees/{{sample}}.{ext}.log",
                 outdir=outdir,
-                clusterer=clusterer_list,
+                allow_missing=True,
                 ext=config["params"]["gappa"]["heat-tree"]["formats"]
                 )
     conda:
