@@ -3,6 +3,10 @@ from dataclasses import dataclass
 from collections.abc import Callable
 from sys import maxsize
 
+from pprint import PrettyPrinter
+pp = PrettyPrinter()
+# pp.pprint( "{} {}".format(arg, arg.type()) )
+
 class typ:
     @staticmethod
     def NONE( arg ):
@@ -17,8 +21,8 @@ class typ:
     def DIR( arg ):
         util.expect_dir_exists( arg )
     @staticmethod
-    def FLAG( arg ):
-        if not arg in ['False', 'True']:
+    def FLAG( arg: str ):
+        if not isinstance( arg, bool ):
             util.fail("expected flag (True or False), but got '{}'".format(arg))
     @staticmethod
     def IN( set: list[str] ):
@@ -56,27 +60,33 @@ class Parser:
     snakemake: object
     do_log: bool = True
 
-    def add( self, arg: str, format_string: str = "{}", valid_func: Callable[[str], bool] = typ.NONE ):
+    def add( self, arg, format_string: str = "{}", valid_func: Callable[[str], bool] = typ.NONE ):
         
         # Validate input
         valid_func( arg )
 
         # add to the shell string
-        if not valid_func is typ.FLAG:
+        if valid_func is typ.FLAG:
+            # differentiate between flags (they don't have arg values attached)
+            if arg:
+                format_string = " " + format_string
+            else:
+                format_string = ""
+        else:
+            # ...and normal CLI arguments
             format_string = " " + format_string.format( arg )
-        elif arg == 'False':
-            format_string = ""
 
+        # add to the complete shell string
         self.shell_string = self.shell_string + format_string
 
+        # return the format string incase we want to check it
         return format_string
     
     def add_opt( self, arg: str, format_string: str = "{}", valid_func: Callable[[str], bool] = typ.NONE ):
-        if arg in self.snakemake.params:
+        if arg in self.snakemake.params.keys():
             return self.add( self.snakemake.params[arg], format_string, valid_func )
 
     def add_threads( self, format_string: str = "--threads {}", valid_func: Callable[[str], bool] = typ.UINT ):
-        # if "threads" in self.snakemake:
         return self.add( self.snakemake.threads, format_string, valid_func )
 
     def get_shell_string( self ):
