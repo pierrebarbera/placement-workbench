@@ -3,10 +3,6 @@ from dataclasses import dataclass
 from collections.abc import Callable
 from sys import maxsize
 
-from pprint import PrettyPrinter
-pp = PrettyPrinter()
-# pp.pprint( "{} {}".format(arg, arg.type()) )
-
 class typ:
     @staticmethod
     def NONE( arg ):
