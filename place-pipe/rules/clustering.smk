@@ -18,8 +18,9 @@ rule cluster_swarm:
     input:
         get_sample_fasta
     params:
-        differences = config["params"]["swarm"]["differences"],
-        fastidious  = config["params"]["swarm"]["fastidious"]
+        differences         = config["params"]["swarm"]["differences"],
+        fastidious          = config["params"]["swarm"]["fastidious"],
+        append_abundance    = 1
     output:
         seeds           = "{outdir}/swarm/samples/{sample}/queries.fa",
         statistics_file = "{outdir}/swarm/samples/{sample}/otu_table.tsv"
