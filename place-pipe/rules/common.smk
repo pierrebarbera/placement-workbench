@@ -7,7 +7,7 @@ sys.path.insert(0, '../../common')
 import pandas as pd
 import os, re, sys
 import socket, platform
-from util import is_fasta, is_fastq, expect_file_exists
+from util import is_fasta, is_fastq, expect_file_exists, config_to_file
 
 # Ensure min Snakemake version
 snakemake.utils.min_version("5.7")
@@ -38,6 +38,9 @@ clusterer_list = config["settings"]["clustering-tool"]
 
 # output prefix
 outdir=config["settings"]["outdir"].rstrip("/")
+
+# persist the used config
+config_to_file( config, outdir )
 
 hmmer_datatype_string  = "dna" if config["settings"]["datatype"] == 'nt' else "amino"
 

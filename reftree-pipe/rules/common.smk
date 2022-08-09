@@ -2,11 +2,11 @@
 #     Dependencies
 # =================================================================================================
 
-sys.path.insert(0, '../../common')
-
-import pandas as pd
 import os
-from util import extension, fail
+import pandas as pd
+_file_dir = os.path.dirname( os.path.abspath(__file__) )
+sys.path.insert( 0, os.path.join(_file_dir, '../../common') )
+from util import extension, fail, config_to_file
 
 # Ensure min Snakemake version
 snakemake.utils.min_version("5.7")
@@ -38,6 +38,9 @@ wildcard_constraints:
 
 # output prefix
 outdir=config["settings"]["outdir"].rstrip("/")
+
+# persist the used config
+config_to_file( config, outdir )
 
 # =================================================================================================
 #     Other global settings

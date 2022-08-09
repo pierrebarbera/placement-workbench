@@ -205,3 +205,12 @@ def is_tool(name):
   from shutil import which
 
   return which(name) is not None
+
+# =================================================================================================
+#     Snakemake-specific helper functions
+# =================================================================================================
+def config_to_file( config, out_dir ):
+    import yaml
+    with open( os.path.join( out_dir, "config.yaml" ), 'w' ) as outfile:
+        yaml.dump( dict(config), outfile )
+
