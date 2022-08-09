@@ -2,7 +2,7 @@
 #     Statistical tests
 # =================================================================================================
 
-def modelstring_params():
+def modelstring_params( wildcards, input, output ):
     import re
     modelstring=""
     with open(input.best_model) as modelfile:
@@ -45,7 +45,8 @@ rule summarize_iqtree_stats_test:
         summary         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/significance.txt",
         plausible_trees = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
     script:
-        "scripts/iqtree_test_summarize.py"
+        "../scripts/iqtree_test_summarize.py"
+localrules: summarize_iqtree_stats_test
 
 rule plausible_consensus:
     input:

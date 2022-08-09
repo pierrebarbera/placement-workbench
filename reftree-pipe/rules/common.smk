@@ -4,8 +4,7 @@
 
 import os
 import pandas as pd
-_file_dir = os.path.dirname( os.path.abspath(__file__) )
-sys.path.insert( 0, os.path.join(_file_dir, '../../common') )
+sys.path.insert( 0, '../../common')
 from util import extension, fail, config_to_file
 
 # Ensure min Snakemake version
