@@ -107,4 +107,4 @@ include: "rules/postalignment.smk"
 if use_auto_model: 
     include: "rules/modeltest.smk"
 include: "rules/treesearch.smk"
-include: "rules/postanalysis.smk"
+include: "rules/tree_plausibility.smk"

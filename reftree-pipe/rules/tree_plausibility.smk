@@ -46,7 +46,6 @@ rule summarize_iqtree_stats_test:
         plausible_trees = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
     script:
         "../scripts/iqtree_test_summarize.py"
-localrules: summarize_iqtree_stats_test
 
 rule plausible_consensus:
     input:
@@ -66,3 +65,5 @@ rule plausible_consensus:
         "mv {params.prefix}.raxml.consensusTreeMR {output.mr} && "
         "raxml-ng --consense MRE --tree {input} --prefix {params.prefix} --redo > {log.mre} 2>&1 && "
         "mv {params.prefix}.raxml.consensusTreeMRE {output.mre}"
+
+localrules: summarize_iqtree_stats_test, plausible_consensus
