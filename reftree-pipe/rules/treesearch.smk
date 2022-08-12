@@ -124,3 +124,20 @@ rule treesearch_consensus:
         "mv {params.prefix}.raxml.consensusTreeMR {output.mr} && "
         "raxml-ng --consense MRE --tree {input} --prefix {params.prefix} --threads {threads} > {log.mre} 2>&1 && "
         "mv {params.prefix}.raxml.consensusTreeMRE {output.mre}"
+
+rule determine_best_run:
+    """Compare all best trees of a sample and create a symlink to that folder"""
+    input:
+        expand(  
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
+            autoref=autoref_list,
+            aligner=aligner_list,
+            trimmer=trimmer_list,
+            allow_missing=True
+            )
+    output:
+        "{outdir}/result/{sample}/best_result/raxml-ng/tree/best.newick"
+    script:
+        "../scripts/symlink-best-result.py"
+
+localrules: determine_best_run

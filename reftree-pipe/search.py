@@ -2,7 +2,7 @@
 
 import multiprocessing
 import argparse, sys, os
-sys.path.insert(0, '../common')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../common'))
 import util
 from datetime import datetime
 import pandas as pd
@@ -32,6 +32,9 @@ parser.add_argument('--phat-target-num', dest='phat_target_num', type=int,
                     help='target number of taxa that the PhAT algorithm should aim for.')
 parser.add_argument('--taxonomy-file', dest='taxonomy_file', type=str,
                     help='taxonomy file (required for PhAT algorithm)')
+parser.add_argument('--compatible-trees', dest='trees_compatible', action='store_true',
+                    help="Indicate that the resulting trees will be compatible (same number of taxa, same labels)"
+                    "WARNING: if this turnes out to be false, the run will fail at the 'rf_distances_between_samples' rule")
 
 parser.add_argument('-a','--align', dest='do_align', action='store_true',
                     help='align the sequences')
@@ -141,7 +144,8 @@ config_overrrides = {
   'data':
   {
     'samples': samples_file,
-    'taxonomy': args.taxonomy_file
+    'taxonomy': args.taxonomy_file,
+    'trees_are_compatible': args.trees_compatible
   },
   'settings':
   {
@@ -172,6 +176,7 @@ snakemake.snakemake(
   conda_frontend=conda_front,
   cores=args.threads,
   config=config_overrrides,
+  latency_wait=3,
   config_args=["dummy=0"]
   )
 

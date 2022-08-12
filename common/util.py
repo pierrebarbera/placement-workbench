@@ -73,6 +73,16 @@ def num_dirs( path ):
   """Returns the number of directories in a path"""
   return len( Path( os.path.dirname( path ) ).parts )
 
+def trim_path( dir_path, path_ext ):
+  """Takes a directory path and removes a path from the end of it. Throws at mismatch"""
+  expect_dir_exists( dir_path )
+  path = os.path.normpath( dir_path )
+  path_parts = Path( path ).parts
+  to_split = Path( path_ext ).parts
+  for n in range(1, len(to_split)+1):
+    if path_parts[-n] != to_split[-n]:
+      fail(f"path_ext must fit with end of path. mismatch: {path_parts[-n]} vs {to_split[-n]}")
+  return Path(*(path_parts[:-len(to_split) or None]))
 
 def last_n_dirnames( path, n ):
   path = os.path.normpath(path)
@@ -80,7 +90,7 @@ def last_n_dirnames( path, n ):
   # don't try to return more than there are
   n = min( n, len(names) )
   # return the last n parts
-  return list( names[ -n: ] ) if n else []
+  return list( names[ -n: ] or None ) if n else []
 
 def ingest_paths( paths, extensions=None ):
   """Takes a list of paths, validates them to make sure they exist, and if a path is a directory
@@ -210,7 +220,14 @@ def is_tool(name):
 #     Snakemake-specific helper functions
 # =================================================================================================
 def config_to_file( config, out_dir ):
-    import yaml
-    with open( os.path.join( out_dir, "config.yaml" ), 'w' ) as outfile:
-        yaml.dump( dict(config), outfile )
+  import yaml
+  with open( os.path.join( out_dir, "config.yaml" ), 'w' ) as outfile:
+      yaml.dump( dict(config), outfile )
+
+def listlen( obj ):
+  """Returns the number of items in object, if obj is list, 1 otherwise"""
+  if isinstance( obj, list ):
+    return len(obj)
+  else:
+    return 1
 

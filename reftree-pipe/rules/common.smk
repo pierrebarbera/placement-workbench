@@ -4,8 +4,7 @@
 
 import os
 import pandas as pd
-sys.path.insert( 0, '../../common')
-from util import extension, fail, config_to_file
+from util import extension, fail, config_to_file, listlen
 
 # Ensure min Snakemake version
 snakemake.utils.min_version("5.7")

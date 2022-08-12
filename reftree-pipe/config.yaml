@@ -19,6 +19,11 @@ data:
     # name of the .csv column that contains the taxon label (i.e. what the accession ID gets replaced
     # with before the tree is generated from it)
     label_column: "label"
+  
+  # Indicate whether the different samples will result in compatible trees. WARNING this WILL
+  # cause the run to fail if it isn't actually the case, as then the pipeline will try to do
+  # operations that only work on compatible trees (e.g., 'rf_distances_between_samples')
+  trees_are_compatible: False
 
 # =================================================================================================
 #     Pipeline Settings
@@ -46,11 +51,11 @@ settings:
   # Select the tool(s) used for sequence alignment.
   # Valid values: "mafft", "muscle"
   aligner:
-    - "mafft"
+    # - "mafft"
     - "muscle"
 
   trimmer:
-    - "trimal"
+    # - "trimal"
     - "no_trim"
     # - "gblocks"
 

@@ -16,7 +16,18 @@ aligner_list = ( "no_alignment" if config["settings"]["skip_alignment"] else con
 trimmer_list = config["settings"]["trimmer"]
 
 # list of autoref modes
-autoref_modes = ( "no_autoref" if config["settings"]["skip_autoref"] else config["settings"]["autoref"] )
+autoref_list = ( "no_autoref" if config["settings"]["skip_autoref"] else config["settings"]["autoref"] )
+
+# Next, some calculation to decide whether to do all of the rf distances
+# if there is only one result tree for a given sample, for example, then we can't do an intra-sample rf distance
+
+# calculate the number of calculated result trees within a sample
+intrasample_trees = listlen(aligner_list) * listlen(trimmer_list) * listlen(autoref_list)
+# and between samples
+intersample_trees = listlen(sample_names)
+# also doesn't make sense to do rf dist for a given tree search if there was only one starting tree
+starting_trees    = ( config["params"]["parsimony_starting_trees"] + config["params"]["random_starting_trees"] )
+trees_compatible  = config["data"]["trees_are_compatible"]
 
 # The rule that is executed by default. It requests the final output files,
 # which are then created by applying snakemake rules.
@@ -29,7 +40,7 @@ rule all:
             aligner=aligner_list,
             trimmer=trimmer_list,
             sample=sample_names,
-            autoref=autoref_modes
+            autoref=autoref_list
         ),
         expand(
             "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
@@ -37,7 +48,13 @@ rule all:
             aligner=aligner_list,
             trimmer=trimmer_list,
             sample=sample_names,
-            autoref=autoref_modes
+            autoref=autoref_list
+        ),
+        # also ensure that the symlink (copy for now) to the best result of each sample is created
+        expand(
+            "{outdir}/result/{sample}/best_result/raxml-ng/tree/best.newick",
+            outdir=outdir,
+            sample=sample_names
         ),
         # Best ML tree with support values
         expand(
@@ -46,7 +63,7 @@ rule all:
             aligner=aligner_list,
             trimmer=trimmer_list,
             sample=sample_names,
-            autoref=autoref_modes
+            autoref=autoref_list
         ),
 
         # Consensus trees from best tree set
@@ -56,7 +73,7 @@ rule all:
             aligner=aligner_list,
             trimmer=trimmer_list,
             sample=sample_names,
-            autoref=autoref_modes
+            autoref=autoref_list
         ),
         expand(
             "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/consensusTreeMRE.newick",
@@ -64,7 +81,7 @@ rule all:
             aligner=aligner_list,
             trimmer=trimmer_list,
             sample=sample_names,
-            autoref=autoref_modes
+            autoref=autoref_list
         ),
 
         # iqtree stats summary
@@ -81,7 +98,7 @@ rule all:
             aligner=aligner_list,
             sample=sample_names,
             trimmer=trimmer_list,
-            autoref=autoref_modes
+            autoref=autoref_list
         ),
         expand(
             "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible.consensusTreeMRE.newick",
@@ -89,8 +106,27 @@ rule all:
             aligner=aligner_list,
             sample=sample_names,
             trimmer=trimmer_list,
-            autoref=autoref_modes
-        )
+            autoref=autoref_list
+        ),
+
+        # Various RF-distance calculations
+        expand(
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/rf_distances.txt",
+            outdir=outdir,
+            aligner=aligner_list,
+            sample=sample_names,
+            trimmer=trimmer_list,
+            autoref=autoref_list
+        ) if starting_trees > 1 else [],
+        expand(
+            "{outdir}/result/{sample}/intrasample_rf_distances.txt",
+            outdir=outdir,
+            sample=sample_names
+        ) if intrasample_trees > 1 else [],
+        expand(
+            "{outdir}/result/intersample_rf_distances.txt",
+            outdir=outdir
+        ) if trees_compatible and (intersample_trees > 1) else [],
 
 # The main `all` rule is local. It does not do anything anyway,
 # except requesting the other rules to run.
@@ -108,3 +144,4 @@ if use_auto_model:
     include: "rules/modeltest.smk"
 include: "rules/treesearch.smk"
 include: "rules/tree_plausibility.smk"
+include: "rules/rf_distance.smk"
