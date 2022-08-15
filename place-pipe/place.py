@@ -29,6 +29,13 @@ parser.add_argument('--model-file', dest='model_file', type=str,
 parser.add_argument('--taxonomy-file', dest='taxon_file', type=str,
                     help='Tab-separated file mapping reference labels to their taxonomic paths', required=False)
 
+parser.add_argument('--cluster-exec', dest='on_cluster', action='store_true',
+                    help="Starts the pipeline in computing-cluster (slurm/sge etc.) submission mode. "
+                    "Highly recommended to do this from a screen/tmux session!")
+parser.add_argument('--cluster-env', dest='clust_env', type=str, nargs='?',
+                    const='auto', default='auto', choices=['auto','slurm', 'sge'],
+                    help="What job submission system we are on. 'auto' attempts to autodetect.")
+
 ###
 #   Config Manip
 ###
@@ -169,10 +176,15 @@ conda_front = 'conda'
 if util.is_tool('mamba'):
   conda_front = 'mamba'
 
+# get cluster settings
+cluster, cluster_config = None, None if not args.on_cluster else util.cluster_settings( args.clust_env, calling_dir )
+
 snakemake.snakemake(
   snakefile=os.path.join( calling_dir, "Snakefile" ),
   use_conda=True,
   conda_frontend=conda_front,
   cores=args.threads,
-  config=config_overrrides
+  config=config_overrrides,
+  cluster_config=cluster_config,
+  cluster=cluster
   )

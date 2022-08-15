@@ -2,7 +2,9 @@
 
 import multiprocessing
 import argparse, sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../common'))
+from os.path import join
+script_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, join(script_dir, '../common'))
 import util
 from datetime import datetime
 import pandas as pd
@@ -52,6 +54,14 @@ parser.add_argument('-p', '--prefix', dest='prefix', type=str,
 parser.add_argument('--threads', dest='threads', type=int,
                     default=multiprocessing.cpu_count(),
                     help='number of threads to use')
+
+parser.add_argument('--cluster-exec', dest='on_cluster', action='store_true',
+                    help="Starts the pipeline in computing-cluster (slurm/sge etc.) submission mode. "
+                    "Highly recommended to do this from a screen/tmux session!")
+parser.add_argument('--cluster-env', dest='clust_env', type=str, nargs='?',
+                    const='auto', default='auto', choices=['auto','slurm', 'sge'],
+                    help="What job submission system we are on. 'auto' attempts to autodetect.")
+
 parser.add_argument('-v','--verbose', dest='verbose', action='store_true',
                     help='increase verbosity')
 args = parser.parse_args()
@@ -68,7 +78,6 @@ if args.do_phat:
     
     if args.do_align:
         util.fail( "It does not make sense to combine PhAT with alignment, as PhAT requires aligned sequences already." )
-
 
 skip_alignment = not args.do_align
 
@@ -132,7 +141,7 @@ samples = pd.DataFrame({
 
 # finally, write the samples.tsv to the output folder
 util.make_path( out_dir )
-samples_file = os.path.join( out_dir, "samples.tsv" )
+samples_file = join( out_dir, "samples.tsv" )
 samples.to_csv( samples_file, sep='\t' )
 
 # check if we want to use modeltest, and set the model string to auto if thats the case
@@ -172,12 +181,18 @@ conda_front = 'conda'
 if util.is_tool('mamba'):
   conda_front = 'mamba'
 
+# get cluster settings
+cluster, cluster_config = None, None if not args.on_cluster else util.cluster_settings( args.clust_env, calling_dir )
+
 snakemake.snakemake(
-  snakefile=os.path.join( calling_dir, "Snakefile" ),
+  snakefile=join( calling_dir, "Snakefile" ),
   use_conda=True,
   conda_frontend=conda_front,
   cores=args.threads,
+  local_cores=args.threads,
   config=config_overrrides,
   latency_wait=3,
+  cluster_config=cluster_config,
+  cluster=cluster
   )
 
