@@ -231,3 +231,25 @@ def listlen( obj ):
   else:
     return 1
 
+def cluster_settings( clust_env, calling_dir ):
+  # detect/set the job submission system to be used
+  cluster_sys = None
+  if clust_env == 'auto':
+    if is_tool("sbatch"):
+      cluster_sys = "slurm"
+    elif is_tool("qsub"):
+      cluster_sys = "sge"
+    else:
+      fail( "Could not autodetect job submission system." )
+  else:
+    cluster_sys = clust_env
+  # set the correct cluster config and other needed settings
+  # (that would otherwise be handled by --profile)
+  profile = join( calling_dir, "profiles", cluster_sys )
+
+  # jobscript = join( profile, f"{cluster_sys}-jobscript.py" )
+  cluster_config = [join( profile, "config.yaml" ),
+                    join( calling_dir, "profiles/cluster-config.yaml" )]
+  cluster = join( profile, "slurm-submit.py" )
+
+  return cluster, cluster_config
