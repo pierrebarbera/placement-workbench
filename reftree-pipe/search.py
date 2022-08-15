@@ -84,6 +84,8 @@ if( args.fasta_files ):
 if( args.accession_files ):
   file_paths.extend( util.ingest_paths( args.accession_files, extensions=['.csv'] ) )
 
+if not file_paths:
+  util.fail( "Did not detect any input fasta/csv files. Wrong directory?" )
 
 def get_unique_names( paths ):
   """
@@ -177,6 +179,5 @@ snakemake.snakemake(
   cores=args.threads,
   config=config_overrrides,
   latency_wait=3,
-  config_args=["dummy=0"]
   )
 

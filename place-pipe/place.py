@@ -174,6 +174,5 @@ snakemake.snakemake(
   use_conda=True,
   conda_frontend=conda_front,
   cores=args.threads,
-  config=config_overrrides,
-  config_args=["dummy=0"]
+  config=config_overrrides
   )
