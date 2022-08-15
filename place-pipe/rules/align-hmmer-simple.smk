@@ -23,7 +23,7 @@ rule hmmer_align:
     conda:
         "../envs/hmmer.yaml"
     threads:
-        get_highest_override( "hmmer", "threads" )
+        get_threads( "hmmer" )
     shell:
         "hmmalign"
         " --{params.states}"

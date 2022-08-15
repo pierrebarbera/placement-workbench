@@ -25,7 +25,7 @@ rule align_mafft:
     params:
         extra=config["params"]["mafft"]["extra"]
     threads:
-        get_highest_override( "mafft", "threads" )
+        get_threads( "mafft" )
     log:
         "{outdir}/result/{sample}/{autoref}/mafft/alignment.log"
     conda:

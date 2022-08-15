@@ -8,7 +8,7 @@ rule modeltest:
     params:
         datatype = config["settings"]["datatype"]
     threads:
-        get_highest_override( "modeltestng", "threads" )
+        get_threads( "modeltestng" )
     output:
         "{outdir}/result/{sample}/{aligner}/{trimmer}/modeltest-ng/model.file"
     log:

@@ -4,6 +4,8 @@
 
 import os
 import pandas as pd
+common_dir = os.path.abspath(os.path.join( workflow.current_basedir, "..", "..", "common" ))
+sys.path.insert(0, common_dir)
 from util import extension, fail, config_to_file, listlen
 
 # Ensure min Snakemake version
@@ -115,3 +117,6 @@ def get_highest_override( tool, key ):
             fail("invalid key for 'config['params']': '{}'".format( key ))
         else:
             return config["params"][key]
+
+def get_threads( tool ):
+    return int(get_highest_override( tool, "threads") )

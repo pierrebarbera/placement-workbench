@@ -72,7 +72,7 @@ rule treesearch_raxmlng:
         extra           = config["params"]["raxmlng"]["extra"],
         prefix          = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search"
     threads:
-        get_highest_override( "raxmlng", "threads" )
+        get_threads( "raxmlng" )
     output:
         best_tree       = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
         best_model      = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
@@ -113,7 +113,7 @@ rule treesearch_consensus:
     params:
         prefix  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees"
     threads:
-        get_highest_override( "raxmlng", "threads" )
+        get_threads( "raxmlng" )
     log:
         mr      = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/mr.log",
         mre     = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/mre.log"
@@ -136,7 +136,9 @@ rule determine_best_run:
             allow_missing=True
             )
     output:
-        "{outdir}/result/{sample}/best_result/raxml-ng/tree/best.newick"
+        "{outdir}/result/{sample}/best_result/raxml-ng/tree/best.newick",
+        "{outdir}/result/{sample}/best_result/raxml-ng/post/plausible.consensusTreeMR.newick",
+        "{outdir}/result/{sample}/best_result/raxml-ng/post/plausible.consensusTreeMRE.newick"
     script:
         "../scripts/symlink-best-result.py"
 

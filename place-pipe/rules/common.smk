@@ -111,3 +111,7 @@ def get_highest_override( tool, key ):
         return config["params"][tool][key]
     else:
         return config["params"][key]
+
+def get_threads( tool ):
+    return int(get_highest_override( tool, "threads") )
+

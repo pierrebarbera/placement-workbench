@@ -33,6 +33,6 @@ rule epa_ng_place:
     conda:
         "../envs/epa-ng.yaml"
     threads:
-        get_highest_override( "epa-ng", "threads" )
+        get_threads( "epa-ng" )
     script:
         "../scripts/epa-ng.py"

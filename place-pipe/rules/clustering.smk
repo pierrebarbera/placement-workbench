@@ -25,7 +25,7 @@ rule cluster_swarm:
         seeds           = "{outdir}/swarm/samples/{sample}/queries.fa",
         statistics_file = "{outdir}/swarm/samples/{sample}/otu_table.tsv"
     threads:
-        get_highest_override( "swarm", "threads" )
+        get_threads( "swarm" )
     log:
         "{outdir}/swarm/samples/{sample}/log.txt"
     conda:

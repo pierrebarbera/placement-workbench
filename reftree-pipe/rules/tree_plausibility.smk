@@ -23,7 +23,7 @@ rule iqtree_stats_test:
     output:
         "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/stats.iqtree"
     threads:
-        get_highest_override( "iqtree", "threads" )
+        get_threads( "iqtree" )
     params:
         workdir     = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post",
         modelstring = modelstring_params

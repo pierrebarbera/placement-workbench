@@ -16,7 +16,7 @@ rule raxml_ng_model_eval:
     log:
         "{outdir}/model/model_eval.log"
     threads:
-        get_highest_override( "raxml-ng", "threads" )
+        get_threads( "raxml-ng" )
     conda:
         "../envs/raxml-ng.yaml"
     shell:

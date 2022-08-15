@@ -11,7 +11,7 @@ rule assign:
     log:
         "{outdir}/{clusterer}/taxonomic_assignment/gappa_assign/{sample}/log.txt"
     threads:
-        get_highest_override( "gappa", "threads" )
+        get_threads( "gappa" )
     conda:
         "../envs/gappa.yaml"
     script:

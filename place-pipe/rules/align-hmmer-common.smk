@@ -13,7 +13,7 @@ rule hmmer_build:
     log:
         "{outdir}/hmmer/build.log"
     threads:
-        get_highest_override( "hmmer", "threads" )
+        get_threads( "hmmer" )
     conda:
         "../envs/hmmer.yaml"
     shell:
