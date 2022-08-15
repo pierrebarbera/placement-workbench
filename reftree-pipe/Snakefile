@@ -127,6 +127,14 @@ rule all:
             "{outdir}/result/intersample_rf_distances.txt",
             outdir=outdir
         ) if trees_compatible and (intersample_trees > 1) else [],
+        expand(
+            "{outdir}/result/intersample_plausible_MR_rfdist.txt",
+            outdir=outdir
+        ) if trees_compatible and (intersample_trees > 1) else [],
+        expand(
+            "{outdir}/result/intersample_plausible_MRE_rfdist.txt",
+            outdir=outdir
+        ) if trees_compatible and (intersample_trees > 1) else [],
 
 # The main `all` rule is local. It does not do anything anyway,
 # except requesting the other rules to run.
