@@ -2,11 +2,11 @@
 #     Dependencies
 # =================================================================================================
 
-sys.path.insert(0, '../../common')
-
 import pandas as pd
 import os, re, sys
 import socket, platform
+common_dir = os.path.abspath(os.path.join( workflow.current_basedir, "..", "..", "common" ))
+sys.path.insert(0, common_dir)
 from util import is_fasta, is_fastq, expect_file_exists, config_to_file
 
 # Ensure min Snakemake version

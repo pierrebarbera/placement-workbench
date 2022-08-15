@@ -3,7 +3,6 @@
 # =================================================================================================
 
 from snakemake.shell import shell
-sys.path.insert(0, '../common')
 import util
 import snakeparser as sp
 import os
