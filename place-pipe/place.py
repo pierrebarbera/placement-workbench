@@ -177,7 +177,7 @@ if util.is_tool('mamba'):
   conda_front = 'mamba'
 
 # get cluster settings
-cluster, cluster_config = None, None if not args.on_cluster else util.cluster_settings( args.clust_env, calling_dir )
+cluster, cluster_config = (None, None) if not args.on_cluster else util.cluster_settings( args.clust_env, calling_dir )
 
 snakemake.snakemake(
   snakefile=os.path.join( calling_dir, "Snakefile" ),
