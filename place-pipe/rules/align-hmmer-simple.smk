@@ -32,3 +32,4 @@ rule hmmer_align:
         " --mapali {input.msa}"
         " {params.extra} {input.hmmprofile} {input.sample}"
         " > {log} 2>&1"
+    group: "alignment"

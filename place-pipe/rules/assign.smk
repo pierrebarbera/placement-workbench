@@ -16,6 +16,7 @@ rule assign:
         "../envs/gappa.yaml"
     script:
         "../scripts/gappa-assign.py"
+    group: "postplacement"
 
 
 # No need to execute this on the cluster computed nodes.

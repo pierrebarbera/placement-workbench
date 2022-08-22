@@ -36,6 +36,7 @@ rule iqtree_stats_test:
         " -m {params.modelstring}"
         " -pre {params.workdir}/stats -T {threads}"
         " -n 0 -zb 1000 -zw -au > {log}"
+    group: "postsearch"
 
 rule summarize_iqtree_stats_test:
     input:
@@ -46,6 +47,7 @@ rule summarize_iqtree_stats_test:
         plausible_trees = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
     script:
         "../scripts/iqtree_test_summarize.py"
+    group: "postsearch"
 
 rule plausible_consensus:
     input:
@@ -65,5 +67,6 @@ rule plausible_consensus:
         "mv {params.prefix}.raxml.consensusTreeMR {output.mr} && "
         "raxml-ng --consense MRE --tree {input} --prefix {params.prefix} --redo > {log.mre} 2>&1 && "
         "mv {params.prefix}.raxml.consensusTreeMRE {output.mre}"
+    group: "postsearch"
 
 localrules: summarize_iqtree_stats_test, plausible_consensus

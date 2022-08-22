@@ -28,6 +28,7 @@ rule gappa_heat_tree_all:
         "../envs/gappa.yaml"
     script:
         "../scripts/gappa-heat-tree.py"
+    group: "postplacement"
 
 # Rule to create individual heat tree visualizations per sample
 rule gappa_heat_tree:
@@ -51,3 +52,4 @@ rule gappa_heat_tree:
         "../envs/gappa.yaml"
     script:
         "../scripts/gappa-heat-tree.py"
+    group: "postplacement"

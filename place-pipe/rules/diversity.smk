@@ -16,6 +16,7 @@ rule diversity_guppy:
         "../envs/pplacer.yaml"
     shell:
         "guppy fpd -o {output} --csv {params.include_pendant} {input} > {log}"
+    group: "postplacement"
 
 # # No need to execute this on the cluster computed nodes.
 # localrules: diversity_guppy

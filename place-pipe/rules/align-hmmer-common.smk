@@ -19,3 +19,4 @@ rule hmmer_build:
     shell:
         "hmmbuild --cpu {threads} --{params.states} {params.extra} "
         "{output} {input} > {log} 2>&1"
+    group: "alignment"

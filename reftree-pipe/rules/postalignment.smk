@@ -21,6 +21,7 @@ rule clean_alignment:
         "../envs/biopython.yaml"
     script:
         "../scripts/trim_ends.py"
+    group: "alignment"
 
 # special rule that skips trimming / does nothing
 rule no_trim:
@@ -32,6 +33,7 @@ rule no_trim:
         "{outdir}/result/{sample}/{autoref}/{aligner}/no_trim/log.txt"
     script:
         "../../common/symlink.py"
+    group: "alignment"
 
 rule trim_gblocks:
     input:
@@ -50,6 +52,7 @@ rule trim_gblocks:
         # somehow gblocks returns a non-zero exit value regardless of success or failure?!
         "$(Gblocks {input} -t={params.datatype} {params.extra} > {log} ; echo '' )"
         " && ln -s {params.rel_input}-gb {output}"
+    group: "alignment"
 
 rule trim_trimal:
     input:
@@ -64,6 +67,7 @@ rule trim_trimal:
         "../envs/trimal.yaml"
     shell:
         "trimal -in {input} -out {output} -fasta -automated1 {params.extra} 2> {log}"
+    group: "alignment"
 localrules: no_trim, clean_alignment
 
 

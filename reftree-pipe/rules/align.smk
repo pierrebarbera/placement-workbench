@@ -11,6 +11,7 @@ rule no_alignment:
         "{outdir}/result/{sample}/{autoref}/no_alignment/log.txt"
     script:
         "../../common/symlink.py"
+    group: "alignment"
 localrules: no_alignment
 
 # =================================================================================================
@@ -32,6 +33,7 @@ rule align_mafft:
         "../envs/mafft.yaml"
     shell:
         "mafft {params.extra} --thread {threads} {input} > {output} 2> {log}"
+    group: "alignment"
 
 # =================================================================================================
 #     Alignment with muscle
@@ -50,3 +52,4 @@ rule align_muscle:
         "../envs/muscle.yaml"
     shell:
         "muscle -in {input} -out {output} {params.extra} > {log} 2>&1"
+    group: "alignment"

@@ -15,6 +15,7 @@ rule rf_distances_between_samples:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
+    group: "postsearch"
 
 rule rf_distances_between_sample_plausible_MRE:
     """
@@ -33,6 +34,7 @@ rule rf_distances_between_sample_plausible_MRE:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
+    group: "postsearch"
 
 rule rf_distances_between_sample_plausible_MR:
     """
@@ -51,6 +53,7 @@ rule rf_distances_between_sample_plausible_MR:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
+    group: "postsearch"
 
 rule rf_distances_within_sample:
     """
@@ -71,6 +74,7 @@ rule rf_distances_within_sample:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
+    group: "postsearch"
 
 rule rf_distances_within_treesearch:
     """
@@ -86,3 +90,4 @@ rule rf_distances_within_treesearch:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
+    group: "postsearch"

@@ -27,3 +27,4 @@ rule gappa_phat_raw:
         "../envs/gappa.yaml"
     script:
         "../scripts/gappa-phat.py"
+    group: "alignment"

@@ -17,3 +17,4 @@ rule modeltest:
         "../envs/modeltest-ng.yaml"
     script:
         "../scripts/modeltest-ng.py"
+    group: "treesearch"

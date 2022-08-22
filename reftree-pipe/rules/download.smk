@@ -17,3 +17,4 @@ rule download_sequences:
         "../envs/download.yaml"
     script:
         "../scripts/download_fasta.py"
+localrules: download_sequences

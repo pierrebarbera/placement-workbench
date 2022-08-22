@@ -36,3 +36,4 @@ rule epa_ng_place:
         get_threads( "epa-ng" )
     script:
         "../scripts/epa-ng.py"
+    group: "placement"
