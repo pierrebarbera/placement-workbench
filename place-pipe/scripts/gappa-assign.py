@@ -3,8 +3,10 @@
 # =================================================================================================
 
 from snakemake.shell import shell
+import sys, os
+common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", "..", "common" ))
+sys.path.insert(0, common_dir)
 import snakeparser as sp
-import os
 
 shell.executable("bash")
 

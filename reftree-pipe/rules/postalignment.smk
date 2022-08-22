@@ -32,7 +32,6 @@ rule no_trim:
         "{outdir}/result/{sample}/{autoref}/{aligner}/no_trim/log.txt"
     script:
         "../../common/symlink.py"
-localrules: no_trim
 
 rule trim_gblocks:
     input:
@@ -65,6 +64,8 @@ rule trim_trimal:
         "../envs/trimal.yaml"
     shell:
         "trimal -in {input} -out {output} -fasta -automated1 {params.extra} 2> {log}"
+localrules: no_trim, clean_alignment
+
 
 # =================================================================================================
 #     Remove duplicates

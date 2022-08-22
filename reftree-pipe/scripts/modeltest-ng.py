@@ -3,9 +3,11 @@
 # =================================================================================================
 
 from snakemake.shell import shell
+import sys, os
+common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", "..", "common" ))
+sys.path.insert(0, common_dir)
 import util
 import snakeparser as sp
-import os
 
 # Taken from: https://github.com/BenoitMorel/ParGenes/blob/master/pargenes/pargenes_src/modeltest.py
 def get_model_from_log(log_file, modeltest_criteria):

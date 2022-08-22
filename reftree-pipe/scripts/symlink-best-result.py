@@ -1,5 +1,7 @@
 from snakemake.shell import shell
 import sys, os
+common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", "..", "common" ))
+sys.path.insert(0, common_dir)
 from util import trim_path, dirname
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)

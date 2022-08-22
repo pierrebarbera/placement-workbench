@@ -1,4 +1,6 @@
-import sys
+import sys, os
+common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", "..", "common" ))
+sys.path.insert(0, common_dir)
 import util
 from Bio import AlignIO
 from collections import Counter

@@ -4,3 +4,7 @@
 .snakemake
 **/run-*
 canga/
+ger_arthropoda/
+**/arthro_trees
+**/slurm-logs
+slurm-debug.log

@@ -20,7 +20,7 @@ conda install mamba -n base -c conda-forge
 ### 2) create the environment
 Next, we create our special "place-workbench" environment (in the  repository root directory):
 ```
-mamba env create -v environment.yml
+mamba env create -f environment.yml
 ```
 ### 3) enable the environment
 Then, we activate that environment.

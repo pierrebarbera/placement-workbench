@@ -1,6 +1,7 @@
-import csv, sys
+import csv, sys, os
+common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", "..", "common" ))
+sys.path.insert(0, common_dir)
 import util
-
 import pandas as pd
 
 from Bio import Entrez as gb
