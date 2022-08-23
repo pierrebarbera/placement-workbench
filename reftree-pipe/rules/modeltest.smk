@@ -3,6 +3,7 @@
 # =================================================================================================
 
 rule modeltest:
+    group: "treesearch"
     input:
        "{outdir}/result/{sample}/{aligner}/{trimmer}/trimmed.afa"
     params:
@@ -17,4 +18,3 @@ rule modeltest:
         "../envs/modeltest-ng.yaml"
     script:
         "../scripts/modeltest-ng.py"
-    group: "treesearch"

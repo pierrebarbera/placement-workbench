@@ -62,6 +62,7 @@ def starting_trees_params( wildcards ):
 # =================================================================================================
 
 rule treesearch_raxmlng:
+    group: "treesearch"
     input:
         msa = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
         modelfile = model_file
@@ -88,17 +89,16 @@ rule treesearch_raxmlng:
         " {params.model}"
         " {params.starting_trees}"
         " {params.bootstrap}"
-        " --threads {threads}"
+        " --threads {threads} --redo"
         " {params.extra}"
         " > {log}  2>&1"
         # symlink resulting files to be simpler to understand and conform with other methods
-        " && cd $(dirname {output})"
+        " && cd $(dirname {output.best_tree})"
         " && ln -s search.raxml.bestTree best.newick"
         " && ln -s search.raxml.bestModel best.model"
         " && ln -s search.raxml.support bootstrap.newick"
         " && ln -s search.raxml.mlTrees ml_trees.newick"
         " && ln -s search.raxml.bootstraps bs_trees.newick"
-    group: "treesearch"
 
 
 # =================================================================================================
@@ -106,6 +106,7 @@ rule treesearch_raxmlng:
 # =================================================================================================
 
 rule treesearch_consensus:
+    group: "treesearch"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
     output:
@@ -125,7 +126,6 @@ rule treesearch_consensus:
         "mv {params.prefix}.raxml.consensusTreeMR {output.mr} && "
         "raxml-ng --consense MRE --tree {input} --prefix {params.prefix} --threads {threads} > {log.mre} 2>&1 && "
         "mv {params.prefix}.raxml.consensusTreeMRE {output.mre}"
-    group: "treesearch"
 
 rule determine_best_run:
     """Compare all best trees of a sample and create a symlink to that folder"""
@@ -143,6 +143,5 @@ rule determine_best_run:
         "{outdir}/result/{sample}/best_result/raxml-ng/post/plausible.consensusTreeMRE.newick"
     script:
         "../scripts/symlink-best-result.py"
-    group: "treesearch"
 
 localrules: determine_best_run

@@ -4,6 +4,7 @@
 
 # Rule to create a heat tree visualization for all samples combined
 rule gappa_heat_tree_all:
+    group: "postplacement"
     input:
         expand( "{outdir}/{clusterer}/placed/{sample}.jplace",
                 outdir=outdir,
@@ -28,10 +29,10 @@ rule gappa_heat_tree_all:
         "../envs/gappa.yaml"
     script:
         "../scripts/gappa-heat-tree.py"
-    group: "postplacement"
 
 # Rule to create individual heat tree visualizations per sample
 rule gappa_heat_tree:
+    group: "postplacement"
     input:
         "{outdir}/placed/{sample}.jplace"
     output:
@@ -52,4 +53,3 @@ rule gappa_heat_tree:
         "../envs/gappa.yaml"
     script:
         "../scripts/gappa-heat-tree.py"
-    group: "postplacement"

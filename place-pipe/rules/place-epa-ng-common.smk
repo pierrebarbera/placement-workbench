@@ -5,6 +5,7 @@
 # Rule to infer the best ML model parameters given the MSA and tree that we are going to use
 # for placement.
 rule raxml_ng_model_eval:
+    group: "placement"
     input:
         tree = config["data"]["reference-tree"],
         msa = config["data"]["reference-alignment"]
@@ -27,7 +28,6 @@ rule raxml_ng_model_eval:
         " --prefix {output.model_dir}/model_eval"
         " --threads {threads}"
         " > {log} 2>&1"
-    group: "placement"
 
 # epa-ng expects a model of evolution to be given either as a string (such as the model
 # string used in raxml-ng), or as a file (such as the best model output file of raxml-ng).

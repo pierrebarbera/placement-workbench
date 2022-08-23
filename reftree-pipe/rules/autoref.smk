@@ -11,6 +11,7 @@ localrules: no_phat
 
 # Rule to run gappa phat algorithm from a raw database of potential reference sequences
 rule gappa_phat_raw:
+    group: "alignment"
     input:
         # the taxonomy file is expected to be passed via the config, for now.
         taxonomy_file=get_taxonomy_file,
@@ -27,4 +28,3 @@ rule gappa_phat_raw:
         "../envs/gappa.yaml"
     script:
         "../scripts/gappa-phat.py"
-    group: "alignment"

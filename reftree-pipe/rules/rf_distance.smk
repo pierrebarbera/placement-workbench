@@ -1,4 +1,5 @@
 rule rf_distances_between_samples:
+    group: "postsearch"
     """
     Calculates RF-distances between all samples, taking the best tree from each
     """
@@ -15,9 +16,9 @@ rule rf_distances_between_samples:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
-    group: "postsearch"
 
 rule rf_distances_between_sample_plausible_MRE:
+    group: "postsearch"
     """
     Calculates RF-distances between all samples, taking the plausible consensus tree from each
     """
@@ -34,9 +35,9 @@ rule rf_distances_between_sample_plausible_MRE:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
-    group: "postsearch"
 
 rule rf_distances_between_sample_plausible_MR:
+    group: "postsearch"
     """
     Calculates RF-distances between all samples, taking the plausible consensus tree from each
     """
@@ -53,9 +54,9 @@ rule rf_distances_between_sample_plausible_MR:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
-    group: "postsearch"
 
 rule rf_distances_within_sample:
+    group: "postsearch"
     """
     Calculates RF-distances between all best trees of a given sample (starting MSA/configuration)
     """
@@ -74,9 +75,9 @@ rule rf_distances_within_sample:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
-    group: "postsearch"
 
 rule rf_distances_within_treesearch:
+    group: "postsearch"
     """
     Calculates RF-distances between all ml_trees of a given search / combination of tools
     """
@@ -90,4 +91,3 @@ rule rf_distances_within_treesearch:
         "../envs/raxml-ng.yaml"
     script:
         "../scripts/raxml-ng-rfdist.py"
-    group: "postsearch"

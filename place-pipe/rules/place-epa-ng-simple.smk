@@ -9,6 +9,7 @@ include: "place-epa-ng-common.smk"
 # =================================================================================================
 
 rule epa_ng_place:
+    group: "placement"
     input:
         tree = config["data"]["reference-tree"],
         msa  = config["data"]["reference-alignment"],
@@ -36,4 +37,3 @@ rule epa_ng_place:
         get_threads( "epa-ng" )
     script:
         "../scripts/epa-ng.py"
-    group: "placement"

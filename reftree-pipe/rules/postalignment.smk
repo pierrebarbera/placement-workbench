@@ -8,6 +8,7 @@
 
 # trim ends that is always called before trimming occurs
 rule clean_alignment:
+    group: "alignment"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/aligned.afa"
     params:
@@ -21,10 +22,10 @@ rule clean_alignment:
         "../envs/biopython.yaml"
     script:
         "../scripts/trim_ends.py"
-    group: "alignment"
 
 # special rule that skips trimming / does nothing
 rule no_trim:
+    # group: "alignment"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     output:
@@ -33,9 +34,9 @@ rule no_trim:
         "{outdir}/result/{sample}/{autoref}/{aligner}/no_trim/log.txt"
     script:
         "../../common/symlink.py"
-    group: "alignment"
 
 rule trim_gblocks:
+    group: "alignment"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     params:
@@ -52,9 +53,9 @@ rule trim_gblocks:
         # somehow gblocks returns a non-zero exit value regardless of success or failure?!
         "$(Gblocks {input} -t={params.datatype} {params.extra} > {log} ; echo '' )"
         " && ln -s {params.rel_input}-gb {output}"
-    group: "alignment"
 
 rule trim_trimal:
+    group: "alignment"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     params:
@@ -67,7 +68,6 @@ rule trim_trimal:
         "../envs/trimal.yaml"
     shell:
         "trimal -in {input} -out {output} -fasta -automated1 {params.extra} 2> {log}"
-    group: "alignment"
 localrules: no_trim, clean_alignment
 
 
