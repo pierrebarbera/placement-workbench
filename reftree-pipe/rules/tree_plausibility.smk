@@ -14,12 +14,32 @@ def modelstring_params( wildcards, input, output ):
         modelstring=re.sub( r"m$", "", modelstring )
     return modelstring
 
+# IQTREE fixes non-unicode chars in the MSA, but not in the tree... so here we go
+rule sanitize_labels:
+    group: "postsearch"
+    input:
+        best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
+        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
+    output:
+        best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_best.newick",
+        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_ml_trees.newick"
+    params:
+        basedir = workflow.current_basedir
+    log:
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitizer.log"
+    conda:
+        "../envs/biopython.yaml"
+    shell:
+        "{params.basedir}/../scripts/sanitize_labels.py {input.best_tree} {output.best_tree} newick > {log}"
+        " && {params.basedir}/../scripts/sanitize_labels.py {input.ml_trees} {output.ml_trees} newick > {log}"
+
 rule iqtree_stats_test:
+    group: "postsearch"
     input:
         msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
-        best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
+        best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_best.newick",
         best_model  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
-        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
+        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_ml_trees.newick"
     output:
         "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/stats.iqtree"
     threads:
@@ -35,10 +55,10 @@ rule iqtree_stats_test:
         "iqtree -s {input.msa} -te {input.best_tree} -z {input.ml_trees}"
         " -m {params.modelstring}"
         " -pre {params.workdir}/stats -T {threads}"
-        " -n 0 -zb 1000 -zw -au > {log}"
-    group: "postsearch"
+        " -n 0 -zb 1000 -zw -au -treediff > {log}"
 
 rule summarize_iqtree_stats_test:
+    group: "postsearch"
     input:
         iqtree_stats    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/stats.iqtree",
         ml_trees        = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
@@ -47,9 +67,9 @@ rule summarize_iqtree_stats_test:
         plausible_trees = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
     script:
         "../scripts/iqtree_test_summarize.py"
-    group: "postsearch"
 
 rule plausible_consensus:
+    group: "postsearch"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible_trees.newick"
     output:
@@ -67,6 +87,5 @@ rule plausible_consensus:
         "mv {params.prefix}.raxml.consensusTreeMR {output.mr} && "
         "raxml-ng --consense MRE --tree {input} --prefix {params.prefix} --redo > {log.mre} 2>&1 && "
         "mv {params.prefix}.raxml.consensusTreeMRE {output.mre}"
-    group: "postsearch"
 
-localrules: summarize_iqtree_stats_test, plausible_consensus
+localrules: summarize_iqtree_stats_test, plausible_consensus, sanitize_labels
