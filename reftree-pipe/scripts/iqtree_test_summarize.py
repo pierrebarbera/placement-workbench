@@ -26,6 +26,8 @@ def filter_accepted_trees( iqtree_tests_file, ml_trees_file ):
   accepted_trees = []
   for i in range(0, len( iqtree_lines )):
     line = iqtree_lines[i]
+    if line.count(" = ") == 1:
+      continue
     plus_count = line.count(" + ")
     minus_count = line.count(" - ")
     assert(plus_count + minus_count == 7)
