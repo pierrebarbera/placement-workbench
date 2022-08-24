@@ -9,6 +9,7 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 shell.executable("bash")
 
 treedir = "raxml-ng/tree"
+postdir = "raxml-ng/post"
 
 # So turns out symlinking like I wanted to doesnt really work. The output to the rule has to be the newick file
 # such that the rules using that file can actually find it. But that means that snakemake "helpfully" pre creates
@@ -18,7 +19,11 @@ treedir = "raxml-ng/tree"
 def best_of_the_best( wildcards, input, output ):
     """Compares a set of runs and returns the folder of the one with the highest loglh"""
     import re
-    dirs = [trim_path( dirname(f), treedir) for f in input]
+    dirs = [trim_path( dirname(f), [treedir, postdir]) for f in input]
+
+    # keep only unique dir paths, such that we can allow multiple redundant inputs
+    # (for correct dependency resolution in snakemake)
+    dirs = list(set(dirs))
 
     result_dict = dict()
     for rundir in dirs:

@@ -130,8 +130,22 @@ rule treesearch_consensus:
 rule determine_best_run:
     """Compare all best trees of a sample and create a symlink to that folder"""
     input:
-        expand(  
+        expand(
             "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
+            autoref=autoref_list,
+            aligner=aligner_list,
+            trimmer=trimmer_list,
+            allow_missing=True
+            ),
+        expand(
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible.consensusTreeMR.newick",
+            autoref=autoref_list,
+            aligner=aligner_list,
+            trimmer=trimmer_list,
+            allow_missing=True
+            ),
+        expand(  
+            "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/plausible.consensusTreeMRE.newick",
             autoref=autoref_list,
             aligner=aligner_list,
             trimmer=trimmer_list,

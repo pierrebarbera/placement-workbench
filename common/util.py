@@ -73,16 +73,22 @@ def num_dirs( path ):
   """Returns the number of directories in a path"""
   return len( Path( os.path.dirname( path ) ).parts )
 
-def trim_path( dir_path, path_ext ):
-  """Takes a directory path and removes a path from the end of it. Throws at mismatch"""
+def trim_path( dir_path, path_exts ):
+  """
+  Takes a directory path and removes a path from the end of it.
+  Can take a list of possible matching path extensions, in whcih case the first matching
+  extension is trimmed and the remaining path is returned
+  """
+  if type(path_exts) is not list: path_exts = [ path_exts ]
   expect_dir_exists( dir_path )
   path = os.path.normpath( dir_path )
   path_parts = Path( path ).parts
-  to_split = Path( path_ext ).parts
-  for n in range(1, len(to_split)+1):
-    if path_parts[-n] != to_split[-n]:
-      fail(f"path_ext must fit with end of path. mismatch: {path_parts[-n]} vs {to_split[-n]}")
-  return Path(*(path_parts[:-len(to_split) or None]))
+  for ext in path_exts:
+    to_split = Path( ext ).parts
+    n = len(to_split)
+    if path_parts[-n:] == to_split:
+      return Path(*(path_parts[:-n or None]))
+  fail(f"dirpath '{dir_path}' did not match any given extensions '{path_exts}'")
 
 def last_n_dirnames( path, n ):
   path = os.path.normpath(path)
