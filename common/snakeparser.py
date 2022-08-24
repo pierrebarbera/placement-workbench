@@ -21,8 +21,8 @@ class typ:
         if not isinstance( arg, bool ):
             util.fail("expected flag (True or False), but got '{}'".format(arg))
     @staticmethod
-    def IN( set: list[str] ):
-        def func( arg: str ):
+    def IN( set: list ):
+        def func( arg ):
             if not arg in set:
                 util.fail( "{} not in ".format( arg, set ) )
         return func
