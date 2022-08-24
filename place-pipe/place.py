@@ -18,50 +18,56 @@ parser = argparse.ArgumentParser(description='Wrapper to run the pipeline with s
 ###
 #  Input Files
 ###
-parser.add_argument('--fasta-paths', dest='fasta_files', type=str, nargs='+',
+input_group = parser.add_argument_group('Input')
+input_group.add_argument('--fasta-paths', dest='fasta_files', type=str, nargs='+',
                     help='input fasta files', required=True)
-parser.add_argument('--reference-tree', dest='ref_tree', type=str,
+input_group.add_argument('--reference-tree', dest='ref_tree', type=str,
                     help='Reference tree, in newick format', required=True)
-parser.add_argument('--reference-msa', dest='ref_msa', type=str,
+input_group.add_argument('--reference-msa', dest='ref_msa', type=str,
                     help='Reference MSA, in fasta format', required=True)
-parser.add_argument('--model-file', dest='model_file', type=str,
+input_group.add_argument('--model-file', dest='model_file', type=str,
                     help='Reference tree, in newick format', required=True)
-parser.add_argument('--taxonomy-file', dest='taxon_file', type=str,
+input_group.add_argument('--taxonomy-file', dest='taxon_file', type=str,
                     help='Tab-separated file mapping reference labels to their taxonomic paths', required=False)
-
-parser.add_argument('--cluster-exec', dest='on_cluster', action='store_true',
-                    help="Starts the pipeline in computing-cluster (slurm/sge etc.) submission mode. "
-                    "Highly recommended to do this from a screen/tmux session!")
-parser.add_argument('--cluster-env', dest='clust_env', type=str, nargs='?',
-                    const='auto', default='auto', choices=['auto','slurm', 'sge'],
-                    help="What job submission system we are on. 'auto' attempts to autodetect.")
 
 ###
 #   Config Manip
 ###
-parser.add_argument('-d', '--datatype', dest='datatype', type=str, nargs='?',
-                    const='nt', default='nt', choices=['nt', 'aa'],
-                    help="datatype, 'aa' for protein, 'nt' for DNA data")
-parser.add_argument('--out-dir', dest='out_dir', type=str,
+pipeline_group = parser.add_argument_group('Pipeline Options')
+pipeline_group.add_argument('--out-dir', dest='out_dir', type=str,
                     default=None,
                     help='optional output directory. By default, the script creates a timestamped output directory.')
-parser.add_argument('-p', '--prefix', dest='prefix', type=str,
+pipeline_group.add_argument('-d', '--datatype', dest='datatype', type=str, nargs='?',
+                    const='nt', default='nt', choices=['nt', 'aa'],
+                    help="datatype, 'aa' for protein, 'nt' for DNA data")
+pipeline_group.add_argument('-p', '--prefix', dest='prefix', type=str,
                     default=None,
                     help='prefix to fasta paths and output (useful to specify where data was mounted to in docker)')
-parser.add_argument('--no-chunkify', dest='no_chunkify', action='store_true',
+pipeline_group.add_argument('--no-chunkify', dest='no_chunkify', action='store_true',
                     help='use the chunkify routine to split queries into blocks of more managable size')
-parser.add_argument('--cluster', dest='cluster', type=str, nargs='+',
+pipeline_group.add_argument('--cluster', dest='cluster', type=str, nargs='+',
                     action='store', default='none', choices=['swarm', 'none'],
                     help="What tools, if any, to use for query clustering.")
 
+###
+#   Cluster options
+###
+cluster_group = parser.add_argument_group('Cluster Execution')
+cluster_group.add_argument('--cluster-exec', dest='on_cluster', action='store_true',
+                    help="Starts the pipeline in computing-cluster (slurm/sge etc.) submission mode. "
+                    "Highly recommended to do this from a screen/tmux session!")
+cluster_group.add_argument('--cluster-env', dest='clust_env', type=str, nargs='?',
+                    const='auto', default='auto', choices=['auto','slurm', 'sge'],
+                    help="What job submission system we are on. 'auto' attempts to autodetect.")
 
 ###
 #   Runtime Manip
 ###
-parser.add_argument('--threads', dest='threads', type=int,
+misc_group = parser.add_argument_group('Misc. Options')
+misc_group.add_argument('--threads', dest='threads', type=int,
                     default=multiprocessing.cpu_count(),
                     help='number of threads to use')
-parser.add_argument('-v','--verbose', dest='verbose', action='store_true',
+misc_group.add_argument('-v','--verbose', dest='verbose', action='store_true',
                     help='increase verbosity')
 args = parser.parse_args()
 

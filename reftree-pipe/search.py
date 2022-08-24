@@ -17,52 +17,56 @@ if( platform.machine() == 'arm64' ):
   os.environ['CONDA_SUBDIR'] = "osx-64"
 
 parser = argparse.ArgumentParser(description='Wrapper to run the pipeline with some default settings.')
-parser.add_argument('--fasta-paths', dest='fasta_files', type=str, nargs='+',
+
+input_group = parser.add_argument_group('Input')
+input_group.add_argument('--fasta-paths', dest='fasta_files', type=str, nargs='+',
                     help='input fasta files')
-parser.add_argument('--csv-paths', dest='accession_files', type=str, nargs='+',
+input_group.add_argument('--csv-paths', dest='accession_files', type=str, nargs='+',
                     help="""input .csv files specifying accessions to be downloaded. These files must contain 
                     at least two columns: 'accession' for the accessions, and 'label' for the name/label associated
                     with an accession. The label will subsequently be used in the fasta/tree files. Note that the column
                     labels can be customized when using the pipeline directly, using the config.yaml file.
                     """)
 
-parser.add_argument('--phat', dest='do_phat', action='store_true',
-                    help="""enable the optional PhAT algorithm, reducing the number of taxa down to a target number, 
-                    based on a given taxonomy. The taxonomy file is expected to exist alongside the input fasta/csv file.""")
-parser.add_argument('--phat-target-num', dest='phat_target_num', type=int,
-                    default=512,
-                    help='target number of taxa that the PhAT algorithm should aim for.')
-parser.add_argument('--taxonomy-file', dest='taxonomy_file', type=str,
-                    help='taxonomy file (required for PhAT algorithm)')
-parser.add_argument('--compatible-trees', dest='trees_compatible', action='store_true',
-                    help="Indicate that the resulting trees will be compatible (same number of taxa, same labels)"
-                    "WARNING: if this turnes out to be false, the run will fail at the 'rf_distances_between_samples' rule")
-
-parser.add_argument('-a','--align', dest='do_align', action='store_true',
-                    help='align the sequences')
-parser.add_argument('--modeltest', dest='do_modeltest', action='store_true',
-                    help='automatically find the best model')
-parser.add_argument('-d', '--datatype', dest='datatype', type=str, nargs='?',
-                    const='nt', default='nt', choices=['nt', 'aa'],
-                    help="datatype, 'aa' for protein, 'nt' for DNA data")
-parser.add_argument('--out-dir', dest='out_dir', type=str,
+pipeline_group = parser.add_argument_group('Pipeline Options')
+pipeline_group.add_argument('--out-dir', dest='out_dir', type=str,
                     default=None,
                     help='optional output directory. By default, the script creates a timestamped output directory.')
-parser.add_argument('-p', '--prefix', dest='prefix', type=str,
+pipeline_group.add_argument('--phat', dest='do_phat', action='store_true',
+                    help="""enable the optional PhAT algorithm, reducing the number of taxa down to a target number, 
+                    based on a given taxonomy. The taxonomy file is expected to exist alongside the input fasta/csv file.""")
+pipeline_group.add_argument('--phat-target-num', dest='phat_target_num', type=int,
+                    default=512,
+                    help='target number of taxa that the PhAT algorithm should aim for.')
+pipeline_group.add_argument('--taxonomy-file', dest='taxonomy_file', type=str,
+                    help='taxonomy file (required for PhAT algorithm)')
+pipeline_group.add_argument('--compatible-trees', dest='trees_compatible', action='store_true',
+                    help="Indicate that the resulting trees will be compatible (same number of taxa, same labels)"
+                    "WARNING: if this turnes out to be false, the run will fail at the 'rf_distances_between_samples' rule")
+pipeline_group.add_argument('-a','--align', dest='do_align', action='store_true',
+                    help='align the sequences')
+pipeline_group.add_argument('--modeltest', dest='do_modeltest', action='store_true',
+                    help='automatically find the best model')
+pipeline_group.add_argument('-d', '--datatype', dest='datatype', type=str, nargs='?',
+                    const='nt', default='nt', choices=['nt', 'aa'],
+                    help="datatype, 'aa' for protein, 'nt' for DNA data")
+pipeline_group.add_argument('-p', '--prefix', dest='prefix', type=str,
                     default=None,
                     help='prefix to fasta paths and output (useful to specify where data was mounted to in docker)')
-parser.add_argument('--threads', dest='threads', type=int,
-                    default=multiprocessing.cpu_count(),
-                    help='number of threads to use')
 
-parser.add_argument('--cluster-exec', dest='on_cluster', action='store_true',
+cluster_group = parser.add_argument_group('Cluster Execution')
+cluster_group.add_argument('--cluster-exec', dest='on_cluster', action='store_true',
                     help="Starts the pipeline in computing-cluster (slurm/sge etc.) submission mode. "
                     "Highly recommended to do this from a screen/tmux session!")
-parser.add_argument('--cluster-env', dest='clust_env', type=str, nargs='?',
+cluster_group.add_argument('--cluster-env', dest='clust_env', type=str, nargs='?',
                     const='auto', default='auto', choices=['auto','slurm', 'sge'],
                     help="What job submission system we are on. 'auto' attempts to autodetect.")
 
-parser.add_argument('-v','--verbose', dest='verbose', action='store_true',
+misc_group = parser.add_argument_group('Misc. Options')
+misc_group.add_argument('--threads', dest='threads', type=int,
+                    default=multiprocessing.cpu_count(),
+                    help='number of threads to use')
+misc_group.add_argument('-v','--verbose', dest='verbose', action='store_true',
                     help='increase verbosity')
 args = parser.parse_args()
 
