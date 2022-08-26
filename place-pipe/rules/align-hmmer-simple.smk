@@ -11,13 +11,13 @@ include: "align-hmmer-common.smk"
 rule hmmer_align:
     group: "alignment"
     input:
-        msa         = config["data"]["reference-alignment"],
-        hmmprofile  = "{outdir}/hmmer/profile.hmm",
-        sample      = "{outdir}/{clusterer}/samples/{sample}/queries.fa"
+        msa      = config["data"]["reference-alignment"],
+        hmmfile  = "{outdir}/hmmer/profile.hmm",
+        seqfile  = "{outdir}/{clusterer}/samples/{sample}/queries.fa"
     output:
-        sequences   = "{outdir}/{clusterer}/aligned/{sample}.afa"
+        "{outdir}/{clusterer}/aligned/{sample}.afa"
     params:
-        extra       = config["params"]["hmmer"]["align-extra"],
+        outformat   = "afa",
         states      = hmmer_datatype_string
     log:
         "{outdir}/{clusterer}/aligned/{sample}.log"
@@ -25,11 +25,5 @@ rule hmmer_align:
         "../envs/hmmer.yaml"
     threads:
         get_threads( "hmmer" )
-    shell:
-        "hmmalign"
-        " --{params.states}"
-        " --outformat afa"
-        " -o {output.sequences}"
-        " --mapali {input.msa}"
-        " {params.extra} {input.hmmprofile} {input.sample}"
-        " > {log} 2>&1"
+    script:
+        "../scripts/hmmalign.py"
