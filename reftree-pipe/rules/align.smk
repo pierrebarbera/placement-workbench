@@ -25,15 +25,16 @@ rule align_mafft:
     output:
         "{outdir}/result/{sample}/{autoref}/mafft/aligned.afa"
     params:
-        extra=config["params"]["mafft"]["extra"]
+        auto        = True,
+        maxiterate  = 1000
     threads:
         get_threads( "mafft" )
     log:
         "{outdir}/result/{sample}/{autoref}/mafft/alignment.log"
     conda:
         "../envs/mafft.yaml"
-    shell:
-        "mafft {params.extra} --thread {threads} {input} > {output} 2> {log}"
+    script:
+        "../scripts/mafft.py"
 
 # =================================================================================================
 #     Alignment with muscle
