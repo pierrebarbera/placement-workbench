@@ -5,9 +5,9 @@
 # These functions are meant to be extended via wildcards if and when more tree inference tools are added
 #
 def bootstrap_params( wildcards ):
-    mode        = get_highest_override( "raxmlng", "bootstrap_metric" )
-    num_trees   = get_highest_override( "raxmlng", "bs_trees" )
-    auto_bs     = get_highest_override( "raxmlng", "auto_bootstrap" )
+    mode        = get_highest_override( ['raxml-ng', 'treesearch'], "bootstrap_metric" )
+    num_trees   = get_highest_override( ['raxml-ng', 'treesearch'], "bs_trees" )
+    auto_bs     = get_highest_override( ['raxml-ng', 'treesearch'], "auto_bootstrap" )
 
     res         = " --bs-metric {}".format(mode) if mode else ""
 
@@ -21,7 +21,7 @@ def bootstrap_params( wildcards ):
 
 def model_params( wildcards, input ):
     datatype    = config["settings"]["datatype"]
-    model       = get_highest_override( "raxmlng", "model" )
+    model       = get_highest_override( ['raxml-ng', 'treesearch'], "model" )
 
     prefix = "--model "
 
@@ -43,8 +43,8 @@ def model_file( wildcards ):
         return []
 
 def starting_trees_params( wildcards ):
-    pars_trees = get_highest_override( "raxmlng", "parsimony_starting_trees")
-    rand_trees = get_highest_override( "raxmlng", "random_starting_trees")
+    pars_trees = get_highest_override( ['raxml-ng', 'treesearch'], "parsimony_starting_trees")
+    rand_trees = get_highest_override( ['raxml-ng', 'treesearch'], "random_starting_trees")
 
     if pars_trees or rand_trees:
         trees = []
@@ -70,10 +70,10 @@ rule treesearch_raxmlng:
         model           = model_params,
         starting_trees  = starting_trees_params,
         bootstrap       = bootstrap_params,
-        extra           = config["params"]["raxmlng"]["extra"],
+        extra           = config["params"]["raxml-ng"]["treesearch"]["extra"],
         prefix          = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search"
     threads:
-        get_threads( "raxmlng" )
+        get_threads( ['raxml-ng', 'treesearch'] )
     output:
         best_tree       = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
         best_model      = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
@@ -115,7 +115,7 @@ rule treesearch_consensus:
     params:
         prefix  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees"
     threads:
-        get_threads( "raxmlng" )
+        get_threads( ['raxml-ng', 'treesearch'] )
     log:
         mr      = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/mr.log",
         mre     = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/mre.log"

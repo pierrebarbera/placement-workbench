@@ -9,7 +9,7 @@ rule hmmer_build:
     output:
         "{outdir}/hmmer/profile.hmm"
     params:
-        extra   = config["params"]["hmmer"]["build-extra"],
+        extra   = config["params"]["hmmer"]["hmmbuild"]["extra"],
         states  = hmmer_datatype_string
     log:
         "{outdir}/hmmer/build.log"

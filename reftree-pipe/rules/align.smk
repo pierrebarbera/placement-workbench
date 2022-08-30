@@ -24,9 +24,6 @@ rule align_mafft:
         "{outdir}/result/{sample}/{autoref}/ref_candidates.fa"
     output:
         "{outdir}/result/{sample}/{autoref}/mafft/aligned.afa"
-    params:
-        auto        = True,
-        maxiterate  = 1000
     threads:
         get_threads( "mafft" )
     log:

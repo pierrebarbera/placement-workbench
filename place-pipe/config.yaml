@@ -65,9 +65,9 @@ params:
   # ----------------------------------------------------------------------
 
   swarm:
-    threads: 1
+    # threads: 1
     differences: 1
-    fastidious: true
+    fastidious: True
 
   # ----------------------------------------------------------------------
   #     chunkify / unchunkify
@@ -99,9 +99,12 @@ params:
   # Used only if settings: alignment-tool == hmmer
   # See hmmer manual: http://hmmer.org/documentation.html
   hmmer:
-    threads: 1
-    build-extra: ""
-    align-extra: ""
+    # threads: 1
+    hmmbuild:
+      extra: ""
+    hmmalign:
+      trim: False
+
 
 
   # ----------------------------------------------------------------------
@@ -119,7 +122,7 @@ params:
   # Used only if settings: placement-tool == epa-ng
   # See epa-ng manual: https://github.com/Pbdas/epa-ng
   epa-ng:
-    threads: 2
+    # threads: 2
 
     # Evolutionary model and its parameters to be used for the maximum likelihood placement.
     # This can be given either as a string following the RAxML-ng model string specification:
@@ -146,6 +149,7 @@ params:
   # ----------------------------------------------------------------------
 
   gappa:
+    # threads: 2
 
     # Settings for making heat trees that visualize the resulting placement files.
     # See https://github.com/lczech/gappa/wiki/Subcommand:-heat-tree for details.
@@ -166,9 +170,10 @@ params:
     
     # Settings for taxonomic assignment. See 
     # https://github.com/lczech/gappa/wiki/Subcommand:-assign for details.
-    # assign:
+    assign:
+      distant_label: False
+      resolve_missing_paths: True
  
-    threads: 2
 
   # ----------------------------------------------------------------------
   #     guppy

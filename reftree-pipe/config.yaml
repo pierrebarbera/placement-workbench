@@ -32,15 +32,13 @@ data:
 settings:
 
   # Select tools for autoref handling. For now, only the PhAT algorithm is supported. Requires
-  # data/taxonomy to be set to a valid file
+  # data/taxonomy to be set to a valid file. Consider changing the desired target number of taxa
+  # the algorithm should aim for under params/gappa/phat/target_number
   autoref:
     - "phat"
 
   # Whether or not to skip autoreffing. Overrides the settings/autoref values
   skip_autoref: True
-
-  # Target number of taxa if autoref tool is used
-  target_taxa_number: 512
 
   # If set to True, the files in the above samples table are assumed to already be aligned,
   # and the below list of alignment tools is not used.
@@ -51,8 +49,8 @@ settings:
   # Select the tool(s) used for sequence alignment.
   # Valid values: "mafft", "muscle"
   aligner:
-    # - "mafft"
-    - "muscle"
+    - "mafft"
+    # - "muscle"
 
   trimmer:
     # - "trimal"
@@ -108,16 +106,18 @@ params:
   #     gappa
   # ----------------------------------------------------------------------
 
-  # gappa:
-  #   phat:
+  gappa:
+    phat:
+      target_size: 512
 
   # ----------------------------------------------------------------------
   #     mafft
   # ----------------------------------------------------------------------
 
   mafft:
-    threads: 4
-    extra: "--auto"
+    # threads: 4
+    auto: True
+    maxiterate: 1000
 
   # ----------------------------------------------------------------------
   #     muscle
@@ -130,16 +130,18 @@ params:
   #     ModelTest-ng
   # ----------------------------------------------------------------------
 
-  # modeltestng:
+  # modeltest-ng:
 
   # ----------------------------------------------------------------------
   #     RAxML-ng
   # ----------------------------------------------------------------------
 
-  raxmlng:
-    # branch support metric: fbp = Felsenstein bootstrap (default), tbe = transfer distance
-    bootstrap_metric: "fbp"
-    extra: ""
+  raxml-ng:
+    treesearch:
+      # branch support metric: fbp = Felsenstein bootstrap (default), tbe = transfer distance
+      bootstrap_metric: "fbp"
+      extra: ""
+    # rfdist:
   
   # ----------------------------------------------------------------------
   #     IQTree

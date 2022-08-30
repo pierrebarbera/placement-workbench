@@ -19,9 +19,6 @@ rule gappa_phat_raw:
         sequence_file=get_fasta
     output:
         "{outdir}/result/{sample}/phat/ref_candidates.fa"
-    params:
-        # the target size is a required input for the PhAT algorithm
-        target_size = config["settings"]["target_taxa_number"]
     log:
         "{outdir}/result/{sample}/phat/log.txt"
     conda:

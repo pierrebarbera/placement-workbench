@@ -18,12 +18,14 @@ sample_outdir = util.dirname( snakemake.output[0] )
 # =================================================================================================
 #     Parse arguments
 # =================================================================================================
-ps = sp.Parser( "gappa prepare phat", snakemake )
+ps = sp.Parser( "gappa prepare phat", snakemake, ['params','gappa','phat'] )
 
 # Required args
 ps.add( snakemake.input.taxonomy_file,  "--taxonomy-file {}",   sp.typ.FILE )
 ps.add( snakemake.input.sequence_file,  "--sequence-file {}",   sp.typ.FILE )
-ps.add( snakemake.params.target_size,   "--target-size {}",     sp.typ.UINT )
+ps.add( snakemake.config['params']['gappa']['phat']['target_size'],
+    "--target-size {}",
+    sp.typ.UINT )
 
 # Optional args
 ps.add_opt( "sub_taxonomy",          "--sub-taxonomy {}" )

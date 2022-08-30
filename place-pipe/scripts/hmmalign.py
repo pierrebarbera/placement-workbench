@@ -13,7 +13,7 @@ shell.executable("bash")
 # =================================================================================================
 #     Parse arguments
 # =================================================================================================
-ps = sp.Parser( "hmmalign", snakemake )
+ps = sp.Parser( "hmmalign", snakemake, ['params','hmmer','hmmalign'] )
 
 # General options
 ps.add_opt( "trim",                "--trim",                  sp.typ.FLAG )

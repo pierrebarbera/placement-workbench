@@ -34,7 +34,7 @@ else:
 # =================================================================================================
 #     Parse arguments
 # =================================================================================================
-ps = sp.Parser("raxml-ng", snakemake)
+ps = sp.Parser("raxml-ng", snakemake, ['params','raxml-ng','rfdist'])
 
 # select the run mode
 ps.add( "--rfdist" )

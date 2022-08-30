@@ -16,7 +16,7 @@ sample_outdir = os.path.dirname( snakemake.output[0] )
 # =================================================================================================
 #     Parse arguments
 # =================================================================================================
-ps = sp.Parser( "gappa examine assign", snakemake )
+ps = sp.Parser( "gappa examine assign", snakemake, ['params','gappa','assign'] )
 
 # Required args
 ps.add( snakemake.input.jplace,     "--jplace-path {}", sp.typ.FILE )

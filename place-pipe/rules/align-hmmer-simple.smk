@@ -23,7 +23,5 @@ rule hmmer_align:
         "{outdir}/{clusterer}/aligned/{sample}.log"
     conda:
         "../envs/hmmer.yaml"
-    threads:
-        get_threads( "hmmer" )
     script:
         "../scripts/hmmalign.py"

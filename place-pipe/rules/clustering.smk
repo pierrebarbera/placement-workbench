@@ -15,12 +15,11 @@ rule no_cluster:
 localrules: no_cluster
 
 rule cluster_swarm:
+    group: "swarm"
     input:
         get_sample_fasta
     params:
-        differences         = config["params"]["swarm"]["differences"],
-        fastidious          = config["params"]["swarm"]["fastidious"],
-        append_abundance    = 1
+        append_abundance = 1
     output:
         seeds           = "{outdir}/swarm/samples/{sample}/queries.fa",
         statistics_file = "{outdir}/swarm/samples/{sample}/otu_table.tsv"
@@ -39,13 +38,11 @@ rule cluster_dada2:
     output:
         fasta       = "{outdir}/dada2/samples/{sample}/queries.fa",
         otu_table   = "{outdir}/dada2/samples{sample}/otu_table.tsv"
-    # params:
-    #     differences = config["params"]["swarm"]["differences"],
-    #     fastidious  = (" --fastidious" if config["params"]["swarm"]["fastidious"] else ""),
-    #     extra       = config["params"]["swarm"]["extra"]
     log:
         "{outdir}/dada2/samples/{sample}/log.txt"
     conda:
         "../envs/dada2.yaml"
     script:
         "../scripts/dada2.R"
+
+

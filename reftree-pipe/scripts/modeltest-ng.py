@@ -38,7 +38,7 @@ sample_outdir = util.dirname( snakemake.output[0] )
 # =================================================================================================
 #     Parse arguments
 # =================================================================================================
-ps = sp.Parser("modeltest-ng", snakemake)
+ps = sp.Parser( "modeltest-ng", snakemake )
 
 # Required args
 ps.add( snakemake.input[0], "--input {}", sp.typ.FILE )

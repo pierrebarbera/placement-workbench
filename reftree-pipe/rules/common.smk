@@ -106,17 +106,26 @@ def relative_input_path( wildcards, input, output ):
 #     Config Related Functions
 # =================================================================================================
 
+from operator import getitem
+from functools import reduce
+
 def get_highest_override( tool, key ):
     """From the config, get the value labeled with "key", unless the "tool" overrides that value,
     in which case fetch the override"""
 
-    if (tool in config["params"]) and (key in config["params"][tool]):
-        return config["params"][tool][key]
-    else:
-        if not key in config["params"]:
-            fail("invalid key for 'config['params']': '{}'".format( key ))
+    params = config['params']
+    if type(tool) is not list: tool = [ tool ]
+
+    try:
+        # try to fetch the key, uder the config path for tool
+        return reduce( getitem, tool + [key], params )
+    except KeyError:
+        # if that fails, try to find the key under the base params
+        if key in params:
+            return params[key]
         else:
-            return config["params"][key]
+            fail("invalid key for 'config['params']': '{}'".format( key ))
+
 
 def get_threads( tool ):
-    return int(get_highest_override( tool, "threads") )
+    return int( get_highest_override( tool, "threads") )
