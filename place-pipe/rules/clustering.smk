@@ -37,12 +37,10 @@ rule cluster_dada2:
         get_sample_fastq
     output:
         fasta       = "{outdir}/dada2/samples/{sample}/queries.fa",
-        otu_table   = "{outdir}/dada2/samples{sample}/otu_table.tsv"
+        otu_table   = "{outdir}/dada2/samples/{sample}/otu_table.tsv"
     log:
         "{outdir}/dada2/samples/{sample}/log.txt"
     conda:
         "../envs/dada2.yaml"
     script:
         "../scripts/dada2.R"
-
-
