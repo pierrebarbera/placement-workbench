@@ -131,6 +131,43 @@ def ingest_paths( paths, extensions=None, allow_gz=False ):
 
   return file_list
 
+def get_unique_names( paths ):
+  """
+  We want to extract unique sample names from the file paths of the input files.
+  To do so, we attempt to keep prepending directory names to the proposed sample
+  names, until we have a unique set of names (the idea being that the user has encoded 
+  the information about what the samples are called in their directory structure).
+  Note that this can still fail, for example if the input files share name and directory,
+  but not file extension ('x.fa x.fasta' for example).
+  """
+
+  names = []
+  # extend by at most as long as the longest path
+  for i in range(0, max( [num_dirs( f ) for f in paths] )):
+
+    failed=False
+    for path in paths:
+      # get at most i preceding dir names as prefixes
+      prefixes = last_n_dirnames( path, i )
+      prefixes.append( filename( path ) )
+      new_name = '_'.join( prefixes )
+      if( new_name in names ):
+        failed = True
+        names = []
+        break
+      else:
+        names.append( new_name )
+
+    if not failed:
+      break
+
+  if failed:
+    fail( f"Could not find assignment of unique names to list of input files. The list:\n{paths}" )
+
+  assert( len(names) == len(paths) )
+
+  return names
+
 def is_fastq( path ):
   return (extension( rstrip_gz(path) ) in [".fastq", ".fq"])
 
