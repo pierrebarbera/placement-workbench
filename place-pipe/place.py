@@ -2,7 +2,8 @@
 
 import multiprocessing
 import argparse, sys, os
-sys.path.insert(0, '../common')
+script_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, os.path.join(script_dir, '..', 'common'))
 import util
 from datetime import datetime
 import pandas as pd
@@ -11,7 +12,7 @@ import platform
 
 # if we're on mac/arm, default back down to x86 compiled packages
 # ideally this decision would be per-package availability
-if( platform.machine() == 'arm64' ):
+if platform.machine() == 'arm64':
   os.environ['CONDA_SUBDIR'] = "osx-64"
 
 parser = argparse.ArgumentParser(description='Wrapper to run the pipeline with some default settings.')
@@ -71,18 +72,19 @@ misc_group.add_argument('-v','--verbose', dest='verbose', action='store_true',
                     help='increase verbosity')
 args = parser.parse_args()
 
-# input validation
-for f in args.fasta_files:
-  util.expect_file_exists( f )
+if len(args.fasta_files) + len(args.unmerged_fastq_files) == 0:
+  util.fail( "Must supply either query fasta or unmerged F/R fastq files" )
+elif len(args.unmerged_fastq_files) % 2 != 0:
+  util.fail( "When supplying unmerged F/R fastq files, must supply separate forward and reverse files." )
 
 util.expect_file_exists( args.ref_tree )
 util.expect_file_exists( args.ref_msa )
 util.expect_file_exists( args.model_file )
 
-if( args.prefix ):
+if args.prefix:
   util.expect_dir_exists( args.prefix )
 
-if( args.taxon_file ):
+if args.taxon_file:
   util.expect_file_exists( args.taxon_file )
 
 clustering_tools = []
@@ -99,8 +101,10 @@ out_dir = "run-{}".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) if( not 
 # 
 # first read in a unique list of all the desired files
 file_paths = []
-if( args.fasta_files ):
-  file_paths.extend( util.ingest_paths( args.fasta_files, extensions=['.fa', '.afa', '.fasta'] ) )
+if args.fasta_files:
+  file_paths.extend( util.ingest_paths( args.fasta_files,
+                                        extensions=['.fa', '.afa', '.fasta'],
+                                        allow_gz=True ) )
 
 def get_unique_names( paths ):
   """
@@ -172,7 +176,7 @@ config_overrrides = {
   }
 }
 
-if( args.taxon_file ):
+if args.taxon_file:
   config_overrrides['data']['taxonomy_file'] = args.taxon_file
 
 calling_dir = os.path.dirname(os.path.abspath(__file__))

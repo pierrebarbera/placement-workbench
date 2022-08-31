@@ -98,7 +98,15 @@ def last_n_dirnames( path, n ):
   # return the last n parts
   return list( names[ -n: ] or None ) if n else []
 
-def ingest_paths( paths, extensions=None ):
+def rstrip_gz( path ):
+    """Strips .gz from a file ending, if it is there"""
+    suffix = '.gz'
+    if path.endswith( suffix ):
+        return path[:-len(suffix)]
+    else:
+        return path
+
+def ingest_paths( paths, extensions=None, allow_gz=False ):
   """Takes a list of paths, validates them to make sure they exist, and if a path is a directory
   globs all files in said directory that have the specified extension. If no specific extension
   is provided, returns all files in that directory (non-recursively)
@@ -107,28 +115,21 @@ def ingest_paths( paths, extensions=None ):
   for path in paths:
     if os.path.isfile( path ):
       expect_file_exists( path )
-      if( extensions and not extension(path) in extensions ):
+      chk_path = rstrip_gz(path) if allow_gz else path
+      if extensions and not extension(chk_path) in extensions:
         warn("file '{path}' does not have any of the expected file extensions: {extensions}")
-      if( not path in file_list ):
+      if not path in file_list:
         file_list.append( path )
 
     elif os.path.isdir( path ):
       expect_dir_exists( path )
       files = [join(path, f) for f in os.listdir( path ) if isfile( join(path, f) )]
-      if( extensions ):
-        file_list.extend( [f for f in files if extension( f ) in extensions and not f in file_list] )
+      if extensions:
+        file_list.extend( [f for f in files if extension( rstrip_gz(f) ) in extensions and not f in file_list] )
       else:
         file_list.extend( [f for f in files if not f in file_list] )
 
   return file_list
-
-def rstrip_gz( path ):
-    """Strips .gz from a file ending, if it is there"""
-    suffix = '.gz'
-    if path.endswith( suffix ):
-        return path[:-len(suffix)]
-    else:
-        return path
 
 def is_fastq( path ):
   return (extension( rstrip_gz(path) ) in [".fastq", ".fq"])
