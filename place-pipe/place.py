@@ -46,9 +46,9 @@ pipeline_group.add_argument('-p', '--prefix', dest='prefix', type=str,
                     help='prefix to fasta paths and output (useful to specify where data was mounted to in docker)')
 pipeline_group.add_argument('--no-chunkify', dest='no_chunkify', action='store_true',
                     help='use the chunkify routine to split queries into blocks of more managable size')
-pipeline_group.add_argument('--cluster', dest='cluster', type=str, nargs='+',
-                    action='store', default='none', choices=['swarm', 'none'],
-                    help="What tools, if any, to use for query clustering.")
+pipeline_group.add_argument('--sequence-clustering', dest='sequence_clustering', type=str, nargs='?',
+                    action='store', default=None, choices=['swarm'],
+                    help="Which tools, if any, to use for query clustering.")
 
 ###
 #   Cluster options
@@ -87,11 +87,9 @@ if args.prefix:
 if args.taxon_file:
   util.expect_file_exists( args.taxon_file )
 
-clustering_tools = []
-for c in args.cluster:
-    clustering_tools.append( "no_clustering" if c == "none" else c )
+clustering_tool = args.sequence_clustering if args.sequence_clustering else "no_clustering"
 
-use_chunkify = False if args.no_chunkify else True
+use_chunkify = not args.no_chunkify
 
 
 # make a unique output dir, labeled by date and time
@@ -130,7 +128,7 @@ config_overrrides = {
   'settings':
   {
     'datatype': args.datatype,
-    'clustering-tool': clustering_tools,
+    'clustering-tool': clustering_tool,
     'use-chunkify': use_chunkify,
     'outdir': out_dir,
   },
