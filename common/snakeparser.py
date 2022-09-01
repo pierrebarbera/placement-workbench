@@ -98,7 +98,7 @@ class Parser:
     def add_opt( self, key: str, format_string: str = "{}", valid_func: Callable[[str], bool] = typ.NONE ):
         # give absolute priority to the rule params, as they may have critical settings
         if key in self._snakemake.params.keys():
-            return self._snakemake.params[key]
+            return self.add( self._snakemake.params[key], format_string, valid_func )
 
         # if the key isn't set in rule/params, look through the config accessors
         # and return the first hit
