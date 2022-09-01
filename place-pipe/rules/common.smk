@@ -83,7 +83,7 @@ logger.info("    Snakefile:          " + (workflow.snakefile))
 logger.info("    Base directory:     " + (workflow.basedir))
 logger.info("    Working directory:  " + os.getcwd())
 logger.info("    Config files:       " + (", ".join(workflow.configfiles)))
-logger.info("    Samples:            " + str(len(samples)))
+logger.info("    Samples:            " + str(len(sample_names)))
 logger.info("===========================================================================")
 logger.info("")
 

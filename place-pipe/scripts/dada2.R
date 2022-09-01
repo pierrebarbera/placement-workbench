@@ -1,8 +1,19 @@
 #!/usr/bin/env Rscript
 
-library(dada2)
-
+# Input parsing/validation 
+mult <- TRUE
+verbose <- TRUE
 if(exists("snakemake")) {
+  if( length(snakemake@log) > 0 ) { 
+    logfile <- file(snakemake@log[[1]], open = "wt")
+    sink(logfile)
+    sink(logfile,type="message")
+  }
+  if( snakemake@threads < 2 ) { 
+    mult <- FALSE
+  } else {
+    setThreadOptions( numThreads = snakemake@threads )
+  }
   if( length(snakemake@input) == 2 ) {
     merge <- TRUE
     fnF <- snakemake@input[[1]]
@@ -18,8 +29,9 @@ if(exists("snakemake")) {
     \n\n")
     q(save="no")
   }
-  out_fasta <- file.path( snakemake@output@fasta )
-  out_table <- file.path( snakemake@output@otu_table )
+  out_fasta <- file.path( snakemake@output[['fasta']] )
+  out_table <- file.path( snakemake@output[['otu_table']] )
+  
 } else {
   opts <- commandArgs(trailingOnly = TRUE)
   if( length(opts) == 3 ) {
@@ -45,18 +57,18 @@ if(exists("snakemake")) {
   out_table <- file.path( outdir, "ASVs_counts.tsv" )
 }
 
-mult <- TRUE
-
-
+library(dada2)
 getN <- function(x) sum(getUniques(x))
 
 # First mode: two sequence files, assumed to be unmerged paired end reads
 if( merge ) {
+  cat("Meging input files\n")
   sample.names <- tools::file_path_sans_ext(basename(fnF))
 
   filtF <- file.path( outdir, "filtered", paste0(sample.names, "_F_filt.fastq.gz") )
   filtR <- file.path( outdir, "filtered", paste0(sample.names, "_R_filt.fastq.gz") )
 
+  cat("Filtering/trimming...\n")
   out <- filterAndTrim(fnF,
     filtF,
     fnR,
@@ -69,30 +81,42 @@ if( merge ) {
     minLen=30,
     compress=TRUE,
     multithread=mult)
+  cat("Done!\n")
 
+  cat("Learning errors...\n")
   errF <- learnErrors(filtF, multithread=mult)
   errR <- learnErrors(filtR, multithread=mult)
+  cat("Done!\n")
 
-  dadaF <- dada(filtF, err=errF, multithread=mult)
-  dadaR <- dada(filtR, err=errR, multithread=mult)
+  cat("Running dada...\n")
+  dadaF <- dada(filtF, err=errF, multithread=mult, verbose=2)
+  dadaR <- dada(filtR, err=errR, multithread=mult, verbose=2)
+  cat("Done!\n")
 
-  mergers <- mergePairs(dadaF, filtF, dadaR, filtR, verbose=TRUE)
+  cat("Paired-end merging...\n")
+  mergers <- mergePairs(dadaF, filtF, dadaR, filtR,
+    minOverlap = 0,
+    verbose=verbose
+  )
+  cat("Done!\n")
+
+  cat("Mangling ASV table...\n")
   seqtab <- makeSequenceTable(mergers)
-
-  seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=mult, verbose=TRUE)
-
+  print(seqtab)
+  seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=mult, verbose=verbose)
   track <- cbind(out, getN(dadaF), getN(dadaR), getN(mergers), rowSums(seqtab.nochim))
-
   colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
   rownames(track) <- sample.names
-}
-# Alternate mode: start straight at merged input sequences
+  cat("Done!\n")
+} else {
 # Use with caution, as per https://github.com/benjjneb/dada2/issues/446
-else {
+# Alternate mode: start straight at merged input sequences
+  cat("Input already merged\n")
   # get sample name 
   sample.names <- tools::file_path_sans_ext(basename(fnF))
   filtF <- file.path( outdir, "filtered", paste0(sample.names, "_filt.fastq.gz") )
-
+  
+  cat("Filtering/trimming...\n")
   out <- filterAndTrim(
     fnF,
     filtF,
@@ -104,19 +128,24 @@ else {
     minLen=30,
     compress=TRUE,
     multithread=mult)
+  cat("Done!\n")
 
-  errF <- learnErrors(filtF, multithread=TRUE)
+  cat("Learning errors...\n")
+  errF <- learnErrors(filtF, multithread=TRUE, verbose=verbose)
   errF <- inflateErr(getErrors(errF), 3)
+  cat("Done!\n")
 
-  dadaF <- dada(filtF, err=errF, multithread=mult)
+  cat("Running dada...\n")
+  dadaF <- dada(filtF, err=errF, multithread=mult, verbose=2)
+  cat("Done!\n")
+
+  cat("Mangling ASV table...\n")
   seqtab <- makeSequenceTable(dadaF)
-
-  seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=mult, verbose=TRUE)
-
+  seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=mult, verbose=verbose)
   track <- cbind(out, getN(dadaF), rowSums(seqtab.nochim))
-
   colnames(track) <- c("input", "filtered", "denoisedF", "nonchim")
   rownames(track) <- sample.names
+  cat("Done!\n")
 }
 
 asv_seqs <- colnames(seqtab.nochim)

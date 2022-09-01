@@ -60,7 +60,7 @@ pipeline_group.add_argument('-p', '--prefix', dest='prefix', type=str,
 pipeline_group.add_argument('--no-chunkify', dest='no_chunkify', action='store_true',
                     help='use the chunkify routine to split queries into blocks of more managable size')
 pipeline_group.add_argument('--sequence-clustering', dest='sequence_clustering', type=str, nargs='?',
-                    action='store', default=None, choices=['swarm'],
+                    action='store', default=None, choices=['swarm', 'dada2'],
                     help="Which tools, if any, to use for query clustering.")
 
 ###
