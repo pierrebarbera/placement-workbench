@@ -95,7 +95,7 @@ if( merge ) {
 
   cat("Paired-end merging...\n")
   mergers <- mergePairs(dadaF, filtF, dadaR, filtR,
-    minOverlap = 0,
+    minOverlap = 10,
     verbose=verbose
   )
   cat("Done!\n")
