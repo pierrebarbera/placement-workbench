@@ -19,8 +19,8 @@ ps = sp.Parser( "hmmalign", snakemake, ['params','hmmer','hmmalign'] )
 ps.add_opt( "trim",             "--trim",       sp.typ.FLAG )
 # special handling of the --amino/--dna/--rna flags
 ps.add_opt( "states",           "--{}" )
-ps.add_opt( "informat",         "--informat" )
-ps.add_opt( "outformat",        "--outformat" )
+ps.add_opt( "informat",         "--informat {}" )
+ps.add_opt( "outformat",        "--outformat {}" )
 
 # output
 ps.add( snakemake.output[0],    "-o {}" )
