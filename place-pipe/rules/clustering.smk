@@ -14,6 +14,32 @@ rule no_cluster:
         "../../common/symlink.py"
 localrules: no_cluster
 
+rule merge_paired_pear:
+    group: "swarm"
+    input:
+        get_sample_fastq
+    output:
+        "{outdir}/merged/{sample}_merged.fa"
+    log:
+        "{outdir}/merged/{sample}.log"
+    conda:
+        "../envs/pear.yaml"
+    script:
+        "../scripts/pear.py"
+
+rule merged_fastq_to_fasta:
+    group: "swarm"
+    input:
+        get_sample_fastq
+    output:
+        "{outdir}/merged/{sample}_converted.fa"
+    log:
+        "{outdir}/merged/{sample}.log"
+    conda:
+        "../envs/pear.yaml"
+    shell:
+        "seqtk seq -A {input} > {output} 2> {log}"
+
 rule cluster_swarm:
     group: "swarm"
     input:

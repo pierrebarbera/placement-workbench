@@ -128,10 +128,11 @@ def ingest_paths( paths, extensions=None, allow_gz=False ):
         file_list.extend( [f for f in files if extension( rstrip_gz(f) ) in extensions and not f in file_list] )
       else:
         file_list.extend( [f for f in files if not f in file_list] )
-
+  # ensure duplicates are discarded
+  file_list = list(set(file_list))
   return file_list
 
-def get_unique_names( paths ):
+def get_unique_names( paths, allow_gz=False ):
   """
   We want to extract unique sample names from the file paths of the input files.
   To do so, we attempt to keep prepending directory names to the proposed sample
@@ -141,14 +142,25 @@ def get_unique_names( paths ):
   but not file extension ('x.fa x.fasta' for example).
   """
 
+  # as we allow full duplicates, we need to track them and their indices
+  # in 'paths', which we do here using a dict
+  from collections import defaultdict
+  paths_dict = defaultdict(list)
+  for i, p in enumerate(paths):
+    paths_dict[os.path.normpath(p)].append(i)
+  
+  # next we go through all paths, with an increasing number of path parts to go back
   names = []
   # extend by at most as long as the longest path
-  for i in range(0, max( [num_dirs( f ) for f in paths] )):
+  for i in range(0, max( [num_dirs( f ) for f in paths_dict.keys()] )):
 
     failed=False
-    for path in paths:
+    for path in paths_dict.keys():
+      
       # get at most i preceding dir names as prefixes
       prefixes = last_n_dirnames( path, i )
+      # optional gzip ignore
+      path = rstrip_gz( path ) if allow_gz else path
       prefixes.append( filename( path ) )
       new_name = '_'.join( prefixes )
       if( new_name in names ):
@@ -164,9 +176,15 @@ def get_unique_names( paths ):
   if failed:
     fail( f"Could not find assignment of unique names to list of input files. The list:\n{paths}" )
 
-  assert( len(names) == len(paths) )
+  assert( len(names) == len(paths_dict) )
 
-  return names
+  # finally, translate back from the paths dict to a name list that reflects the input paths
+  names_of_paths = [''] * len(paths)
+  for names_idx, paths_idxs in enumerate(paths_dict.values()):
+    for i in paths_idxs:
+      names_of_paths[ i ] = names[ names_idx ]
+
+  return names_of_paths
 
 def is_fastq( path ):
   return (extension( rstrip_gz(path) ) in [".fastq", ".fq"])

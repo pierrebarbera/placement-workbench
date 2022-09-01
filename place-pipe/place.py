@@ -21,7 +21,20 @@ parser = argparse.ArgumentParser(description='Wrapper to run the pipeline with s
 ###
 input_group = parser.add_argument_group('Input')
 input_group.add_argument('--fasta-paths', dest='fasta_files', type=str, nargs='+',
-                    help='input fasta files', required=True)
+                    help='input fasta files')
+input_group.add_argument('--fastq-paths', dest='fastq_files', type=str, nargs='+',
+                    help="input fastq files. If there are unmerged (paired-end) samples,"
+                    " forward and reverse must be in separate files"
+                    " and you MUST specify the naming pattern by which they are differentiated"
+                    " using the --merge-pattern argument, otherwise the pipeline will try to place them separately.")
+input_group.add_argument('--merge-pattern', dest='merge_pattern', type=str,
+                    help="Pattern by which unmerged forward/reverse fastq files differ. Enables paired-end" 
+                    " merging in the pipeline. For example"
+                    " if the files are called A_f.fq and A_r.fq, the appropriate pattern would be"
+                    " '_(f|r).fq'. PLEASE NOTE: the forward file must be first when lexicographically sorted"
+                    " and the differentiating part must be at the end of the filename/path, meaning"
+                    " separating forward and reverse into folders (/forward/sample1.fq etc.) is not supported.")
+
 input_group.add_argument('--reference-tree', dest='ref_tree', type=str,
                     help='Reference tree, in newick format', required=True)
 input_group.add_argument('--reference-msa', dest='ref_msa', type=str,
@@ -72,10 +85,11 @@ misc_group.add_argument('-v','--verbose', dest='verbose', action='store_true',
                     help='increase verbosity')
 args = parser.parse_args()
 
-if len(args.fasta_files) + len(args.unmerged_fastq_files) == 0:
-  util.fail( "Must supply either query fasta or unmerged F/R fastq files" )
-elif len(args.unmerged_fastq_files) % 2 != 0:
-  util.fail( "When supplying unmerged F/R fastq files, must supply separate forward and reverse files." )
+num_in_paths = 0 if not args.fasta_files else len(args.fasta_files)
+num_in_paths = num_in_paths if not args.fastq_files else num_in_paths + len(args.fastq_files)
+if num_in_paths == 0:
+  util.fail( "Must supply query fasta/fastq files to be placed!" )
+
 
 util.expect_file_exists( args.ref_tree )
 util.expect_file_exists( args.ref_msa )
@@ -104,10 +118,40 @@ if args.fasta_files:
                                         extensions=['.fa', '.afa', '.fasta'],
                                         allow_gz=True ) )
 
+# also fetch the fastq files in the same way
+fastq_file_paths = []
+if args.fastq_files:
+  fastq_file_paths.extend( util.ingest_paths( args.fastq_files,
+                                        extensions=['.fq', '.fastq'],
+                                        allow_gz=True ) )
+if args.merge_pattern:
+  # however these we need to treat differently: we find each F/R pair according to the pattern
+  import re
+  # clean up the pattern and stuff it in a regex
+  # escape unescaped dots
+  pattern = re.sub(r"\.", "\.", args.merge_pattern)
+  reg = re.compile(rf"(.*){pattern}$")
+  unmerged_files  = []
+  unmerged_names  = []
+  for f in fastq_file_paths:
+    match = reg.search( f )
+    if match:
+      unmerged_files.append( f )
+      unmerged_names.append( match.group(1) )
+    else:
+      file_paths.append( f )
+
+  assert(len(unmerged_files) % 2 == 0)
+
+sample_names = util.get_unique_names( file_paths ) if file_paths else []
+
+if args.merge_pattern and unmerged_files:
+  sample_names.extend( util.get_unique_names( unmerged_names ) )
+  file_paths.extend( unmerged_files )
 
 # add file paths to the samples, giving it a sample name corresponding to the file name / directory
 samples = pd.DataFrame({
-  'sample':util.get_unique_names(file_paths),
+  'sample':sample_names,
   'input_file':file_paths
   }).set_index( 'sample' )
 
