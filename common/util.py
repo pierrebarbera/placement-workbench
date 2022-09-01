@@ -226,16 +226,23 @@ def make_path_clean( path ):
 #     String Functions
 # =================================================================================================
 
-"""
-  returns the first occurence of the string matching
-  .*${marker1}${input_str}${marker2}.*  (bash notation)
-
-  the function does not check that such a string exists
-"""
 def find_string_between(input_str, marker1, marker2):
+  """returns the first occurence of the string matching
+    .*${marker1}${input_str}${marker2}.*  (bash notation)
+
+    the function does not check that such a string exists
+  """
   start = input_str.find(marker1) + len(marker1)
   end = input_str.find(marker2, start)
   return input_str[start:end]
+
+def has_format_fields( s ):
+  """Checks if a string has any formattable fields ('{}')"""
+  from string import Formatter
+  for _,a,b,c in Formatter().parse( s ):
+    if a != None or b != None or c != None:
+      return True
+  return False
 
 # =================================================================================================
 #     System Functions

@@ -81,12 +81,14 @@ class Parser:
         # add to the shell string
         if valid_func is typ.FLAG:
             # differentiate between flags (they don't have arg values attached)
+            assert( not util.has_format_fields( format_string ) )
             if arg:
                 format_string = " " + format_string
             else:
                 format_string = ""
         else:
             # ...and normal CLI arguments
+            assert( util.has_format_fields( format_string ) )
             format_string = " " + format_string.format( arg )
 
         # add to the complete shell string
