@@ -39,7 +39,7 @@ samples = pd.read_table(config["data"]["samples"], dtype=str).set_index(["sample
 
 # Get just the sample names, to use as a list of wildcards later
 sample_names=list(set(samples.index.get_level_values("sample")))
-
+assert(len(sample_names) > 0)
 # next we do some quick sanity check as we allow samples to have multiple files, if those files are 
 # unmerged fastq files
 pd_df_type = pd.core.series.Series

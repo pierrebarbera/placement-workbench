@@ -10,6 +10,14 @@ data:
   # a list of accessions to be downloaded, or a combination thereof
   samples: "data/samples.tsv"
 
+  # Optional: constrain the treesearch by a given constraint tree
+  # NOTE: labels must agree with input sequence file, but the tree does not
+  # need to contain all taxa. For details, 
+  # see https://github.com/amkozlov/raxml-ng/wiki/Input-data#topological-constraint
+
+  constraint_tree: "data/constraint.newick"
+
+  # Optional: taxonomy file used in the PhAT algorithm
   # taxonomy: "data/taxonomy.tsv"
 
   # customizing the structure of any input csv files containing a list of accessions to be downloaded

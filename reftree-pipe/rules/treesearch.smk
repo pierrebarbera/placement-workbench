@@ -71,7 +71,8 @@ rule treesearch_raxmlng:
         starting_trees  = starting_trees_params,
         bootstrap       = bootstrap_params,
         extra           = config["params"]["raxml-ng"]["treesearch"]["extra"],
-        prefix          = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search"
+        prefix          = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search",
+        constraint      = "" if not config["data"]["constraint_tree"] else "--tree-constraint {}".format(config["data"]["constraint_tree"])
     threads:
         get_threads( ['raxml-ng', 'treesearch'] )
     output:
@@ -90,6 +91,7 @@ rule treesearch_raxmlng:
         " {params.starting_trees}"
         " {params.bootstrap}"
         " --threads {threads} --redo"
+        " {params.constraint}"
         " {params.extra}"
         " > {log}  2>&1"
         # symlink resulting files to be simpler to understand and conform with other methods

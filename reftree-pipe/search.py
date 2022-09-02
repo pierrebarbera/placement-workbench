@@ -27,6 +27,8 @@ input_group.add_argument('--csv-paths', dest='accession_files', type=str, nargs=
                     with an accession. The label will subsequently be used in the fasta/tree files. Note that the column
                     labels can be customized when using the pipeline directly, using the config.yaml file.
                     """)
+input_group.add_argument('--constraint-tree', dest='constraint_tree', type=str,
+                    help='Optional constraint tree, in newick format')
 
 pipeline_group = parser.add_argument_group('Pipeline Options')
 pipeline_group.add_argument('--out-dir', dest='out_dir', type=str,
@@ -61,6 +63,9 @@ cluster_group.add_argument('--cluster-exec', dest='on_cluster', action='store_tr
 cluster_group.add_argument('--cluster-env', dest='clust_env', type=str, nargs='?',
                     const='auto', default='auto', choices=['auto','slurm', 'sge'],
                     help="What job submission system we are on. 'auto' attempts to autodetect.")
+cluster_group.add_argument('--nodes', dest='nodes', type=int,
+                    default=1,
+                    help='number of nodes to use')
 
 misc_group = parser.add_argument_group('Misc. Options')
 misc_group.add_argument('--threads', dest='threads', type=int,
@@ -100,7 +105,6 @@ if( args.accession_files ):
 if not file_paths:
   util.fail( "Did not detect any input fasta/csv files. Wrong directory?" )
 
-
 # add file paths to the samples, giving it a sample name corresponding to the file name / directory
 samples = pd.DataFrame({
   'sample':util.get_unique_names(file_paths),
@@ -123,6 +127,7 @@ config_overrrides = {
   'data':
   {
     'samples': samples_file,
+    'constraint_tree': args.constraint_tree,
     'taxonomy': args.taxonomy_file,
     'trees_are_compatible': args.trees_compatible
   },
@@ -156,11 +161,12 @@ snakemake.snakemake(
   snakefile=join( calling_dir, "Snakefile" ),
   use_conda=True,
   conda_frontend=conda_front,
-  cores=args.threads,
+  cores=args.threads*args.nodes,
   local_cores=args.threads,
   config=config_overrrides,
   latency_wait=3,
   cluster_config=cluster_config,
-  cluster=cluster
+  cluster=cluster,
+  force_incomplete=True
   )
 
