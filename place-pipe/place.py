@@ -142,6 +142,8 @@ if args.merge_pattern:
       file_paths.append( f )
 
   assert(len(unmerged_files) % 2 == 0)
+else:
+  file_paths.extend( fastq_file_paths )
 
 sample_names = util.get_unique_names( file_paths ) if file_paths else []
 

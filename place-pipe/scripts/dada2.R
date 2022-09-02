@@ -114,7 +114,9 @@ if( merge ) {
   cat("Input already merged\n")
   # get sample name 
   sample.names <- tools::file_path_sans_ext(basename(fnF))
+  print(sample.names)
   filtF <- file.path( outdir, "filtered", paste0(sample.names, "_filt.fastq.gz") )
+  print(filtF)
   
   cat("Filtering/trimming...\n")
   out <- filterAndTrim(
@@ -122,7 +124,7 @@ if( merge ) {
     filtF,
     truncLen=0,
     maxN=0,
-    maxEE=c(2,5),
+    maxEE=2,
     truncQ=2,
     rm.phix=TRUE,
     minLen=30,
