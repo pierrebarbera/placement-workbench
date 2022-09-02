@@ -41,7 +41,7 @@ with TemporaryDirectory() as tempdir:
     # We need to split the combined query+ref msa into individual (temp) files.
     shell(
         "epa-ng "
-        "--split {snakemake.input.msa} {snakemake.input.sequences} "
+        '--split "{snakemake.input.msa}" {snakemake.input.sequences} '
         "--out-dir {tempdir:q} "
         "{log}"
     )
@@ -60,9 +60,9 @@ with TemporaryDirectory() as tempdir:
         # "--redo "
         "--query {tempdir:q}/query.fasta "
         "--ref-msa {tempdir:q}/reference.fasta "
-        "--tree {snakemake.input.tree} "
+        '--tree "{snakemake.input.tree}" '
         "--outdir {tempdir:q} "
-        "--model {snakemake.input.model}{snakemake.params.model} "
+        '--model "{snakemake.input.model}{snakemake.params.model}" '
         "--threads {snakemake.threads} "
         "{snakemake.params.extra} "
         "{log}"

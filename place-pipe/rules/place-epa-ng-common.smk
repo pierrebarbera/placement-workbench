@@ -22,8 +22,8 @@ rule raxml_ng_model_eval:
         "../envs/raxml-ng.yaml"
     shell:
         "raxml-ng --evaluate"
-        " --msa {input.msa}"
-        " --tree {input.tree}"
+        ' --msa "{input.msa}"'
+        ' --tree "{input.tree}"'
         " --model {params.model}"
         " --prefix {output.model_dir}/model_eval"
         " --threads {threads}"

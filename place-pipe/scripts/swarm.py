@@ -15,7 +15,7 @@ outdir = os.path.dirname( snakemake.output[0] )
 
 # trim out any N's from the input fasta file
 stripped_file = os.path.join( outdir, "stripped.fa" )
-shell( f"sed '/^>/ ! s/[^ACGTacgt]//g' {snakemake.input[0]} > {stripped_file}" )
+shell( f"sed '/^>/ ! s/[^ACGTacgt]//g' \"{snakemake.input[0]}\" > {stripped_file}" )
 
 # =================================================================================================
 #     Parse arguments

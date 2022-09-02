@@ -72,7 +72,7 @@ rule treesearch_raxmlng:
         bootstrap       = bootstrap_params,
         extra           = config["params"]["raxml-ng"]["treesearch"]["extra"],
         prefix          = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search",
-        constraint      = "" if not config["data"]["constraint_tree"] else "--tree-constraint {}".format(config["data"]["constraint_tree"])
+        constraint      = "" if not config["data"]["constraint_tree"] else '--tree-constraint "{}"'.format(config["data"]["constraint_tree"])
     threads:
         get_threads( ['raxml-ng', 'treesearch'] )
     output:

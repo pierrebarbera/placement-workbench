@@ -89,6 +89,8 @@ class Parser:
         else:
             # ...and normal CLI arguments
             assert( util.has_format_fields( format_string ) )
+            # surround by quotes if its a file, as the path may have spaces
+            arg = f'"{arg}"' if valid_func is typ.FILE else arg
             format_string = " " + format_string.format( arg )
 
         # add to the complete shell string

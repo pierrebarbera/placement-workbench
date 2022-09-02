@@ -5,6 +5,7 @@ import sys
 import stat
 import subprocess
 from pathlib import Path
+import re
 
 # =================================================================================================
 #     Error Handling
@@ -163,6 +164,8 @@ def get_unique_names( paths, allow_gz=False ):
       path = rstrip_gz( path ) if allow_gz else path
       prefixes.append( filename( path ) )
       new_name = '_'.join( prefixes )
+      # ensure the name doesn't contain unescaped spaces
+      new_name = re.sub( r'(?<=[^\\])\s', '_', new_name )
       if( new_name in names ):
         failed = True
         names = []

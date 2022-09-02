@@ -38,7 +38,7 @@ rule merged_fastq_to_fasta:
     conda:
         "../envs/pear.yaml"
     shell:
-        "seqtk seq -A {input} > {output} 2> {log}"
+        'seqtk seq -A "{input}" > {output} 2> {log}'
 
 rule cluster_swarm:
     group: "swarm"

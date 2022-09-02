@@ -21,4 +21,4 @@ else:
 
 rel_input = os.path.relpath( in_path, os.path.dirname( out_path ) )
 
-shell( f"ln -s {rel_input} {out_path} {log}" )
+shell( f'ln -s "{rel_input}" "{out_path}" {log}' )

@@ -19,4 +19,4 @@ rule hmmer_build:
         "../envs/hmmer.yaml"
     shell:
         "hmmbuild --cpu {threads} --{params.states} {params.extra} "
-        "{output} {input} > {log} 2>&1"
+        '{output} "{input}" > {log} 2>&1'
