@@ -11,7 +11,11 @@ import snakeparser as sp
 shell.executable("bash")
 
 # Get the output directory
-sample_outdir = os.path.dirname( snakemake.output[0] )
+outdir = os.path.dirname( snakemake.output[0] )
+
+# trim out any N's from the input fasta file
+stripped_file = os.path.join( outdir, "stripped.fa" )
+shell( f"sed '/^>/ ! s/[^ACGTacgt]//g' {snakemake.input[0]} > {stripped_file}" )
 
 # =================================================================================================
 #     Parse arguments
@@ -51,7 +55,7 @@ ps.add_opt( "gap_opening_penalty",  "--gap-opening-penalty {}",     sp.typ.UINT 
 ps.add_opt( "gap_extension_penalty","--gap-extension-penalty {}",   sp.typ.UINT )
 
 # Required fasta input file at the end
-ps.add( snakemake.input[0], "{}",    sp.typ.FILE )
+ps.add( stripped_file, "{}",    sp.typ.FILE )
 
 # =================================================================================================
 #     Run
