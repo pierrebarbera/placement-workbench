@@ -101,8 +101,6 @@ if args.prefix:
 if args.taxon_file:
   util.expect_file_exists( args.taxon_file )
 
-clustering_tool = args.sequence_clustering if args.sequence_clustering else "no_clustering"
-
 use_chunkify = not args.no_chunkify
 
 
@@ -174,7 +172,6 @@ config_overrrides = {
   'settings':
   {
     'datatype': args.datatype,
-    'clustering-tool': clustering_tool,
     'use-chunkify': use_chunkify,
     'outdir': out_dir,
   },
@@ -186,6 +183,8 @@ config_overrrides = {
 
 if args.taxon_file:
   config_overrrides['data']['taxonomy_file'] = args.taxon_file
+if args.sequence_clustering:
+  config_overrrides['data']['clustering-tool'] = args.sequence_clustering
 
 calling_dir = os.path.dirname(os.path.abspath(__file__))
 
