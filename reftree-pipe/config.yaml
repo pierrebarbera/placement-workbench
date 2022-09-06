@@ -15,10 +15,12 @@ data:
   # need to contain all taxa. For details, 
   # see https://github.com/amkozlov/raxml-ng/wiki/Input-data#topological-constraint
 
-  constraint_tree: "data/constraint.newick"
+  # constraint_tree: "data/constraint.newick"
+  constraint_tree: ""
 
   # Optional: taxonomy file used in the PhAT algorithm
   # taxonomy: "data/taxonomy.tsv"
+  taxonomy: ""
 
   # customizing the structure of any input csv files containing a list of accessions to be downloaded
   accession_file_structure:

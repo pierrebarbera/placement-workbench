@@ -127,8 +127,6 @@ config_overrrides = {
   'data':
   {
     'samples': samples_file,
-    'constraint_tree': args.constraint_tree,
-    'taxonomy': args.taxonomy_file,
     'trees_are_compatible': args.trees_compatible
   },
   'settings':
@@ -146,6 +144,11 @@ config_overrrides = {
     'model': model_string
   }
 }
+
+if args.constraint_tree:
+  config_overrrides['data']['constraint_tree'] = args.constraint_tree
+if args.taxonomy_file:
+  config_overrrides['data']['taxonomy'] = args.taxonomy_file
 
 calling_dir = os.path.dirname(os.path.abspath(__file__))
 
