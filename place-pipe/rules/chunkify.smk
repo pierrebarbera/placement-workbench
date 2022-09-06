@@ -55,9 +55,8 @@ checkpoint chunkify:
         minabun         = config["params"]["chunkify"]["min-abundance"],
         chunksize       = config["params"]["chunkify"]["chunk-size"]
     log:
-        expand( "{outdir}/{clusterer}/chunkify/chunkify_{sample}.log",
+        expand( "{outdir}/{clusterer}/chunkify/chunkify.log",
                 outdir=outdir,
-                sample=sample_names,
                 allow_missing=True
                 )
     conda:
@@ -112,9 +111,8 @@ rule unchunkify:
                                     ),
         # clusterer = expand("{clusterer}", clusterer=clusterer_list)[0]
     log:
-        expand( "{outdir}/{clusterer}/chunkify/unchunkify_{sample}.log",
+        expand( "{outdir}/{clusterer}/chunkify/unchunkify.log",
                 outdir=outdir,
-                sample=sample_names,
                 allow_missing=True
                 )
     conda:
