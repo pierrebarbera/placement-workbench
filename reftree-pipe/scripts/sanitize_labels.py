@@ -24,6 +24,7 @@ if __name__ == "__main__":
         with open(out_file, 'w') as of:
             for record in seq.parse(in_file, "fasta"):
                 record.id = sanitize( record.id )
+                record.description = record.id
                 seq.write(record, of, "fasta")
     elif mode == "newick":
         trees = list(phy.parse(in_file, "newick"))
