@@ -8,7 +8,7 @@ common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", ".."
 sys.path.insert(0, common_dir)
 import util
 import snakeparser as sp
-
+from tempfile import NamedTemporaryFile
 
 shell.executable("bash")
 
@@ -24,12 +24,11 @@ if len(snakemake.input) == 1:
 # If there are multiple, we assume that multiple newick files with single trees are specified
 # In this case we combine them into one file first
 else:
-    util.make_path( outdir )
-    ml_trees = os.path.join( outdir, "ml_trees.newick" )
-    with open( ml_trees, 'w' ) as outfile:
-        for in_path in snakemake.input:
-            with open( in_path, 'r' ) as infile:
-                outfile.write( infile.read() )
+    tmp = NamedTemporaryFile( suffix="ml_trees.newick" )
+    ml_trees = tmp.name
+    for in_path in snakemake.input:
+        with open( in_path, 'r' ) as infile:
+            tmp.write( infile.read() )
 
 # =================================================================================================
 #     Parse arguments
@@ -37,7 +36,7 @@ else:
 ps = sp.Parser("raxml-ng", snakemake, ['params','raxml-ng','rfdist'])
 
 # select the run mode
-ps.add( "--rfdist" )
+ps.add( "--rfdist", "{}" )
 
 # Required args
 ps.add( ml_trees, "--tree {}", sp.typ.FILE )
