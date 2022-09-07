@@ -55,7 +55,7 @@ rule iqtree_stats_test:
         "iqtree -s {input.msa} -te {input.best_tree} -z {input.ml_trees}"
         " -m {params.modelstring}"
         " -pre {params.workdir}/stats -T {threads}"
-        " -n 0 -zb 1000 -zw -au -treediff > {log}"
+        " -n 0 -zb 1000 -zw -au -treediff -redo > {log}"
 
 rule summarize_iqtree_stats_test:
     group: "postsearch"

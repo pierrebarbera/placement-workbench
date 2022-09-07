@@ -10,6 +10,8 @@ rule rf_distances_between_samples:
                 )
     output:
         "{outdir}/result/intersample_rf_distances.txt"
+    params:
+        prefix = "rfdist_inter"
     log:
         "{outdir}/result/rfdist.log"
     conda:
@@ -29,6 +31,8 @@ rule rf_distances_between_sample_plausible_MRE:
                 )
     output:
         "{outdir}/result/intersample_plausible_MRE_rfdist.txt"
+    params:
+        prefix = "rfdist_MRE"
     log:
         "{outdir}/result/rfdist_MRE.log"
     conda:
@@ -48,6 +52,8 @@ rule rf_distances_between_sample_plausible_MR:
                 )
     output:
         "{outdir}/result/intersample_plausible_MR_rfdist.txt"
+    params:
+        prefix = "rfdist_MR"
     log:
         "{outdir}/result/rfdist_MR.log"
     conda:
