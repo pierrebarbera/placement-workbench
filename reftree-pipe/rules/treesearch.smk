@@ -5,8 +5,8 @@
 # These functions are meant to be extended via wildcards if and when more tree inference tools are added
 #
 def bootstrap_params( wildcards ):
-    num_trees   = get_highest_override( ['raxml-ng', 'treesearch'], "bs_trees" )
-    auto_bs     = get_highest_override( ['raxml-ng', 'treesearch'], "auto_bootstrap" )
+    num_trees   = get_highest_override( ['raxml-ng', 'treesearch'], "bs-trees" )
+    auto_bs     = get_highest_override( ['raxml-ng', 'treesearch'], "auto-bootstrap" )
 
     if num_trees:
         if auto_bs:
@@ -53,9 +53,9 @@ rule treesearch_raxmlng:
         model_file  = model_file
     params:
         model       = model_params,
-        pars_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "parsimony_starting_trees"),
-        rand_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "random_starting_trees"),
-        bs_metric   = get_highest_override( ['raxml-ng', 'treesearch'], "bootstrap_metric" ),
+        pars_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "parsimony-starting-trees"),
+        rand_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "random-starting-trees"),
+        bs_metric   = get_highest_override( ['raxml-ng', 'treesearch'], "bootstrap-metric" ),
         bs_trees    = bootstrap_params,
         data_type   = datatype,
         redo        = True

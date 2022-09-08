@@ -26,7 +26,7 @@ intrasample_trees = listlen(aligner_list) * listlen(trimmer_list) * listlen(auto
 # and between samples
 intersample_trees = listlen(sample_names)
 # also doesn't make sense to do rf dist for a given tree search if there was only one starting tree
-starting_trees    = ( config["params"]["parsimony_starting_trees"] + config["params"]["random_starting_trees"] )
+starting_trees    = ( config["params"]["parsimony-starting-trees"] + config["params"]["random-starting-trees"] )
 trees_compatible  = config["data"]["trees_are_compatible"]
 
 # The rule that is executed by default. It requests the final output files,

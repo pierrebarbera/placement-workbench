@@ -93,12 +93,12 @@ params:
   model: ""
 
   # number of starting trees
-  parsimony_starting_trees: 10
-  random_starting_trees: 10
+  parsimony-starting-trees: 10
+  random-starting-trees: 10
   # number of bootstrap trees. When used with auto_bootstrap=True, this becomes the upper limit of bs trees
-  bs_trees: 100
+  bs-trees: 100
   # should the number of bootstrap trees be automatically determined?
-  auto_bootstrap: True
+  auto-bootstrap: True
 
   # ----------------------------------------------------------------------
   #     Alignment-specific settings
@@ -106,7 +106,7 @@ params:
 
   # trim leading/trailing columns that contain fewer than n non-gap characters
   # (meaning a value of 0 disables the trimming)
-  trim_ends_n: 4
+  trim-ends-n: 4
 
   # ======================================================================
   #     Tool specific settings
@@ -118,7 +118,7 @@ params:
 
   gappa:
     phat:
-      target_size: 512
+      target-size: 512
 
   # ----------------------------------------------------------------------
   #     mafft

@@ -133,7 +133,6 @@ config_overrrides = {
   {
     'skip_autoref': not args.do_phat,
     'autoref': "phat", # always set phat as an autoref tool. ignored internally on skip
-    'target_taxa_number': args.phat_target_num,
     'skip_alignment': skip_alignment,
     'outdir': out_dir,
     'datatype': args.datatype
@@ -141,7 +140,14 @@ config_overrrides = {
   'params':
   {
     'threads': args.threads,
-    'model': model_string
+    'model': model_string,
+    'gappa':
+    {
+      'phat':
+      {
+        'target-size': args.phat_target_num
+      }
+    }
   }
 }
 

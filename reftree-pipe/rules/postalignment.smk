@@ -13,7 +13,7 @@ rule clean_alignment:
         "{outdir}/result/{sample}/{autoref}/{aligner}/aligned.afa"
     params:
         datatype    = config["settings"]["datatype"],
-        n           = config["params"]["trim_ends_n"]
+        n           = config["params"]["trim-ends-n"]
     output:
         "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
     log:
