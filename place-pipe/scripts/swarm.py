@@ -30,29 +30,29 @@ ps.add( snakemake.output.statistics_file,   "--statistics-file {}" )
 ps.add_threads()
 
 # Clustering options
-ps.add_opt( "differences",      "--differences {}",     sp.typ.UINT )
-ps.add_opt( "no_otu_breaking",  "--no-otu-breaking",    sp.typ.FLAG )
+ps.add_opt( "differences",          "", sp.typ.UINT )
+ps.add_opt( "no-otu-breaking",      "", sp.typ.FLAG )
 # Fastidious options
-ps.add_opt( "boundary",         "--boundary {}",        sp.typ.UINT )
-ps.add_opt( "ceiling",          "--ceiling {}",         sp.typ.UINT )
-ps.add_opt( "fastidious",       "--fastidious",         sp.typ.FLAG )
-ps.add_opt( "bloom_bits",       "--bloom-bits {}",      sp.typ.UINT )
+ps.add_opt( "boundary",             "", sp.typ.UINT )
+ps.add_opt( "ceiling",              "", sp.typ.UINT )
+ps.add_opt( "fastidious",           "", sp.typ.FLAG )
+ps.add_opt( "bloom-bits",           "", sp.typ.UINT )
 
 # (other) output options
-ps.add_opt( "append_abundance",     "--append-abundance {}",    sp.typ.UINT )
-ps.add_opt( "internal_structure",   "--internal-structure {}" )
-ps.add_opt( "network_file",         "--network-file {}" )
-ps.add_opt( "output_file",          "--output-file {}" )
-ps.add_opt( "mothur",               "--mothur",                 sp.typ.FLAG )
-ps.add_opt( "uclust_file",          "--uclust-file {}" )
-ps.add_opt( "usearch_abundance",    "--usearch-abundance",      sp.typ.FLAG )
+ps.add_opt( "append-abundance",     "", sp.typ.UINT )
+ps.add_opt( "internal-structure",   "" )
+ps.add_opt( "network-file",         "" )
+ps.add_opt( "output-file",          "" )
+ps.add_opt( "mothur",               "", sp.typ.FLAG )
+ps.add_opt( "uclust-file",          "" )
+ps.add_opt( "usearch-abundance",    "", sp.typ.FLAG )
 
 
 # Pairwise alignment advanced options
-ps.add_opt( "match_reward",         "--match-reward {}",            sp.typ.UINT )
-ps.add_opt( "mismatch_penalty",     "--mismatch-penalty {}",        sp.typ.UINT )
-ps.add_opt( "gap_opening_penalty",  "--gap-opening-penalty {}",     sp.typ.UINT )
-ps.add_opt( "gap_extension_penalty","--gap-extension-penalty {}",   sp.typ.UINT )
+ps.add_opt( "match-reward",         "", sp.typ.UINT )
+ps.add_opt( "mismatch-penalty",     "", sp.typ.UINT )
+ps.add_opt( "gap-opening-penalty",  "", sp.typ.UINT )
+ps.add_opt( "gap-extension-penalty","", sp.typ.UINT )
 
 # Required fasta input file at the end
 ps.add( stripped_file, "{}",    sp.typ.FILE )

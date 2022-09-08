@@ -49,6 +49,14 @@ class typ:
                 util.fail( "{} not within [{},{}] ".format( arg, lower, upper ) )
         return func
 
+
+def rule_key( s ):
+    """Helper function that converts any '-' characters in a string to '-'.
+    Needed to enable differing formatting between rules/params and config/params keys
+    """
+    return s.replace('-', '_')
+
+
 class Parser:
     """Class for progressively building a validated shell command.
     Basically a fancy StringBuilder class with some input validation.
@@ -99,14 +107,24 @@ class Parser:
         # return the format string incase we want to check it
         return format_string
     
-    def add_opt( self, key: str, format_string: str = "{}", valid_func: Callable[[str], bool] = typ.NONE ):
+    def add_opt( self, key: str, format_string: str = "",
+                valid_func: Callable[[str], bool] = typ.NONE,
+                add_accessors=[] ):
+        # we allow custom accessors to be added to the config accessor list
+        if type(add_accessors) is not list[list]: add_accessors = [ add_accessors ]
+        # if no format string was specified, build it from the key (--key)
+        if not format_string:
+            format_string = f"--{key}"
+            if not valid_func is typ.FLAG:
+                format_string = format_string + r" {}"
+
         # give absolute priority to the rule params, as they may have critical settings
-        if key in self._snakemake.params.keys():
-            return self.add( self._snakemake.params[key], format_string, valid_func )
+        if rule_key( key ) in self._snakemake.params.keys():
+            return self.add( self._snakemake.params[rule_key(key)], format_string, valid_func )
 
         # if the key isn't set in rule/params, look through the config accessors
         # and return the first hit
-        for accessor in self._accessors:
+        for accessor in self._accessors + add_accessors:
             entry = reduce( getitem, accessor, self._snakemake.config )
             if key in entry.keys():
                 return self.add( entry[key], format_string, valid_func )

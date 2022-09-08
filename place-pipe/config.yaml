@@ -171,8 +171,8 @@ params:
     # Settings for taxonomic assignment. See 
     # https://github.com/lczech/gappa/wiki/Subcommand:-assign for details.
     assign:
-      distant_label: False
-      resolve_missing_paths: True
+      distant-label: False
+      resolve-missing-paths: True
  
 
   # ----------------------------------------------------------------------

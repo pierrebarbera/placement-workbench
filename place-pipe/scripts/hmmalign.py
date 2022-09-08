@@ -16,11 +16,11 @@ shell.executable("bash")
 ps = sp.Parser( "hmmalign", snakemake, ['params','hmmer','hmmalign'] )
 
 # General options
-ps.add_opt( "trim",             "--trim",       sp.typ.FLAG )
+ps.add_opt( "trim",             "",             sp.typ.FLAG )
 # special handling of the --amino/--dna/--rna flags
 ps.add_opt( "states",           "--{}" )
-ps.add_opt( "informat",         "--informat {}" )
-ps.add_opt( "outformat",        "--outformat {}" )
+ps.add_opt( "informat" )
+ps.add_opt( "outformat" )
 
 # output
 ps.add( snakemake.output[0],    "-o {}" )

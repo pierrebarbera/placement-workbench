@@ -42,12 +42,15 @@ else:
 # =================================================================================================
 #     Parse arguments
 # =================================================================================================
-prefix = "rf_calc" if not "prefix" in snakemake.params.keys() else snakemake.params.prefix
+if "prefix" in snakemake.params.keys():
+    prefix = snakemake.params.prefix
+else:
+    prefix = os.path.join( outdir, "rf_calc" )
 
 ps = sp.Parser("raxml-ng", snakemake, ['params','raxml-ng','rfdist'])
 
 # select the run mode
-ps.add( "--rfdist", "{}" )
+ps.add( "--rfdist" )
 
 # Required args
 ps.add( ml_trees, "--tree {}", sp.typ.FILE )
@@ -56,7 +59,7 @@ ps.add( ml_trees, "--tree {}", sp.typ.FILE )
 
 
 # Closing args
-ps.add( os.path.join( outdir, prefix ), "--prefix {}" )
+ps.add( prefix, "--prefix {}" )
 
 ps.add_threads()
 
@@ -67,7 +70,7 @@ ps.add_threads()
 
 shell( ps.get_shell_string() )
 
-result_file = os.path.join( outdir, prefix + ".raxml.rfDistances" )
+result_file = prefix + ".raxml.rfDistances"
 util.expect_file_exists( result_file )
 
 # rename the result file
