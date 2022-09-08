@@ -67,12 +67,14 @@ class Parser:
     # of preference (i.e., first try snakemake["config"]["params"][tool][key], then more if specified)
     # note that the params set in the calling rule always takes precedence
     _accessors: list[list] = []
+    _arg_ident: str
 
     # custom constructor, to clarify inputs and to give direct control over accessor behaviour
     def __init__(   self,
                     tool: str,
                     snakemake: object,
-                    accessors: list[list] = None ):
+                    accessors: list[list] = None,
+                    arg_ident = '--' ):
         self._shell_string = tool
         self._snakemake = snakemake
         if not accessors and tool in snakemake.config['params'].keys():
@@ -80,6 +82,7 @@ class Parser:
         if accessors:
             if type(accessors) is not list[list]: accessors = [ accessors ]
             self._accessors = accessors + self._accessors
+        self._arg_ident = arg_ident
 
     def add( self, arg, format_string: str = "{}", valid_func: Callable[[str], bool] = typ.NONE ):
         
@@ -114,7 +117,7 @@ class Parser:
         if type(add_accessors) is not list[list]: add_accessors = [ add_accessors ]
         # if no format string was specified, build it from the key (--key)
         if not format_string:
-            format_string = f"--{key}"
+            format_string = f"{self._arg_ident}{key}"
             if not valid_func is typ.FLAG:
                 format_string = format_string + r" {}"
 
