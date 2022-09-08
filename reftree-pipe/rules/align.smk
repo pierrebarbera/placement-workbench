@@ -24,6 +24,9 @@ rule align_mafft:
         "{outdir}/result/{sample}/{autoref}/ref_candidates.fa"
     output:
         "{outdir}/result/{sample}/{autoref}/mafft/aligned.afa"
+    params:
+        nuc     = config["settings"]["datatype"] == 'nt',
+        amino   = config["settings"]["datatype"] == 'aa'
     threads:
         get_threads( "mafft" )
     log:
@@ -44,10 +47,13 @@ rule align_muscle:
     output:
         "{outdir}/result/{sample}/{autoref}/muscle/aligned.afa"
     params:
-        extra = config["params"]["muscle"]["extra"]
+        nt      = config["settings"]["datatype"] == 'nt',
+        amino   = config["settings"]["datatype"] == 'aa'
+    threads:
+        get_threads( "muscle" )
     log:
         "{outdir}/result/{sample}/{autoref}/muscle/alignment.log"
     conda:
         "../envs/muscle.yaml"
-    shell:
-        "muscle -in {input} -out {output} {params.extra} > {log} 2>&1"
+    script:
+        "../scripts/muscle.py"
