@@ -21,12 +21,12 @@ class typ:
     @staticmethod
     def FLAG( arg: str ):
         if not isinstance( arg, bool ):
-            util.fail("expected flag (True or False), but got '{}'".format(arg))
+            util.fail( f"expected flag (True or False), but got '{arg}'")
     @staticmethod
     def IN( set: list ):
         def func( arg ):
             if not arg in set:
-                util.fail( "{} not in ".format( arg, set ) )
+                util.fail( f"{arg} not in {set}" )
         return func
     @staticmethod
     def FLOAT( lower: float = 0.0, upper: float = float("inf") ):
@@ -36,7 +36,7 @@ class typ:
         def func( arg ):
             f = float(arg)
             if not ( (f >= lower) and (f <= upper) ):
-                util.fail( "{} not within [{},{}] ".format( arg, lower, upper ) )
+                util.fail( f"{arg} not within [{lower},{upper}]" )
         return func
     @staticmethod
     def UINT( lower: int = 0, upper: int = maxsize*2+1 ):
@@ -46,7 +46,7 @@ class typ:
         def func( arg ):
             f = int(arg)
             if not ( (f >= lower) and (f <= upper) ):
-                util.fail( "{} not within [{},{}] ".format( arg, lower, upper ) )
+                util.fail( f"{arg} not within [{lower},{upper}]" )
         return func
 
 
@@ -98,7 +98,7 @@ class Parser:
             # ...and normal CLI arguments
             assert( util.has_format_fields( format_string ) )
             # surround by quotes if its a file, as the path may have spaces
-            arg = f'"{arg}"' if valid_func is typ.FILE else arg
+            arg = f'\"{arg}\"' if valid_func is typ.FILE else arg
             format_string = " " + format_string.format( arg )
 
         # add to the complete shell string
@@ -134,6 +134,6 @@ class Parser:
 
     def get_shell_string( self, do_log: bool = True, log_stdout: bool = True ):
         if do_log:
-            return self._shell_string + " {}".format( self._snakemake.log_fmt_shell(stdout=log_stdout, stderr=True) )
+            return self._shell_string + f" {self._snakemake.log_fmt_shell(stdout=log_stdout, stderr=True)}"
         else:
             return self._shell_string 
