@@ -149,8 +149,7 @@ params:
   raxml-ng:
     treesearch:
       # branch support metric: fbp = Felsenstein bootstrap (default), tbe = transfer distance
-      bootstrap_metric: "fbp"
-      extra: ""
+      bootstrap-metric: "fbp"
     # rfdist:
   
   # ----------------------------------------------------------------------

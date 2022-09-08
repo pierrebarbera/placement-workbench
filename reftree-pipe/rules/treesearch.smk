@@ -5,74 +5,60 @@
 # These functions are meant to be extended via wildcards if and when more tree inference tools are added
 #
 def bootstrap_params( wildcards ):
-    mode        = get_highest_override( ['raxml-ng', 'treesearch'], "bootstrap_metric" )
     num_trees   = get_highest_override( ['raxml-ng', 'treesearch'], "bs_trees" )
     auto_bs     = get_highest_override( ['raxml-ng', 'treesearch'], "auto_bootstrap" )
 
-    res         = " --bs-metric {}".format(mode) if mode else ""
-
     if num_trees:
         if auto_bs:
-            res = res + " --bs-trees autoMRE{{{}}}".format(num_trees)
+            return f"autoMRE{{{{{num_trees}}}}}"
         else:
-            res = res + " --bs-trees {}".format(num_trees)
-
-    return res
-
-def model_params( wildcards, input ):
-    datatype    = config["settings"]["datatype"]
-    model       = get_highest_override( ['raxml-ng', 'treesearch'], "model" )
-
-    prefix = "--model "
-
-    if use_auto_model:
-        return prefix + input.modelfile
-    elif model:
-        return prefix + model
-    elif datatype and datatype in ['nt','aa']:
-        return prefix + "GTR+G" if datatype == 'nt' else arg_string + 'LG+G'
-    else:
-        util.fail("'datatype' field is required, and must be either 'nt' or 'aa'.")
+            return f"{num_trees}"
+    return ""
 
 def model_file( wildcards ):
     if use_auto_model:
-        return "{}/result/{}/{}/{}/{}/modeltest-ng/model.file".format(
-            wildcards.outdir, wildcards.sample, wildcards.autoref, wildcards.aligner, wildcards.trimmer
-        )
+        return rules.modeltest.output
     else:
         return []
 
-def starting_trees_params( wildcards ):
-    pars_trees = get_highest_override( ['raxml-ng', 'treesearch'], "parsimony_starting_trees")
-    rand_trees = get_highest_override( ['raxml-ng', 'treesearch'], "random_starting_trees")
+def model_params( wildcards ):
+    datatype    = config["settings"]["datatype"]
+    model       = get_highest_override( ['raxml-ng', 'treesearch'], "model" )
 
-    if pars_trees or rand_trees:
-        trees = []
-        if pars_trees:
-            trees.append("pars{{{}}}".format(pars_trees))
-        if rand_trees:
-            trees.append("rand{{{}}}".format(rand_trees))
-        return " --tree " + ",".join(trees)
+    if use_auto_model:
+        return model_file( wildcards )
+    elif model:
+        return model
+    elif datatype and datatype in ['nt','aa']:
+        return "GTR+G" if datatype == 'nt' else  "LG+G"
     else:
-        # nothing specified: leave it up to the tool to decide
-        return ""
+        util.fail("'datatype' field is required, and must be either 'nt' or 'aa'.")
+
+def datatype( wildcards ):
+    dt = config["settings"]["datatype"]
+    if dt == "nt":
+        return "DNA"
+    elif dt == "aa":
+        return "AA"
+    else:
+        util.fail("'datatype' field is required, and must be either 'nt' or 'aa'.")
 
 # =================================================================================================
 #     Tree Search with RAxML-ng
 # =================================================================================================
 
 rule treesearch_raxmlng:
-    group: "treesearch"
     input:
-        msa = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
-        modelfile = model_file
+        msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
+        model_file  = model_file
     params:
-        model           = model_params,
-        starting_trees  = starting_trees_params,
-        bootstrap       = bootstrap_params,
-        extra           = config["params"]["raxml-ng"]["treesearch"]["extra"],
-        prefix          = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search",
-        constraint      = "" if not config["data"]["constraint_tree"] else '--tree-constraint "{}"'.format(config["data"]["constraint_tree"])
+        model       = model_params,
+        pars_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "parsimony_starting_trees"),
+        rand_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "random_starting_trees"),
+        bs_metric   = get_highest_override( ['raxml-ng', 'treesearch'], "bootstrap_metric" ),
+        bs_trees    = bootstrap_params,
+        data_type   = datatype,
+        redo        = True
     threads:
         get_threads( ['raxml-ng', 'treesearch'] )
     output:
@@ -85,30 +71,14 @@ rule treesearch_raxmlng:
         "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/search.log"
     conda:
         "../envs/raxml-ng.yaml"
-    shell:
-        "raxml-ng --all --msa {input.msa} --prefix {params.prefix}"
-        " {params.model}"
-        " {params.starting_trees}"
-        " {params.bootstrap}"
-        " --threads {threads} --redo"
-        " {params.constraint}"
-        " {params.extra}"
-        " > {log}  2>&1"
-        # symlink resulting files to be simpler to understand and conform with other methods
-        " && cd $(dirname {output.best_tree})"
-        " && ln -s search.raxml.bestTree best.newick"
-        " && ln -s search.raxml.bestModel best.model"
-        " && ln -s search.raxml.support bootstrap.newick"
-        " && ln -s search.raxml.mlTrees ml_trees.newick"
-        " && ln -s search.raxml.bootstraps bs_trees.newick"
-
+    script:
+        "../scripts/raxml-ng-search.py"
 
 # =================================================================================================
 #     Consensus Tree with RAxML-ng
 # =================================================================================================
 
 rule treesearch_consensus:
-    group: "treesearch"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
     output:
