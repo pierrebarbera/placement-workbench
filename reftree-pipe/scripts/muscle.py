@@ -37,4 +37,4 @@ ps.add_threads( "-threads {}" )
 #     Run
 # =================================================================================================
 
-shell( ps.get_shell_string( log_stdout=False ) )
+shell( ps.get_shell_string() )

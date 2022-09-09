@@ -58,16 +58,14 @@ rule trim_trimal:
     group: "alignment"
     input:
         "{outdir}/result/{sample}/{autoref}/{aligner}/cleaned.afa"
-    params:
-        extra = config["params"]["trimal"]["extra"]
     output:
         "{outdir}/result/{sample}/{autoref}/{aligner}/trimal/trimmed.afa"
     log:
         "{outdir}/result/{sample}/{autoref}/{aligner}/trimal/log.txt"
     conda:
         "../envs/trimal.yaml"
-    shell:
-        "trimal -in {input} -out {output} -fasta -automated1 {params.extra} 2> {log}"
+    script:
+        "../scripts/trimal.py"
 localrules: no_trim, clean_alignment
 
 
