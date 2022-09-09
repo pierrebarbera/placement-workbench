@@ -182,4 +182,3 @@ params:
   guppy:
     fpd:
       include-pendant: False
-      extra: ""
