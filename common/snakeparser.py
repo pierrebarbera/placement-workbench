@@ -13,6 +13,11 @@ class typ:
     def FILE( arg ):
         util.expect_file_exists( arg )
     @staticmethod
+    def FILES( arg ):
+        if type(arg) is not list: arg = list(arg)
+        for f in arg:
+            util.expect_file_exists( f )
+    @staticmethod
     def EXEC( arg ):
         util.expect_executable_exists( arg )
     @staticmethod
@@ -104,6 +109,10 @@ class Parser:
             assert( util.has_format_fields( fstr ) )
             # surround by quotes if its a file, as the path may have spaces
             arg = f'\"{arg}\"' if valid_func is typ.FILE else arg
+            # same but for a list of files
+            if valid_func is typ.FILES:
+                if type(arg) is not list: arg = list(arg)
+                arg = " ".join([f'\"{a}\"' for a in arg])
             fstr = " " + fstr.format( arg )
 
         # add to the complete shell string

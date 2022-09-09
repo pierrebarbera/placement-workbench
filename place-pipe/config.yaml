@@ -161,8 +161,9 @@ params:
       formats:
         - "svg"
 
-      # Any extra parameters. In particular useful to change color and svg settings.
-      extra: "--svg-tree-ladderize"
+      # All other options (all gappa examine heat-tree options are implemented!)
+      svg-tree-ladderize: True
+
     
     # Settings for taxonomic assignment. See 
     # https://github.com/lczech/gappa/wiki/Subcommand:-assign for details.

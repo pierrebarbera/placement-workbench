@@ -7,24 +7,18 @@ rule gappa_heat_tree_all:
     group: "postplacement"
     input:
         expand( "{outdir}/{clusterer}/placed/{sample}.jplace",
-                outdir=outdir,
                 allow_missing=True,
                 sample=sample_names
                 )
     output:
         expand( "{outdir}/{clusterer}/heat-tree.{ext}",
-                outdir=outdir,
                 allow_missing=True,
                 ext=config["params"]["gappa"]["heat-tree"]["formats"]
                 )
     params:
-        extra=config["params"]["gappa"]["heat-tree"]["extra"],
+        allow_file_overwriting = True
     log:
-        expand( "{outdir}/{clusterer}/heat_tree_all.{ext}.log",
-                outdir=outdir,
-                allow_missing=True,
-                ext=config["params"]["gappa"]["heat-tree"]["formats"]
-                )
+        "{outdir}/{clusterer}/heat_tree_all.log"
     conda:
         "../envs/gappa.yaml"
     script:
@@ -34,21 +28,16 @@ rule gappa_heat_tree_all:
 rule gappa_heat_tree:
     group: "postplacement"
     input:
-        "{outdir}/placed/{sample}.jplace"
+        rules.epa_ng_place.output
     output:
-        expand( "{outdir}/{clusterer}/heat-trees/{{sample}}/heat-tree.{ext}",
-                outdir=outdir,
+        expand( "{outdir}/{clusterer}/heat-trees/{sample}/heat-tree.{ext}",
                 allow_missing=True,
                 ext=config["params"]["gappa"]["heat-tree"]["formats"]
                 )
     params:
-        extra=config["params"]["gappa"]["heat-tree"]["extra"],
+        allow_file_overwriting = True
     log:
-        expand( "{outdir}/{clusterer}/heat_trees/{{sample}}.{ext}.log",
-                outdir=outdir,
-                allow_missing=True,
-                ext=config["params"]["gappa"]["heat-tree"]["formats"]
-                )
+        "{outdir}/{clusterer}/heat_trees/{sample}.log"
     conda:
         "../envs/gappa.yaml"
     script:
