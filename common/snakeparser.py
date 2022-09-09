@@ -84,7 +84,9 @@ class Parser:
             self._accessors = accessors + self._accessors
         self._arg_ident = arg_ident
 
-    def add( self, arg, format_string: str = "{}", valid_func: Callable[[str], bool] = typ.NONE ):
+    def add( self, arg,
+            fstr: str = "{}",
+            valid_func: Callable[[str], bool] = typ.NONE ):
         
         # Validate input
         valid_func( arg )
@@ -92,45 +94,46 @@ class Parser:
         # add to the shell string
         if valid_func is typ.FLAG:
             # differentiate between flags (they don't have arg values attached)
-            assert( not util.has_format_fields( format_string ) )
+            assert( not util.has_format_fields( fstr ) )
             if arg:
-                format_string = " " + format_string
+                fstr = " " + fstr
             else:
-                format_string = ""
+                fstr = ""
         else:
             # ...and normal CLI arguments
-            assert( util.has_format_fields( format_string ) )
+            assert( util.has_format_fields( fstr ) )
             # surround by quotes if its a file, as the path may have spaces
             arg = f'\"{arg}\"' if valid_func is typ.FILE else arg
-            format_string = " " + format_string.format( arg )
+            fstr = " " + fstr.format( arg )
 
         # add to the complete shell string
-        self._shell_string = self._shell_string + format_string
+        self._shell_string = self._shell_string + fstr
 
         # return the format string incase we want to check it
-        return format_string
+        return fstr
     
-    def add_opt( self, key: str, format_string: str = "",
+    def add_opt( self, key: str,
                 valid_func: Callable[[str], bool] = typ.NONE,
+                fstr: str = "",
                 add_accessors=[] ):
         # we allow custom accessors to be added to the config accessor list
         if type(add_accessors) is not list[list]: add_accessors = [ add_accessors ]
         # if no format string was specified, build it from the key (--key)
-        if not format_string:
-            format_string = f"{self._arg_ident}{key}"
+        if not fstr:
+            fstr = f"{self._arg_ident}{key}"
             if not valid_func is typ.FLAG:
-                format_string = format_string + r" {}"
+                fstr = fstr + r" {}"
 
         # give absolute priority to the rule params, as they may have critical settings
         if rule_key( key ) in self._snakemake.params.keys():
-            return self.add( self._snakemake.params[rule_key(key)], format_string, valid_func )
+            return self.add( self._snakemake.params[rule_key(key)], fstr, valid_func )
 
         # if the key isn't set in rule/params, look through the config accessors
         # and return the first hit
         for accessor in self._accessors + add_accessors:
             entry = reduce( getitem, accessor, self._snakemake.config )
             if key in entry.keys():
-                return self.add( entry[key], format_string, valid_func )
+                return self.add( entry[key], fstr, valid_func )
 
     def add_threads( self, format_string: str = "--threads {}", valid_func: Callable[[str], bool] = typ.UINT ):
         return self.add( self._snakemake.threads, format_string, valid_func )

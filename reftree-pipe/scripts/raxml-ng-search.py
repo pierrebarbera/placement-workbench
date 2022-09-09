@@ -37,7 +37,7 @@ if rand_trees:
     trees.append( f"rand{{{{{rand_trees}}}}}" )
 starting_trees = ",".join(trees)
 if starting_trees:
-    ps.add( starting_trees,  "--tree {}" )
+    ps.add( starting_trees, "--tree {}" )
 
 if "prefix" in snakemake.params.keys():
     prefix = snakemake.params.prefix
@@ -47,45 +47,44 @@ ps.add( prefix,  "--prefix {}" )
 
 ps.add_opt( "data-type" )
 ps.add_opt( "log" )
-ps.add_opt( "redo",         "", sp.typ.FLAG )
-ps.add_opt( "precision",    "", sp.typ.UINT )
-ps.add_opt( "site-weights", "", sp.typ.FILE )
+ps.add_opt( "redo",         sp.typ.FLAG )
+ps.add_opt( "precision",    sp.typ.UINT )
+ps.add_opt( "site-weights", sp.typ.FILE )
 ps.add_opt( "outgroup" )
 
 # General options
 def ONOFF():
     return sp.typ.IN( ['on', 'off'] )
 ps.add_opt( "seed" )
-ps.add_opt( "pat-comp",     "", ONOFF )
-ps.add_opt( "tip-inner",    "", ONOFF )
-ps.add_opt( "site-repeats", "", ONOFF )
+ps.add_opt( "pat-comp",     ONOFF )
+ps.add_opt( "tip-inner",    ONOFF )
+ps.add_opt( "site-repeats", ONOFF )
 ps.add_threads()
-ps.add_opt( "workers",      "", sp.typ.UINT )
-ps.add_opt( "simd",         "", sp.typ.IN(['none','sse3','avx','avx2']) )
-ps.add_opt( "rate-scalers", "", ONOFF )
+ps.add_opt( "workers",      sp.typ.UINT )
+ps.add_opt( "simd",         sp.typ.IN(['none','sse3','avx','avx2']) )
+ps.add_opt( "rate-scalers", ONOFF )
 ps.add_opt( "force" )
 
 # Model options
-ps.add_opt( "brlen",        "", sp.typ.IN(['linked','scaled','unlinked']) )
-ps.add_opt( "blmin",        "", sp.typ.FLOAT )
-ps.add_opt( "blmax",        "", sp.typ.FLOAT )
-ps.add_opt( "blopt",        "", sp.typ.IN(
+ps.add_opt( "brlen",        sp.typ.IN(['linked','scaled','unlinked']) )
+ps.add_opt( "blmin",        sp.typ.FLOAT )
+ps.add_opt( "blmax",        sp.typ.FLOAT )
+ps.add_opt( "blopt",        sp.typ.IN(
     ['nr_fast','nr_safe','nr_oldfast','nr_oldsafe']) )
-ps.add_opt( "opt-model",    "", ONOFF )
-ps.add_opt( "opt-branches", "", ONOFF )
-ps.add_opt( "prob-msa",     "", ONOFF )
-ps.add_opt( "lh-epsilon",   "", sp.typ.FLOAT )
+ps.add_opt( "opt-model",    ONOFF )
+ps.add_opt( "opt-branches", ONOFF )
+ps.add_opt( "prob-msa",     ONOFF )
+ps.add_opt( "lh-epsilon",   sp.typ.FLOAT )
 
 # Topology search options
-ps.add_opt( "spr-radius",   "", sp.typ.UINT )
-ps.add_opt( "spr-cutoff",   "",
-    lambda a: sp.typ.FLOAT(a) if not a == "off" else True )
+ps.add_opt( "spr-radius",   sp.typ.UINT )
+ps.add_opt( "spr-cutoff",   lambda a: sp.typ.FLOAT(a) if not a == "off" else True )
 
 # Bootstrapping options
 ps.add_opt( "bs-trees" )
 ps.add_opt( "bs-cutoff" )
-ps.add_opt( "bs-metric",    "", sp.typ.IN(['fbp','tbe']) )
-ps.add_opt( "bs-write-msa", "", ONOFF )
+ps.add_opt( "bs-metric",    sp.typ.IN(['fbp','tbe']) )
+ps.add_opt( "bs-write-msa", ONOFF )
 
 # =================================================================================================
 #     Run

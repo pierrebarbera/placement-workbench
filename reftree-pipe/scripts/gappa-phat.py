@@ -28,14 +28,14 @@ ps.add( snakemake.config['params']['gappa']['phat']['target_size'],
     sp.typ.UINT )
 
 # Optional args
-ps.add_opt( "sub-taxonomy",          "" )
-ps.add_opt( "min-subclade-size",     "",    sp.typ.UINT )
-ps.add_opt( "max-subclade-size",     "",    sp.typ.UINT )
-ps.add_opt( "min-tax-level",         "",    sp.typ.UINT )
-ps.add_opt( "allow-approximation",   "",    sp.typ.FLAG )
-ps.add_opt( "no-taxa-selection",     "",    sp.typ.FLAG )
-ps.add_opt( "consensus-method",      "",    sp.typ.IN(['majorities','cavener','threshold']) )
-ps.add_opt( "consensus-threshold",   "",    sp.typ.FLOAT(0.0, 1.0) )
+ps.add_opt( "sub-taxonomy" )
+ps.add_opt( "min-subclade-size",        sp.typ.UINT )
+ps.add_opt( "max-subclade-size",        sp.typ.UINT )
+ps.add_opt( "min-tax-level",            sp.typ.UINT )
+ps.add_opt( "allow-approximation",      sp.typ.FLAG )
+ps.add_opt( "no-taxa-selection",        sp.typ.FLAG )
+ps.add_opt( "consensus-method",         sp.typ.IN(['majorities','cavener','threshold']) )
+ps.add_opt( "consensus-threshold",      sp.typ.FLOAT(0.0, 1.0) )
 
 # Closing args
 ps.add( sample_outdir, "--out-dir {}", sp.typ.DIR )
