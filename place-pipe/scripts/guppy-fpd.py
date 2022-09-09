@@ -6,12 +6,13 @@ from snakemake.shell import shell
 import sys, os
 common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", "..", "common" ))
 sys.path.insert(0, common_dir)
+from util import dirname
 import snakeparser as sp
 
 shell.executable("bash")
 
 # Get the output directory
-outdir = util.dirname( snakemake.output[0] )
+outdir = dirname( snakemake.output[0] )
 
 # =================================================================================================
 #     Parse arguments
@@ -27,7 +28,7 @@ ps.add_opt( "chao-d" )
 ps.add_opt( "include-pendant",  sp.typ.FLAG )
 
 # output
-ps.add( snakemake.output[0],    "-o {}" )
+ps.add( os.path.basename(snakemake.output[0]), "-o {}" )
 ps.add( outdir,                 "--out-dir {}" )
 
 # Input positional argument at the end

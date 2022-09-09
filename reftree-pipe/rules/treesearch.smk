@@ -15,18 +15,12 @@ def bootstrap_params( wildcards ):
             return f"{num_trees}"
     return ""
 
-def model_file( wildcards ):
-    if use_auto_model:
-        return rules.modeltest.output
-    else:
-        return []
-
-def model_params( wildcards ):
+def model_params( wildcards, input ):
     datatype    = config["settings"]["datatype"]
     model       = get_highest_override( ['raxml-ng', 'treesearch'], "model" )
 
     if use_auto_model:
-        return model_file( wildcards )
+        return input.model_file
     elif model:
         return model
     elif datatype and datatype in ['nt','aa']:
@@ -50,7 +44,7 @@ def datatype( wildcards ):
 rule treesearch_raxmlng:
     input:
         msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
-        model_file  = model_file
+        model_file  = rules.modeltest.output if use_auto_model else []
     params:
         model       = model_params,
         pars_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "parsimony-starting-trees"),

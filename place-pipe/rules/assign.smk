@@ -9,6 +9,8 @@ rule assign:
         taxon_file  = config["data"]["taxonomy-file"]
     output:
         "{outdir}/{clusterer}/taxonomic_assignment/gappa_assign/{sample}/profile.tsv"
+    params:
+        allow_file_overwriting = True
     log:
         "{outdir}/{clusterer}/taxonomic_assignment/gappa_assign/{sample}/log.txt"
     threads:
