@@ -139,10 +139,6 @@ params:
     # is empty, and only used to run RAxML-ng to evaluate the model parameters.
     model: "GTR+G"
 
-    # Any extra parameters to be used with epa-ng. See their documentation for details.
-    # Make sure not do provide conflicting options (e.g., binary mode or model string)
-    # for the options that are already given above.
-    extra: ""
 
   # ----------------------------------------------------------------------
   #     gappa

@@ -11,25 +11,21 @@ include: "place-epa-ng-common.smk"
 rule epa_ng_place:
     group: "placement"
     input:
-        tree = config["data"]["reference-tree"],
-        msa  = config["data"]["reference-alignment"],
-        sequences = "{outdir}/{clusterer}/chunkify/aligned/{sample}.afa",
-
-        # See the "simple" setup for an explanation of the model function that we use here.
-        model = epa_ng_place_model( "input" )
+        tree    = config["data"]["reference-tree"],
+        msa     = config["data"]["reference-alignment"],
+        query   = "{outdir}/{clusterer}/chunkify/aligned/{sample}.afa",
+        # add the model file for DAG resolution only
+        model   = rules.raxml_ng_model_eval.output if use_evaluate else []
     output:
-        jplace = "{outdir}/{clusterer}/chunkify/placed/{sample}.jplace"
+        jplace  = "{outdir}/{clusterer}/chunkify/placed/{sample}.jplace"
     params:
-        # Get the model if it is a string (and not a file).
-        model = epa_ng_place_model( "params" ),
-
-        # Get any extra params to use with epa-ng
-        extra = config["params"]["epa-ng"]["extra"]
+        model   = model_params,
+        redo    = True
     log:
         "{outdir}/{clusterer}/place/{sample}.log"
-    conda:
-        "../envs/epa-ng.yaml"
     threads:
         get_threads( "epa-ng" )
+    conda:
+        "../envs/epa-ng.yaml"
     script:
         "../scripts/epa-ng.py"

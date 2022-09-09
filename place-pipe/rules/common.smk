@@ -61,6 +61,9 @@ clusterer_list = config["settings"]["clustering-tool"]
 # output prefix
 outdir=config["settings"]["outdir"].rstrip("/")
 
+# helper bool for model vs evaluate
+use_evaluate = bool( config["params"]["epa-ng"]["model-params"] == "" )
+
 # persist the used config
 config_to_file( config, outdir )
 

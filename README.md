@@ -92,7 +92,7 @@ then you can add this file to the input:
 
 Finally, the pipeline also supports option clustering of input query sequences:
 ```
-./place.py [...] --cluster swarm
+./place.py [...] --sequence-clustering swarm
 ```
 
 ## Advanced Usage and Configuration
