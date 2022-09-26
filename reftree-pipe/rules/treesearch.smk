@@ -41,10 +41,24 @@ def datatype( wildcards ):
 #     Tree Search with RAxML-ng
 # =================================================================================================
 
+rule get_constraint:
+    input:
+        tree    = config['data']['constraint_tree'],
+        fasta   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa"
+    output:
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/constraint.newick"
+    log:
+        "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/get_constraint.log"
+    conda:
+        "../envs/biopython.yaml"
+    script:
+        "../scripts/constraintify.py"
+
 rule treesearch_raxmlng:
     input:
-        msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
-        model_file  = rules.modeltest.output if use_auto_model else []
+        msa             = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
+        model_file      = rules.modeltest.output[0] if use_auto_model else [],
+        tree_constraint = rules.get_constraint.output[0] if config['data']['constraint_tree'] else []
     params:
         model       = model_params,
         pars_trees  = get_highest_override( ['raxml-ng', 'treesearch'], "parsimony-starting-trees"),
@@ -124,4 +138,4 @@ rule determine_best_run:
     script:
         "../scripts/symlink-best-result.py"
 
-localrules: determine_best_run
+localrules: determine_best_run, get_constraint

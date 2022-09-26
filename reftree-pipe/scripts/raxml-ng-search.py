@@ -22,9 +22,13 @@ ps = sp.Parser( "raxml-ng", snakemake, ['params','raxml-ng','treesearch'] )
 # select the run mode
 ps.add( "--all" )
 
-# Inpu and Output Options
+# Input and Output Options
 ps.add( snakemake.input.msa,    "--msa {}",     sp.typ.FILE )
 ps.add( snakemake.params.model, "--model {}" )
+
+# optional tree constraint input file if specified
+if 'tree_constraint' in snakemake.input.keys() and snakemake.input.tree_constraint != []:
+    ps.add( snakemake.input.tree_constraint, "--tree-constraint {}", sp.typ.FILE )
 
 # special handling of starting trees
 pars_trees = snakemake.params.pars_trees
