@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from Bio import SeqIO as seq
 from Bio import Phylo as phy
 from snakemake.shell import shell
@@ -8,6 +7,9 @@ common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", ".."
 sys.path.insert(0, common_dir)
 import util
 import re
+
+sys.stdout = open( str(snakemake.log), 'w' )
+sys.stderr = sys.stdout
 
 def match_and_split( container, search_string ):
     pat = re.compile( search_string.lower() )
@@ -35,6 +37,7 @@ fasta_in    = snakemake.input.fasta
 newick_out  = snakemake.output[0]
 
 taxa_labels = set()
+to_prune    = set()
 # first read in the fasta file, and retain all taxa names
 for record in seq.parse( fasta_in, "fasta" ):
     taxa_labels.add( record.description )
@@ -54,5 +57,13 @@ for t in tree.find_clades(terminal=True):
         print(t.name)
         # create new "clades" from the labels and attach to this node
         t.clades = [phy.BaseTree.Clade(name=n) for n in matches]
+    else:
+        # if we did not find any corresponding taxa, we must prune this leaf,
+        # as this would otherwise cause an error with raxml-ng
+        to_prune.add( t.name )
+
+for name in to_prune:
+    tree.prune( name=name )
+
 # finally, write the result
 phy.write(tree, newick_out, "newick", plain=True)
