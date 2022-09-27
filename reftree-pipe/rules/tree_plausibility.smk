@@ -19,10 +19,12 @@ rule sanitize_labels:
     group: "postsearch"
     input:
         best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.newick",
-        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick"
+        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/ml_trees.newick",
+        msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa"
     output:
         best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_best.newick",
-        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_ml_trees.newick"
+        ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_ml_trees.newick",
+        msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_msa.afa",
     params:
         basedir = workflow.current_basedir
     log:
@@ -32,11 +34,12 @@ rule sanitize_labels:
     shell:
         "{params.basedir}/../scripts/sanitize_labels.py {input.best_tree} {output.best_tree} newick > {log}"
         " && {params.basedir}/../scripts/sanitize_labels.py {input.ml_trees} {output.ml_trees} newick > {log}"
+        " && {params.basedir}/../scripts/sanitize_labels.py {input.msa} {output.msa} fasta > {log}"
 
 rule iqtree_stats_test:
     group: "postsearch"
     input:
-        msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/trimmed.afa",
+        msa         = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_msa.afa",
         best_tree   = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_best.newick",
         best_model  = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/tree/best.model",
         ml_trees    = "{outdir}/result/{sample}/{autoref}/{aligner}/{trimmer}/raxml-ng/post/sanitized_ml_trees.newick"
