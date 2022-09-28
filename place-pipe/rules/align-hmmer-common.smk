@@ -3,7 +3,6 @@
 # =================================================================================================
 
 rule hmmer_build:
-    group: "alignment"
     input:
         config["data"]["reference-alignment"]
     output:

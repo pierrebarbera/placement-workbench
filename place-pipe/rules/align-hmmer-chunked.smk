@@ -9,7 +9,6 @@ include: "align-hmmer-common.smk"
 # =================================================================================================
 
 rule hmmer_align:
-    group: "alignment"
     input:
         msa      = config["data"]["reference-alignment"],
         hmmfile  = "{outdir}/hmmer/profile.hmm",
