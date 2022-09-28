@@ -98,7 +98,7 @@ def get_sample_fasta( wildcards ):
     """Get fasta file for a given sample""" 
     entry = samples.loc[wildcards.sample, "input_file"]
     
-    if type(entry) is pd_df_type or is_fastq( entry ):
+    if type(entry) is pd_df_type:
         return rules.merge_paired_pear.output
     elif is_fastq( entry ):
         return rules.merged_fastq_to_fasta.output
