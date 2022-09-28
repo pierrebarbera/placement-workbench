@@ -7,15 +7,23 @@ import sys, os
 common_dir = os.path.abspath(os.path.join( os.path.dirname(__file__), "..", "..", "common" ))
 sys.path.insert(0, common_dir)
 import snakeparser as sp
+from tempfile import NamedTemporaryFile
 
 shell.executable("bash")
+
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 # Get the output directory
 outdir = os.path.dirname( snakemake.output[0] )
 
-# trim out any N's from the input fasta file
-stripped_file = os.path.join( outdir, "stripped.fa" )
-shell( f"sed '/^>/ ! s/[^ACGTacgt]//g' \"{snakemake.input[0]}\" > {stripped_file}" )
+# swarm expects the input to be dereplicated
+derep_file = NamedTemporaryFile( suffix="dereplicated.fa" )
+shell( f"swarm --append-abundance 1 -d 0 -w {derep_file.name} -o /dev/null {snakemake.input[0]} {log}" )
+
+# also, trim out any N's from the input fasta file
+stripped_file = NamedTemporaryFile( suffix="stripped.fa" )
+shell( f"sed '/^>/ ! s/[^ACGTacgt]//g' \"{derep_file.name}\" > {stripped_file.name}" )
+
 
 # =================================================================================================
 #     Parse arguments
@@ -55,7 +63,7 @@ ps.add_opt( "gap-opening-penalty",      sp.typ.UINT )
 ps.add_opt( "gap-extension-penalty",    sp.typ.UINT )
 
 # Required fasta input file at the end
-ps.add( stripped_file, "{}",    sp.typ.FILE )
+ps.add( stripped_file.name, "{}",    sp.typ.FILE )
 
 # =================================================================================================
 #     Run
