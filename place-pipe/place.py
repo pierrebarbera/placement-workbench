@@ -184,7 +184,7 @@ config_overrrides = {
 if args.taxon_file:
   config_overrrides['data']['taxonomy_file'] = args.taxon_file
 if args.sequence_clustering:
-  config_overrrides['data']['clustering-tool'] = args.sequence_clustering
+  config_overrrides['settings']['clustering-tool'] = args.sequence_clustering
 
 calling_dir = os.path.dirname(os.path.abspath(__file__))
 
