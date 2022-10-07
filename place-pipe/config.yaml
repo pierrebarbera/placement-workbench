@@ -21,7 +21,8 @@ data:
 
   # OPTIONAL File containing a tab-separated list of reference taxon to taxonomic string assignments, as
   # used by 'gappa assign'. If provided, taxonomic assignment is added as an output
-  taxonomy-file: "data/reference/taxopaths.tsv"
+  # taxonomy-file: "data/reference/taxopaths.tsv"
+  taxonomy-file: ""
 
 # =================================================================================================
 #     Pipeline Settings
@@ -33,7 +34,9 @@ settings:
 
   # Select the tools used for aligning queries to the reference alignment.
   # Valid values: "swarm" and "no_clustering"
-  clustering-tool: "no_clustering"
+  clustering-tool: 
+    - "no_clustering"
+    # - "swarm"
 
   # If set to True, we automagically run chunkify/unchunkify on the input sample fasta files.
   # That is, we de-duplicate query sequences and re-distribute their workload to minimize cluster
@@ -84,7 +87,7 @@ params:
     min-abundance: 1
 
     # Chunkify. Number of sequences per chunk file.
-    chunk-size: 100000
+    chunk-size: 50000
 
     # Unchunkify. Cache size to determine how many jplace files are kept in memory.
     # Default (0) means all. Set this to a number greater than 0 (~100k maybe, depending on
@@ -104,6 +107,11 @@ params:
       extra: ""
     hmmalign:
       trim: False
+    # Hmmsearch filters the sequences that would go into alignment to exclude those that don't
+    # align well (according to, for example, an E-Value). See the hmmsearch manual for
+    # full settings (they're pretty much all supported here)
+    hmmsearch:
+      E: 0.01
 
 
 
@@ -160,6 +168,7 @@ params:
       # List any of "newick", "nexus", "phyloxml", "svg".
       formats:
         - "svg"
+        - "newick"
 
       # All other options (all gappa examine heat-tree options are implemented!)
       svg-tree-ladderize: True

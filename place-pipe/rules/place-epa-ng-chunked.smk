@@ -13,7 +13,7 @@ rule epa_ng_place:
     input:
         tree    = config["data"]["reference-tree"],
         msa     = config["data"]["reference-alignment"],
-        query   = "{outdir}/{clusterer}/chunkify/aligned/{sample}.afa",
+        query   = "{outdir}/{clusterer}/chunkify/aligned/{sample}/queries.afa",
         # add the model file for DAG resolution only
         model   = rules.raxml_ng_model_eval.output if use_evaluate else []
     output:
