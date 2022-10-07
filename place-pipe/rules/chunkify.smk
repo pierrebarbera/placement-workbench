@@ -59,6 +59,8 @@ checkpoint chunkify:
                 outdir=outdir,
                 allow_missing=True
                 )
+    threads:
+        get_threads( "gappa" )
     conda:
         "../envs/gappa.yaml"
     shell:
@@ -71,6 +73,7 @@ checkpoint chunkify:
         " --hash-function {params.hashfunction}"
         " --min-abundance {params.minabun}"
         " --chunk-size {params.chunksize}"
+        " --threads {threads}"
         " > {log} 2>&1"
 
 # Following the documentation tutorial here:
@@ -115,6 +118,8 @@ rule unchunkify:
                 outdir=outdir,
                 allow_missing=True
                 )
+    threads:
+        get_threads( "gappa" )
     conda:
         "../envs/gappa.yaml"
     shell:
@@ -123,4 +128,5 @@ rule unchunkify:
         " --chunk-file-expression {params.base_dir}/chunkify/placed/chunk_@.jplace"
         " --hash-function {params.hash_function}"
         " --out-dir {params.base_dir}/placed"
+        " --threads {threads}"
         " > {log} 2>&1"
