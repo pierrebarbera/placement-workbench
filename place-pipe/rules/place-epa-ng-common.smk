@@ -5,7 +5,6 @@
 # Rule to infer the best ML model parameters given the MSA and tree that we are going to use
 # for placement.
 rule raxml_ng_model_eval:
-    group: "placement"
     input:
         tree    = config["data"]["reference-tree"],
         msa     = config["data"]["reference-alignment"]
