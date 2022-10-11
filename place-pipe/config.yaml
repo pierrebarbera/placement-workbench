@@ -180,6 +180,7 @@ params:
     assign:
       distant-label: False
       resolve-missing-paths: True
+      krona: True
  
 
   # ----------------------------------------------------------------------

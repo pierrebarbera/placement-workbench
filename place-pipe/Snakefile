@@ -34,7 +34,12 @@ rule all:
             outdir=outdir,
             sample=sample_names,
             clusterer=clusterer_list
-        ) if config["data"]["taxonomy-file"] else []
+        ) if config["data"]["taxonomy-file"] else [],
+        expand("{outdir}/{clusterer}/taxonomic_assignment/gappa_assign/{sample}/krona.html",
+            outdir=outdir,
+            sample=sample_names,
+            clusterer=clusterer_list
+        ) if make_krona_plots else []
  
 # The main `all` rule is local. It does not do anything anyway,
 # except requesting the other rules to run.

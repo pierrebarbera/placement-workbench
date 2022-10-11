@@ -64,6 +64,9 @@ outdir=config["settings"]["outdir"].rstrip("/")
 # helper bool for model vs evaluate
 use_evaluate = bool( config["params"]["epa-ng"]["model-params"] == "" )
 
+# helper bool for krona
+make_krona_plots = ('krona' in config['params']['gappa']['assign'].keys()) and bool(config['params']['gappa']['assign']['krona'])
+
 # persist the used config
 config_to_file( config, outdir )
 
