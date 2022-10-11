@@ -1,12 +1,6 @@
 # The Placement Workbench
 A highly automated, configurable pair of pipelines, for creation and engineering of reference trees, and for their subsequent use with phylogenetic placement
 
-## Structure of this repository
-This repository contains two separate snakemake pipelines:
-`place-pipe`:
-
-`reftree-pipe`:
-
 ## Setup
 ### 1) install conda/mamba
 The pipelines are built on top of `snakemake` and `conda`. Thankfully, we can get `snakemake` from `conda`, which means we only have one real dependency! In principle everything should work with just the normal `conda` installation, however I've had much better results using `mamba`.
