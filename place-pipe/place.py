@@ -182,7 +182,7 @@ config_overrrides = {
 }
 
 if args.taxon_file:
-  config_overrrides['data']['taxonomy_file'] = args.taxon_file
+  config_overrrides['data']['taxonomy-file'] = args.taxon_file
 if args.sequence_clustering:
   config_overrrides['settings']['clustering-tool'] = args.sequence_clustering
 
@@ -203,5 +203,6 @@ snakemake.snakemake(
   cores=args.threads,
   config=config_overrrides,
   cluster_config=cluster_config,
-  cluster=cluster
+  cluster=cluster,
+  rerun_triggers=["mtime"]
   )
