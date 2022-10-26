@@ -34,6 +34,9 @@ class typ:
                 util.fail( f"{arg} not in {set}" )
         return func
     @staticmethod
+    def STRING( arg ):
+        return True
+    @staticmethod
     def FLOAT( lower: float = 0.0, upper: float = float("inf") ):
         """
         Returns validation function that checks if arg is within [lower,upper]
@@ -108,7 +111,7 @@ class Parser:
             # ...and normal CLI arguments
             assert( util.has_format_fields( fstr ) )
             # surround by quotes if its a file, as the path may have spaces
-            arg = f'\"{arg}\"' if valid_func is typ.FILE else arg
+            arg = f'\"{arg}\"' if (valid_func is typ.FILE) or (valid_func is typ.STRING)  else arg
             # same but for a list of files
             if valid_func is typ.FILES:
                 if type(arg) is not list: arg = list(arg)
