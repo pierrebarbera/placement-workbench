@@ -173,6 +173,8 @@ params:
 
       # All other options (all gappa examine heat-tree options are implemented!)
       svg-tree-ladderize: True
+      min-value: 1.0
+      under-color: "#808080"
 
     
     # Settings for taxonomic assignment. See 
